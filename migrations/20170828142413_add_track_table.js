@@ -1,11 +1,18 @@
 exports.up = function (knex, Promise) {
-    return knex.schema.createTable('participents', table => {
+    return knex.schema.createTable('track', table => {
         table.increments('id').primary();
-        table.string('name');
-        table.integer('sum');
+        table.integer('project_ID');
+        table.integer('task_ID');
+        table.integer('user_ID');
+        table.string('date');
+        table.string('start_time');
+        table.string('end_time');
+        table.string('duration');
+        table.string('description');
+        table.string('additional_cost');
     });
 };
 
 exports.down = function (knex, Promise) {
-    return knex.schema.dropTable('participents');
+    return knex.schema.dropTable('track');
 };

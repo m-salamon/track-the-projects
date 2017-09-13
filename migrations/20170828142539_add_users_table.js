@@ -4,6 +4,8 @@ exports.up = function (knex, Promise) {
     table.increments('id').primary();
     table.string('name');
     table.string('email');
+    table.boolean('isVerified');
+    table.string('password');
     table.string('team_ID');
   });
 };
