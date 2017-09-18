@@ -1,4 +1,4 @@
-# track-the-projeccts
+# track-the-projects
 
 ### Time Tracking for your projects and tasks
 
