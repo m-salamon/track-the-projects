@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import '../css/track.css';
 import axios from 'axios';
+import PageTop from './pageTop';
+import PageBottom from './pageBottom';
 
 export default class Track extends React.Component{
     constructor() {
@@ -15,8 +18,11 @@ export default class Track extends React.Component{
     }
 
     render() {
+       
         return (
-        <div>
+        <div>   
+        <PageTop/>
+        <div className="container">
         {/* page title */} 
         <div className="row justify-content-between blue">
             <div className="col-md-6">
@@ -35,7 +41,7 @@ export default class Track extends React.Component{
                             <div className="form-inline col-sm-12">
                                 <div className="p-sm-3  col-md-6 col-sm-12"> {/* project input */}
                                     <div className="form-group row"> 
-                                        <label for="" className="col-sm-3 col-lg-2 col-form-label">Project</label>
+                                        <label className="col-sm-3 col-lg-2 col-form-label">Project</label>
                                         <div className="col-sm-9 col-lg-10">
                                             <div className="input-group">
                                                 <input type="text" className="form-control" aria-label="Text input with dropdown button" placeholder="type project name..."/>
@@ -61,7 +67,7 @@ export default class Track extends React.Component{
 
                                 <div className="p-sm-3  col-md-6 col-sm-12"> {/* task input */}
                                     <div className="form-group row"> 
-                                        <label for="" className="col-sm-3 col-lg-2 col-form-label">Task</label>
+                                        <label className="col-sm-3 col-lg-2 col-form-label">Task</label>
                                         <div className="col-sm-9 col-lg-10">
 
                                             <div className="input-group">
@@ -90,7 +96,7 @@ export default class Track extends React.Component{
                         {/* /.row */}
                         <div className="col-sm-12 p-sm-3 ">
                             <div className="form-group row">
-                                <label for="" className="col-sm-3 col-md-2 col-lg-1 col-form-label">Description</label>
+                                <label className="col-sm-3 col-md-2 col-lg-1 col-form-label">Description</label>
                                 <div className="col-sm-9  col-md-10 col-lg-11">
                                     <textarea className="form-control" id="exampleFormControlTextarea1" rows="2" placeholder="brief description about what your doing..."></textarea>
                                 </div>
@@ -119,10 +125,10 @@ export default class Track extends React.Component{
                         </div>
                     </div>
                     <div className="col-md-3 col-sm-12 d-flex align-self-sm-end">
-                        <div className="time-started mx-auto float-sm-right" style="font-size:1.5rem">
+                        <div className="time-started mx-auto float-sm-right f-1-5">
                             <i className="fa fa-clock-o" aria-hidden="true"></i>
                             <span>10:28am</span>
-                            <span className="d-sm-inline-block text-medium-dark" style="font-size:1rem">time started</span>
+                            <span className="d-sm-inline-block text-medium-dark f-1">&nbsp;time started</span>
                         </div>
                     </div> 
             </div>{/* /.row */}
@@ -202,6 +208,8 @@ export default class Track extends React.Component{
                    </div>
                 </div>
             </div>
+        </div>
+        <PageBottom/>
         </div>
         );
     }
