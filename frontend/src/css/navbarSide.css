@@ -1,0 +1,70 @@
+/* ===================================================
+================== copy this code   ==================
+====================================================== */
+
+a {
+    color: #cfd2da;
+}
+
+a:hover {
+    color: #fff;
+}
+
+.nav-pills .nav-link.active,
+.show>.nav-pills .nav-link {
+    color: #fff;
+    background-color: #1997c6;
+}
+
+.sidebar {
+    position: fixed;
+    top: 51px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    /* Scrollable contents if viewport is shorter than content. */
+}
+
+.sidebar {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.sidebar .nav {
+    margin-bottom: 20px;
+   
+}
+
+.sidebar .nav-item {
+    width: 100%;
+}
+
+.sidebar .nav-item+.nav-item {
+    margin-left: 0;
+}
+
+.sidebar .nav-link {
+    border-radius: 0.25rem;
+}
+
+.nav-item-unclickable{
+    color: #51586a;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-bottom: 5px;
+}
+
+.nav-hr{
+    color: #cfd2da;
+    line-height: 1.5;
+    border-top: 1px solid #434857;
+    margin-bottom: 30px;
+}
+/* ===================================================
+=======================  end  ========================
+====================================================== */

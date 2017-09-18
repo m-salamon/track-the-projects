@@ -8,6 +8,7 @@
     "migrate-latest": "npm-run knex migrate:latest"
   },
   "dependencies": {
+    "axios": "^0.16.2",
     "body-parser": "~1.16.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.0",

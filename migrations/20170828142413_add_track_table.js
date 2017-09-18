@@ -4,6 +4,7 @@ exports.up = function (knex, Promise) {
         table.integer('project_ID');
         table.integer('task_ID');
         table.integer('user_ID');
+        table.integer('team_ID');
         table.string('date');
         table.string('start_time');
         table.string('end_time');
