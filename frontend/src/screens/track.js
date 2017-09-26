@@ -4,12 +4,17 @@ import '../css/track.css';
 import axios from 'axios';
 import PageTop from './pageTop';
 import PageBottom from './pageBottom';
+import PageTitle from '../components/PageTitle';
+import Input from '../components/Input';
+import Dropdown from '../components/Dropdown';
+import Button from '../components/Button';
 
 export default class Track extends React.Component{
     constructor() {
         super();
         this.state = {
-
+            title: 'Track Log',
+            projectItems: [{client: "stringing", project: 'and more stuff', project_ID: 1},{client: "something else", project: 'astuff', project_ID: 2}]
         }
     }
 
@@ -17,20 +22,15 @@ export default class Track extends React.Component{
     
     }
 
+    
     render() {
-       
+
         return (
         <div>   
         <PageTop/>
         <div className="container">
         {/* page title */} 
-        <div className="row justify-content-between blue">
-            <div className="col-md-6">
-                <h2>Track Log</h2>
-            </div>
-            <div className="col-md-6 text-md-right">Monday september 4th 2017</div>
-        </div>
-        <hr className="hr-line mt-1" />    
+        <PageTitle title={this.state.title} /> 
 
             {/* track log */} 
             <div className="row">
@@ -39,26 +39,19 @@ export default class Track extends React.Component{
                         {/* .row */}
                         <div className="row"> 
                             <div className="form-inline col-sm-12">
-                                <div className="p-sm-3  col-md-6 col-sm-12"> {/* project input */}
+                            {/* project input */}
+                                <div className="p-sm-3  col-md-6 col-sm-12"> 
                                     <div className="form-group row"> 
                                         <label className="col-sm-3 col-lg-2 col-form-label">Project</label>
                                         <div className="col-sm-9 col-lg-10">
                                             <div className="input-group">
-                                                <input type="text" className="form-control" aria-label="Text input with dropdown button" placeholder="type project name..."/>
+                                                <Input type={"text"} className={"form-control"} placeholder={"type project name..."} />
                                                 <div className="input-group-btn">
-                                                    <button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
-                                                    Projects
-                                                </button>
-                                                    <div className="dropdown-menu dropdown-menu-right">
-                                                        <ul className="list-group">
-                                                            <li className="list-group-item list-group-item-action active">Cras justo odio Lorem ipsum dolor sit</li>
-                                                            <li className="list-group-item list-group-item-action">Cras justo odio</li>
-                                                            <li className="list-group-item list-group-item-action">Cras odio</li>
-                                                        </ul>
-                                                    </div>
+                                                <Dropdown title="Projects" id="dropdown-1" dropdownItem={this.state.projectItems} className="btn btn-secondary dropdown-toggle"/>
                                                 </div>
                                                 <span className="input-group-btn">
-                                                    <button className="btn btn-secondary green-background" type="button" data-toggle="tooltip" title="Create a new project"><i className="fa fa-plus" aria-hidden="true"></i></button>
+                                                <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>}  className="btn btn-secondary green-background" type="button" data-toggle="tooltip" title="Create a new project" />
+                                                    {/*<button className="btn btn-secondary green-background" type="button" data-toggle="tooltip" title="Create a new project"><i className="fa fa-plus" aria-hidden="true"></i></button>*/}
                                                   </span>
                                             </div>
                                         </div>

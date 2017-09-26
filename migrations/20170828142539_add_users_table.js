@@ -2,7 +2,8 @@
 exports.up = function (knex, Promise) {
   return knex.schema.createTable('users', table => {
     table.increments('id').primary();
-    table.string('name');
+    table.string('firstName');
+    table.string('lastName');
     table.string('email');
     table.boolean('isVerified');
     table.string('password');

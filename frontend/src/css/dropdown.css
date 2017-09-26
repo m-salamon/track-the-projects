@@ -1,0 +1,22 @@
+.open>.dropdown-menu {
+    display: block;
+}
+.dropdown-menu {
+    padding: 0;
+}
+
+.dropdown-menu li {
+    cursor: pointer;
+}
+
+.list-group-item a{
+    color: rgb(73, 80, 87);
+    text-decoration: none;
+}
+
+.list-group-item.active a{
+    color: #fff;
+}
+.list-group-item .header{
+    color: rgba(73, 80, 87, 0.65);
+}
