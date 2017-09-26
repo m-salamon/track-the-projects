@@ -5,6 +5,6 @@ import { DropdownButton, MenuItem,ButtonGroup } from 'react-bootstrap';
 export default function DropdownLi(props) {
 
     return (
-        <MenuItem className="list-group-item list-group-item-action" id={props.project_ID}><div className="header">{props.client}</div><Link to={`${props.name}`}></Link>{props.name}</MenuItem>
+        <MenuItem pullRight="false" className="list-group-item list-group-item-action" id={props.project_ID}><div className="header">{props.client}</div><Link to={`${props.name}`}></Link>{props.name}</MenuItem>
     )
 }

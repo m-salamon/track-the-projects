@@ -20,3 +20,7 @@
 .list-group-item .header{
     color: rgba(73, 80, 87, 0.65);
 }
+.dropdown-menu-right {
+    left: auto;
+    right: 0;
+}

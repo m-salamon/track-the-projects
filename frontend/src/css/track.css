@@ -71,7 +71,14 @@
     margin-right: -50%;
 }
 
-
+.dropdown-effects{
+box-shadow: 0 0 0 1px #1BC98E;
+border-top: 2px solid #1BC98E;
+}
+.dropdown-effects:hover{
+    box-shadow: 0 0 0 1px #15a071;
+    border-top: 2px solid #128c63;
+    }
 /* ===================================================
   =======================  end  ========================
   ====================================================== */

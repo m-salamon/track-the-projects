@@ -7,6 +7,9 @@ import PageBottom from './pageBottom';
 import PageTitle from '../components/PageTitle';
 import Input from '../components/Input';
 import Dropdown from '../components/Dropdown';
+import DropdownInput from '../components/DropdownInput';
+import DropdownSelector from '../components/DropdownSelector';
+
 import Button from '../components/Button';
 
 export default class Track extends React.Component{
@@ -14,17 +17,51 @@ export default class Track extends React.Component{
         super();
         this.state = {
             title: 'Track Log',
-            projectItems: [{client: "stringing", project: 'and more stuff', project_ID: 1},{client: "something else", project: 'astuff', project_ID: 2}]
+            projectItems: [{client: "stringing", project: 'and more stuff', project_ID: 1},{client: "something else", project: 'astuff', project_ID: 2}],
+            taskItems: [{client: "stringing", project: 'and more stuff', project_ID: 1},{client: "something else", project: 'astuff', project_ID: 2}],
+            inputs: {
+                projectId: '',
+                project: '',
+                taskId: '',
+                task: '',
+                description: '',
+                dropdownShow: false 
+            },
+            dropdownItems: [ { key: 'af', value: 'af', flag: 'af', text: 'Afghanistan' },{ key: 'us', value: 'us', flag: 'us', text: 'Afghanistan' } ]
         }
+        
     }
 
-    changeHandler = () => {
+    changeHandler = (e) => {
+        let inputs = Object.assign({}, this.state.inputs);
+        inputs[e.target.name] = e.target.value;
+        inputs.dropdownShow = true;
+        this.setState({ inputs });
+    }
     
+    changeHandlerDropdown = (e) => {
+        let inputs = Object.assign({}, this.state.inputs);
+        inputs.task = e.value;
+        this.setState({ inputs });
     }
 
-    
+    clickHandler = (e) => {
+        console.log('was clicked');
+        this.state.inputs.dropdownShow = true;
+    }
+
+    blurHandler = () => {
+        console.log('was blured');
+        
+        
+    }
+
+    defaultOpenBoolean = () => {
+        
+    }
+
     render() {
-
+        
         return (
         <div>   
         <PageTop/>
@@ -45,14 +82,13 @@ export default class Track extends React.Component{
                                         <label className="col-sm-3 col-lg-2 col-form-label">Project</label>
                                         <div className="col-sm-9 col-lg-10">
                                             <div className="input-group">
-                                                <Input type={"text"} className={"form-control"} placeholder={"type project name..."} />
+                                                <Input name="project" value={this.state.inputs.project} required={true} onChange={this.changeHandler}  onClick={this.clickHandler}  onBlur={this.blurHandler} type="text" className="form-control" placeholder="type project name..." />
                                                 <div className="input-group-btn">
-                                                <Dropdown title="Projects" id="dropdown-1" dropdownItem={this.state.projectItems} className="btn btn-secondary dropdown-toggle"/>
+                                                <Dropdown title="Projects" id="dropdown-projects" dropdownItem={this.state.projectItems}  dropdownShow={this.state.inputs.dropdownShow}  className="btn btn-secondary dropdown-toggle"/>
                                                 </div>
                                                 <span className="input-group-btn">
-                                                <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>}  className="btn btn-secondary green-background" type="button" data-toggle="tooltip" title="Create a new project" />
-                                                    {/*<button className="btn btn-secondary green-background" type="button" data-toggle="tooltip" title="Create a new project"><i className="fa fa-plus" aria-hidden="true"></i></button>*/}
-                                                  </span>
+                                                    <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>}  className="btn btn-secondary green-background" type="button" data-toggle="tooltip" title="Create a new project" />
+                                                </span>
                                             </div>
                                         </div>
                                     </div>{/* /.form-group  */}
@@ -61,25 +97,18 @@ export default class Track extends React.Component{
                                 <div className="p-sm-3  col-md-6 col-sm-12"> {/* task input */}
                                     <div className="form-group row"> 
                                         <label className="col-sm-3 col-lg-2 col-form-label">Task</label>
+                                         
                                         <div className="col-sm-9 col-lg-10">
-
                                             <div className="input-group">
-                                                <input type="text" className="form-control" aria-label="Text input with dropdown button" placeholder="type task name..."/>
-                                                <div className="input-group-btn">
-                                                    <button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
-                                                    Tasks
-                                                </button>
-                                                    <div className="dropdown-menu dropdown-menu-right">
-                                                        <ul className="list-group">
-                                                            <li className="list-group-item list-group-item-action active">Cras justo odio Lorem ipsum dolor sit</li>
-                                                            <li className="list-group-item list-group-item-action">Cras justo odio</li>
-                                                            <li className="list-group-item list-group-item-action">Cras odio</li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
+                                            
+                                            <DropdownSelector className="btn-block" value={this.state.inputs.task} onChange={this.changeHandlerDropdown}/>
+                                           
+                                            
+                                            
+                                                {/*<Input name="task" value={this.state.inputs.task} required={true}  type="text" className="form-control" placeholder="type task name..." />*/}
                                                 <span className="input-group-btn">
-                                                    <button className="btn btn-secondary green-background" type="button" data-toggle="tooltip" title="Create a new task"><i className="fa fa-plus" aria-hidden="true"></i></button>
-                                                  </span>
+                                                    <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>}  className="btn btn-secondary green-background dropdown-effects" type="button" data-toggle="tooltip" title="Create a new task" />                                                
+                                                </span>
                                             </div>
                                         </div>
                                     </div>{/* /.form-group  */}
@@ -91,7 +120,7 @@ export default class Track extends React.Component{
                             <div className="form-group row">
                                 <label className="col-sm-3 col-md-2 col-lg-1 col-form-label">Description</label>
                                 <div className="col-sm-9  col-md-10 col-lg-11">
-                                    <textarea className="form-control" id="exampleFormControlTextarea1" rows="2" placeholder="brief description about what your doing..."></textarea>
+                                <Input name="description" value={this.state.inputs.description} onChange={this.changeHandler} required={false} type="textarea" className="form-control textarea" placeholder="brief description about what your doing..." />
                                 </div>
                             </div>
                         </div>{/* /track-log */}
@@ -99,6 +128,7 @@ export default class Track extends React.Component{
                 </div>
             </div>{/* /.row */}
 
+            {/* start stop buttons */}
             <div className="row justify-content-center">
                     <div className="col-md-2 col-sm-6 col-auto">
                         <div className="button-start  float-sm-right">
@@ -124,7 +154,7 @@ export default class Track extends React.Component{
                             <span className="d-sm-inline-block text-medium-dark f-1">&nbsp;time started</span>
                         </div>
                     </div> 
-            </div>{/* /.row */}
+            </div>{/* /.start stop buttons */}
 
             
             {/* My logs  */}
