@@ -13,7 +13,6 @@ class Input extends React.Component{
     blurHandler = (e) => {
         this.props.onBlur();
         this.validateInput();
-        console.log('it was blured')
     }
 
     changeHandler = (e) => {
@@ -57,7 +56,6 @@ class Input extends React.Component{
         if (this.props.formIsSubmited) {
             this.props.FormIsSubmited(false);
             this.submit();
-
         }
     }
 

@@ -1,0 +1,7 @@
+const TRACK_LOG_START = 'TRACK_LOG_START';
+const GET_PROJECTS = 'GET_PROJECTS';
+
+export {
+    TRACK_LOG_START,
+    GET_PROJECTS
+}

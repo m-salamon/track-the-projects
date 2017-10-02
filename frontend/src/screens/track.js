@@ -2,23 +2,24 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import '../css/track.css';
 import axios from 'axios';
+import { RouteComponentProps } from 'react-router-dom';
 import PageTop from './pageTop';
 import PageBottom from './pageBottom';
 import PageTitle from '../components/PageTitle';
 import Input from '../components/Input';
-import Dropdown from '../components/Dropdown';
-import DropdownInput from '../components/DropdownInput';
 import DropdownSelector from '../components/DropdownSelector';
+import { connect } from 'react-redux';
+import { getProjects } from '../actions/actions';
 
 import Button from '../components/Button';
 
-export default class Track extends React.Component{
+class Track extends React.Component{
     constructor() {
         super();
         this.state = {
             title: 'Track Log',
-            projectItems: [{client: "stringing", project: 'and more stuff', project_ID: 1},{client: "something else", project: 'astuff', project_ID: 2}],
-            taskItems: [{client: "stringing", project: 'and more stuff', project_ID: 1},{client: "something else", project: 'astuff', project_ID: 2}],
+            projectItems: [],
+            taskItems: [{client: "stringing", value: 'more', label: 'more', name: 'task', task_ID: 1},{client: "something else", value: 'astuff', label: 'astuff', name: 'task', task_ID: 2}],
             inputs: {
                 projectId: '',
                 project: '',
@@ -26,8 +27,7 @@ export default class Track extends React.Component{
                 task: '',
                 description: '',
                 dropdownShow: false 
-            },
-            dropdownItems: [ { key: 'af', value: 'af', flag: 'af', text: 'Afghanistan' },{ key: 'us', value: 'us', flag: 'us', text: 'Afghanistan' } ]
+            }
         }
         
     }
@@ -41,27 +41,38 @@ export default class Track extends React.Component{
     
     changeHandlerDropdown = (e) => {
         let inputs = Object.assign({}, this.state.inputs);
-        inputs.task = e.value;
+        if(e){
+            inputs[e.name] = e.value;
+        }
         this.setState({ inputs });
     }
 
-    clickHandler = (e) => {
-        console.log('was clicked');
-        this.state.inputs.dropdownShow = true;
-    }
-
     blurHandler = () => {
-        console.log('was blured');
-        
-        
+        console.log('was blured');      
     }
 
-    defaultOpenBoolean = () => {
+    async componentDidMount(){
+        //get all projects from redux
+        this.props.getProjects();   
+    }
+
+    componentDidUpdate(){
+       
+    }
+
+    componentWillReceiveProps(nextProps){
+        if (nextProps.projectItems) {
+            let state = Object.assign({}, this.state);
+            nextProps.projectItems.map(item => {
+                state.projectItems.push({name: 'project', label: item.name, value: item.name, id: item.id, client_ID: item.client_ID, user_ID: item.user_ID, team_ID: item.team_ID })
+            })
+            this.setState({ state });
+            console.log(this.state)
+        }
         
     }
 
     render() {
-        
         return (
         <div>   
         <PageTop/>
@@ -82,12 +93,9 @@ export default class Track extends React.Component{
                                         <label className="col-sm-3 col-lg-2 col-form-label">Project</label>
                                         <div className="col-sm-9 col-lg-10">
                                             <div className="input-group">
-                                                <Input name="project" value={this.state.inputs.project} required={true} onChange={this.changeHandler}  onClick={this.clickHandler}  onBlur={this.blurHandler} type="text" className="form-control" placeholder="type project name..." />
-                                                <div className="input-group-btn">
-                                                <Dropdown title="Projects" id="dropdown-projects" dropdownItem={this.state.projectItems}  dropdownShow={this.state.inputs.dropdownShow}  className="btn btn-secondary dropdown-toggle"/>
-                                                </div>
+                                                <DropdownSelector name="project" options={this.state.projectItems} placeholder="type project name..." className="btn-block" value={this.state.inputs.project} onChange={this.changeHandlerDropdown}/>                                            
                                                 <span className="input-group-btn">
-                                                    <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>}  className="btn btn-secondary green-background" type="button" data-toggle="tooltip" title="Create a new project" />
+                                                    <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>}  className="btn btn-secondary green-background dropdown-effects" type="button" data-toggle="tooltip" title="Create a new project" />
                                                 </span>
                                             </div>
                                         </div>
@@ -97,15 +105,9 @@ export default class Track extends React.Component{
                                 <div className="p-sm-3  col-md-6 col-sm-12"> {/* task input */}
                                     <div className="form-group row"> 
                                         <label className="col-sm-3 col-lg-2 col-form-label">Task</label>
-                                         
                                         <div className="col-sm-9 col-lg-10">
                                             <div className="input-group">
-                                            
-                                            <DropdownSelector className="btn-block" value={this.state.inputs.task} onChange={this.changeHandlerDropdown}/>
-                                           
-                                            
-                                            
-                                                {/*<Input name="task" value={this.state.inputs.task} required={true}  type="text" className="form-control" placeholder="type task name..." />*/}
+                                                <DropdownSelector name="task" options={this.state.taskItems} placeholder="type task name..." className="btn-block" value={this.state.inputs.task} onChange={this.changeHandlerDropdown}/>
                                                 <span className="input-group-btn">
                                                     <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>}  className="btn btn-secondary green-background dropdown-effects" type="button" data-toggle="tooltip" title="Create a new task" />                                                
                                                 </span>
@@ -120,7 +122,7 @@ export default class Track extends React.Component{
                             <div className="form-group row">
                                 <label className="col-sm-3 col-md-2 col-lg-1 col-form-label">Description</label>
                                 <div className="col-sm-9  col-md-10 col-lg-11">
-                                <Input name="description" value={this.state.inputs.description} onChange={this.changeHandler} required={false} type="textarea" className="form-control textarea" placeholder="brief description about what your doing..." />
+                                <Input name="description" onBlur={this.blurHandler} value={this.state.inputs.description} onChange={this.changeHandler} required={false} type="textarea" className="form-control textarea" placeholder="brief description about what your doing..." />
                                 </div>
                             </div>
                         </div>{/* /track-log */}
@@ -237,3 +239,20 @@ export default class Track extends React.Component{
         );
     }
 }
+
+function mapStateToProps(state, prop){
+    return {
+        //will get props from redux to us local props
+        projectItems: state.getProjectReducer
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return {
+        //will store whatever is in local state into redux state
+        getProjects: () => dispatch(getProjects())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Track);
+//export default reduxAware(Track);

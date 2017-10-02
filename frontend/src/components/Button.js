@@ -1,13 +1,44 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 
-export default function Button(props) {
-    return (
-            <button
-                className={props.className}
-                type={props.type}
-                onClick={props.onClick}>
-                {props.buttonName}
-            </button>
-    );
+class Button extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+     
+        }
+        
+    }
+ 
+    clickHandler = (e) => {
+
+    }
+
+    render(){
+        return (
+                <button
+                    className={this.props.className}
+                    type={this.props.type}
+                    onClick={this.props.clickHandler} 
+                    title={this.props.title}>
+                    {this.props.buttonName}
+                </button>
+        );
+    }    
 
 }
+
+function mapStateToProps(state) {
+    return {
+
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+
+    }
+}
+
+//export default Button;
+export default connect(mapStateToProps, mapDispatchToProps)(Button);
