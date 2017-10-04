@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux';
-import trackLogStart from './trackLogStart';
+import saveTrackLogReducer from './saveTrackLog';
 import getProjectReducer from './project';
+import getTaskReducer from './task';
 
 const appreducer = combineReducers({
-    trackLogStart,
-    getProjectReducer
+    saveTrackLogReducer,
+    getProjectReducer,
+    getTaskReducer,
 })
 
 export default appreducer;

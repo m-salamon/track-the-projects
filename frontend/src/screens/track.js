@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import '../css/track.css';
 import axios from 'axios';
+import moment from 'moment';
+
 import { RouteComponentProps } from 'react-router-dom';
 import PageTop from './pageTop';
 import PageBottom from './pageBottom';
@@ -9,7 +11,7 @@ import PageTitle from '../components/PageTitle';
 import Input from '../components/Input';
 import DropdownSelector from '../components/DropdownSelector';
 import { connect } from 'react-redux';
-import { getProjects } from '../actions/actions';
+import { getProjects, getTasks, saveTrackLog } from '../actions/actions';
 
 import Button from '../components/Button';
 
@@ -19,15 +21,20 @@ class Track extends React.Component{
         this.state = {
             title: 'Track Log',
             projectItems: [],
-            taskItems: [{client: "stringing", value: 'more', label: 'more', name: 'task', task_ID: 1},{client: "something else", value: 'astuff', label: 'astuff', name: 'task', task_ID: 2}],
+            taskItems: [],
+            startTime: '00:00',
+            endTime: '',
+            timeDuration: '00:00:00',
             inputs: {
                 projectId: '',
                 project: '',
                 taskId: '',
                 task: '',
-                description: '',
-                dropdownShow: false 
-            }
+                description: ''
+            },
+            isLogStart: false,
+            teamId: '',
+            userId: ''
         }
         
     }
@@ -35,41 +42,119 @@ class Track extends React.Component{
     changeHandler = (e) => {
         let inputs = Object.assign({}, this.state.inputs);
         inputs[e.target.name] = e.target.value;
-        inputs.dropdownShow = true;
-        this.setState({ inputs });
+        this.setState({ inputs: inputs });
     }
     
     changeHandlerDropdown = (e) => {
         let inputs = Object.assign({}, this.state.inputs);
         if(e){
             inputs[e.name] = e.value;
+            if(e.name == 'task'){
+                inputs.taskId = e.id;
+            }else if(e.name == 'project'){
+                inputs.projectId = e.id;
+            }
         }
-        this.setState({ inputs });
+        
+        this.setState({ inputs: inputs });
+
     }
 
     blurHandler = () => {
-        console.log('was blured');      
+           
     }
+
+    startLog = () => {
+        if(this.state.isLogStart){
+            return;
+        }
+        this.state.isLogStart = true;
+
+        //startTime
+        let startTime = Object.assign({}, this.state.startTime);
+        startTime = moment().format("h:mma");
+        this.setState({ startTime: startTime });
+
+        //duration time
+        startTime = moment().format("hhmmssa");
+        
+        var interval = setInterval(() => {
+            this.durationLog(startTime);
+            if(!this.state.isLogStart){
+                clearInterval(interval);
+            }
+        }, 1000);
+    } 
+
+    durationLog = (startTime) => {
+        if(!this.state.isLogStart){
+            return;
+        }
+        let timeDuration = Object.assign({}, this.state.timeDuration);
+        console.log(this.state.timeDuration)
+        let durationInSeconds = moment().diff(moment(startTime, "hhmmssa"), 'seconds');
+        timeDuration = moment.utc(durationInSeconds*1000).format('HH:mm:ss');
+
+        this.setState({ timeDuration: timeDuration });
+    }
+
+    endLog = async () => {
+        if(!this.state.isLogStart){
+            return;
+        }
+        this.state.isLogStart = false;
+
+        let endTime = Object.assign({}, this.state.endTime);
+        endTime = moment().format("h:mma");
+        this.setState({ endTime: endTime }, () => this.saveLog());
+    }
+
+    saveLog = () => {
+        let state = Object.assign({}, this.state);
+        let trackLogState = 
+            { startTime: state.startTime ,
+             endTime: state.endTime,
+             timeDuration: state.timeDuration ,
+             projectId: state.inputs.projectId ,
+             taskId: state.inputs.taskId ,
+             description: state.inputs.description ,
+             teamId: state.teamId ,
+             userId: state.userId 
+            }
+        this.props.saveTrackLog(trackLogState);
+        
+        //this needs a better workaround - the problem is i cant change the way state was initilized     
+        this.setState({startTime: '00:00:00', endTime: '', timeDuration: '00:00:00', projectId: '', project: '', taskId: '', project: '', task: '', description: ''})
+        console.log(this.state)
+    }
+
+    
 
     async componentDidMount(){
         //get all projects from redux
-        this.props.getProjects();   
+        this.props.getProjects();  
+        this.props.getTasks(); 
     }
 
     componentDidUpdate(){
-       
+
     }
 
     componentWillReceiveProps(nextProps){
+        let state = Object.assign({}, this.state);
         if (nextProps.projectItems) {
-            let state = Object.assign({}, this.state);
+            state.projectItems.length = 0;
             nextProps.projectItems.map(item => {
                 state.projectItems.push({name: 'project', label: item.name, value: item.name, id: item.id, client_ID: item.client_ID, user_ID: item.user_ID, team_ID: item.team_ID })
             })
-            this.setState({ state });
-            console.log(this.state)
         }
-        
+        if (nextProps.taskItems) {
+            state.taskItems.length = 0;
+            nextProps.taskItems.map(item => {
+                state.taskItems.push({name: 'task', label: item.name, value: item.name, id: item.id, hourly_rate: item.hourly_rate, project_ID: item.project_ID })
+            })
+        }
+        this.setState({ projectItems:  state.projectItems, taskItems: state.taskItems});
     }
 
     render() {
@@ -133,26 +218,26 @@ class Track extends React.Component{
             {/* start stop buttons */}
             <div className="row justify-content-center">
                     <div className="col-md-2 col-sm-6 col-auto">
-                        <div className="button-start  float-sm-right">
-                            <i className="fa fa-play" aria-hidden="true"></i>
+                        <div onClick={this.startLog} className="button-start  float-sm-right">
+                            <i className="fa fa-play" aria-hidden="true"></i>                                                                         
                             <span className="d-block">Start</span>
                         </div>
                     </div>
                     <div className="col-md-2 col-sm-6 col-auto">
-                        <div className="button-stop">
+                        <div onClick={this.endLog} className="button-stop">
                             <i className="fa fa-stop" aria-hidden="true"></i>
                             <span className="d-block">Stop</span>
                         </div>
                     </div>
                     <div className="col-md-3 col-sm-12 pt-3 d-flex align-self-sm-center">
                         <div className="track-timer mx-auto display-4">
-                            00:09:08
+                            {this.state.timeDuration.toString()}
                         </div>
                     </div>
                     <div className="col-md-3 col-sm-12 d-flex align-self-sm-end">
                         <div className="time-started mx-auto float-sm-right f-1-5">
                             <i className="fa fa-clock-o" aria-hidden="true"></i>
-                            <span>10:28am</span>
+                            <span>{this.state.startTime.toString()}</span>
                             <span className="d-sm-inline-block text-medium-dark f-1">&nbsp;time started</span>
                         </div>
                     </div> 
@@ -242,15 +327,21 @@ class Track extends React.Component{
 
 function mapStateToProps(state, prop){
     return {
-        //will get props from redux to us local props
-        projectItems: state.getProjectReducer
+        //will get props from redux to our local props
+        projectItems: state.getProjectReducer,
+        taskItems: state.getTaskReducer
     }
 }
 
 function mapDispatchToProps(dispatch){
     return {
         //will store whatever is in local state into redux state
-        getProjects: () => dispatch(getProjects())
+        getProjects: () => dispatch(getProjects()),
+        getTasks: () => dispatch(getTasks()),
+
+        saveTrackLog: (state) => dispatch(saveTrackLog(state))
+
+        
     }
 }
 
