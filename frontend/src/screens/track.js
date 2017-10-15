@@ -20,6 +20,8 @@ class Track extends React.Component{
         super();
         this.state = {
             title: 'Track Log',
+            todaysDate: moment().format("dddd, MMMM Do YYYY"),
+            logDate: moment().format('L'),
             projectItems: [],
             taskItems: [],
             startTime: '00:00',
@@ -34,7 +36,8 @@ class Track extends React.Component{
             },
             isLogStart: false,
             teamId: '',
-            userId: ''
+            userId: '',
+            hasError: true
         }
         
     }
@@ -61,10 +64,22 @@ class Track extends React.Component{
     }
 
     blurHandler = () => {
-           
+         this.validateInput();  
+    }
+
+    validateInput = () => { 
+       if(this.state.inputs.projectId == '' || this.state.inputs.taskId == ''){
+        this.state.hasError = true; 
+       }else{
+        this.state.hasError = false;
+       }
     }
 
     startLog = () => {
+        this.validateInput();
+        if(this.state.hasError){
+            return;
+        }
         if(this.state.isLogStart){
             return;
         }
@@ -112,19 +127,20 @@ class Track extends React.Component{
     saveLog = () => {
         let state = Object.assign({}, this.state);
         let trackLogState = 
-            { startTime: state.startTime ,
+            { startTime: state.startTime,
              endTime: state.endTime,
-             timeDuration: state.timeDuration ,
-             projectId: state.inputs.projectId ,
-             taskId: state.inputs.taskId ,
-             description: state.inputs.description ,
-             teamId: state.teamId ,
+             date: state.logDate,
+             timeDuration: state.timeDuration,
+             projectId: state.inputs.projectId,
+             taskId: state.inputs.taskId,
+             description: state.inputs.description,
+             teamId: state.teamId,
              userId: state.userId 
             }
         this.props.saveTrackLog(trackLogState);
         
         //this needs a better workaround - the problem is i cant change the way state was initilized     
-        this.setState({startTime: '00:00:00', endTime: '', timeDuration: '00:00:00', projectId: '', project: '', taskId: '', project: '', task: '', description: ''})
+        this.setState({startTime: '00:00', endTime: '', timeDuration: '00:00:00', projectId: '', project: '', taskId: '', project: '', task: '', description: ''})
         console.log(this.state)
     }
 
@@ -158,12 +174,17 @@ class Track extends React.Component{
     }
 
     render() {
+        {this.validateInput()}
+        let errorClassName = '';
+        if (this.state.hasError) {
+            errorClassName = 'disabled';
+        }
         return (
         <div>   
         <PageTop/>
         <div className="container">
         {/* page title */} 
-        <PageTitle title={this.state.title} /> 
+        <PageTitle title={this.state.title} todaysDate={this.state.todaysDate}/> 
 
             {/* track log */} 
             <div className="row">
@@ -178,7 +199,7 @@ class Track extends React.Component{
                                         <label className="col-sm-3 col-lg-2 col-form-label">Project</label>
                                         <div className="col-sm-9 col-lg-10">
                                             <div className="input-group">
-                                                <DropdownSelector name="project" options={this.state.projectItems} placeholder="type project name..." className="btn-block" value={this.state.inputs.project} onChange={this.changeHandlerDropdown}/>                                            
+                                                <DropdownSelector name="project" options={this.state.projectItems} placeholder="type project name..." className="btn-block" value={this.state.inputs.project} onChange={this.changeHandlerDropdown} />                                            
                                                 <span className="input-group-btn">
                                                     <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>}  className="btn btn-secondary green-background dropdown-effects" type="button" data-toggle="tooltip" title="Create a new project" />
                                                 </span>
@@ -192,7 +213,7 @@ class Track extends React.Component{
                                         <label className="col-sm-3 col-lg-2 col-form-label">Task</label>
                                         <div className="col-sm-9 col-lg-10">
                                             <div className="input-group">
-                                                <DropdownSelector name="task" options={this.state.taskItems} placeholder="type task name..." className="btn-block" value={this.state.inputs.task} onChange={this.changeHandlerDropdown}/>
+                                                <DropdownSelector name="task" options={this.state.taskItems} placeholder="type task name..." className="btn-block" value={this.state.inputs.task} onChange={this.changeHandlerDropdown} />
                                                 <span className="input-group-btn">
                                                     <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>}  className="btn btn-secondary green-background dropdown-effects" type="button" data-toggle="tooltip" title="Create a new task" />                                                
                                                 </span>
@@ -218,7 +239,7 @@ class Track extends React.Component{
             {/* start stop buttons */}
             <div className="row justify-content-center">
                     <div className="col-md-2 col-sm-6 col-auto">
-                        <div onClick={this.startLog} className="button-start  float-sm-right">
+                        <div onClick={this.startLog} className={"button-start  float-sm-right " + ' ' + errorClassName}>
                             <i className="fa fa-play" aria-hidden="true"></i>                                                                         
                             <span className="d-block">Start</span>
                         </div>
@@ -237,7 +258,7 @@ class Track extends React.Component{
                     <div className="col-md-3 col-sm-12 d-flex align-self-sm-end">
                         <div className="time-started mx-auto float-sm-right f-1-5">
                             <i className="fa fa-clock-o" aria-hidden="true"></i>
-                            <span>{this.state.startTime.toString()}</span>
+                            <span>&nbsp;</span><span>{this.state.startTime.toString()}</span>
                             <span className="d-sm-inline-block text-medium-dark f-1">&nbsp;time started</span>
                         </div>
                     </div> 
