@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom';
 import '../css/track.css';
 import axios from 'axios';
 import moment from 'moment';
-
 import { RouteComponentProps } from 'react-router-dom';
 import PageTop from './pageTop';
 import PageBottom from './pageBottom';
 import PageTitle from '../components/PageTitle';
 import Input from '../components/Input';
 import DropdownSelector from '../components/DropdownSelector';
+import TrackLogList from '../components/TrackLogList';
 import { connect } from 'react-redux';
-import { getProjects, getTasks, saveTrackLog } from '../actions/actions';
+import { getProjects, getTasks, saveTrackLog,  getTrackLog} from '../actions/actions';
 
 import Button from '../components/Button';
 
@@ -37,7 +37,8 @@ class Track extends React.Component{
             isLogStart: false,
             teamId: '',
             userId: '',
-            hasError: true
+            hasError: true,
+            trackLogs: []
         }
         
     }
@@ -106,7 +107,6 @@ class Track extends React.Component{
             return;
         }
         let timeDuration = Object.assign({}, this.state.timeDuration);
-        console.log(this.state.timeDuration)
         let durationInSeconds = moment().diff(moment(startTime, "hhmmssa"), 'seconds');
         timeDuration = moment.utc(durationInSeconds*1000).format('HH:mm:ss');
 
@@ -141,7 +141,6 @@ class Track extends React.Component{
         
         //this needs a better workaround - the problem is i cant change the way state was initilized     
         this.setState({startTime: '00:00', endTime: '', timeDuration: '00:00:00', projectId: '', project: '', taskId: '', project: '', task: '', description: ''})
-        console.log(this.state)
     }
 
     
@@ -150,6 +149,7 @@ class Track extends React.Component{
         //get all projects from redux
         this.props.getProjects();  
         this.props.getTasks(); 
+        this.props.getTrackLog();
     }
 
     componentDidUpdate(){
@@ -170,7 +170,13 @@ class Track extends React.Component{
                 state.taskItems.push({name: 'task', label: item.name, value: item.name, id: item.id, hourly_rate: item.hourly_rate, project_ID: item.project_ID })
             })
         }
-        this.setState({ projectItems:  state.projectItems, taskItems: state.taskItems});
+        if (nextProps.getTrackLog) {
+            state.trackLogs.length = 0;
+            nextProps.getTrackLogItems.map(item => {
+                state.trackLogs.push(item)
+            })
+        }
+        this.setState({ projectItems:  state.projectItems, taskItems: state.taskItems, trackLogs: state.trackLogs});
     }
 
     render() {
@@ -274,71 +280,7 @@ class Track extends React.Component{
                 {/* <div className="col-md-6 text-md-right">Monday september 4th 2017</div> */}
             </div>
             <hr className="hr-line mt-1" />
-            
-            <div className="textwithline mt-md-5 mb-md-2 text-medium-dark">No Client</div>
-            <div className="row">
-                <div className="col-sm-3 col-xs-6">
-                    <div className="text-medium-dark">Project</div>
-                    <div className="f-1-2">frontend</div>
-                </div>
-                <div className="col-sm-3 col-xs-6">
-                    <div className="text-medium-dark">Task</div>
-                    <div className="f-1-2">authentication</div>
-                </div>
-                <div className="col-sm-3 col-xs-6">
-                    <div className="text-medium-dark">Duration</div>
-                    <div className="f-1-2">05:00</div>
-                </div>
-                <div className="col-sm-3 col-xs-6">
-                   <div className="btn-group float-right" role="group" aria-label="Third group">
-                      <button type="button" className="btn btn-secondary yellow-background f-1-2" data-toggle="tooltip" title="Edit the track log"><i className="fa fa-pencil" aria-hidden="true"></i></button>
-                     <button type="button" className="btn btn-secondary red-background f-1-2" data-toggle="tooltip" title="Delete the track log"><i className="fa fa-trash" aria-hidden="true"></i></button>
-                   </div>
-                </div>
-            </div>
-            
-            <div className="textwithline mt-md-4 mb-md-2 text-medium-dark">Custom software enterprise</div>
-            <div className="row">
-                <div className="col-sm-3 col-xs-6">
-                    <div className="text-medium-dark">Project</div>
-                    <div className="f-1-2">frontend</div>
-                </div>
-                <div className="col-sm-3 col-xs-6">
-                    <div className="text-medium-dark">Task</div>
-                    <div className="f-1-2">authentication</div>
-                </div>
-                <div className="col-sm-3 col-xs-6">
-                    <div className="text-medium-dark">Duration</div>
-                    <div className="f-1-2">01:45</div>
-                </div>
-                <div className="col-sm-3 col-xs-6">
-                   <div className="btn-group float-right" role="group" aria-label="Third group">
-                      <button type="button" className="btn btn-secondary yellow-background f-1-2" data-toggle="tooltip" title="Edit the track log"><i className="fa fa-pencil" aria-hidden="true"></i></button>
-                     <button type="button" className="btn btn-secondary red-background f-1-2" data-toggle="tooltip" title="Delete the track log"><i className="fa fa-trash" aria-hidden="true"></i></button>
-                   </div>
-                </div>
-            </div>
-            <div className="textwithline mt-md-4 mb-md-2 text-medium-dark">Epic marketing</div>
-            <div className="row">
-                <div className="col-sm-3 col-xs-6">
-                    <div className="text-medium-dark">Project</div>
-                    <div className="f-1-2">frontend</div>
-                </div>
-                <div className="col-sm-3 col-xs-6">
-                    <div className="text-medium-dark">Task</div>
-                    <div className="f-1-2">authentication</div>
-                </div>
-                <div className="col-sm-3 col-xs-6">
-                    <div className="text-medium-dark">Duration</div>
-                    <div className="f-1-2">00:15</div>
-                </div>
-                <div className="col-sm-3 col-xs-6">
-                   <div className="btn-group float-right" role="group" aria-label="Third group">
-                      <button type="button" className="btn btn-secondary yellow-background f-1-2" data-toggle="tooltip" title="Edit the track log"><i className="fa fa-pencil" aria-hidden="true"></i></button>
-                     <button type="button" className="btn btn-secondary red-background f-1-2" data-toggle="tooltip" title="Delete the track log"><i className="fa fa-trash" aria-hidden="true"></i></button>
-                   </div>
-                </div>
-            </div>
+            <TrackLogList trackLogs={this.state.trackLogs}/>
         </div>
         <PageBottom/>
         </div>
@@ -347,11 +289,14 @@ class Track extends React.Component{
 }
 
 function mapStateToProps(state, prop){
+    console.log(state)
     return {
         //will get props from redux to our local props
         projectItems: state.getProjectReducer,
-        taskItems: state.getTaskReducer
+        taskItems: state.getTaskReducer,
+        getTrackLogItems: state.getTrackLogReducer
     }
+    
 }
 
 function mapDispatchToProps(dispatch){
@@ -359,9 +304,10 @@ function mapDispatchToProps(dispatch){
         //will store whatever is in local state into redux state
         getProjects: () => dispatch(getProjects()),
         getTasks: () => dispatch(getTasks()),
+        getTrackLog: () => dispatch(getTrackLog()),
 
         saveTrackLog: (state) => dispatch(saveTrackLog(state))
-
+        
         
     }
 }

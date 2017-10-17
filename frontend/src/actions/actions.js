@@ -52,9 +52,26 @@ function saveTrackLog(saveLog) {
     }
 }
 
+////////////////
+// get todays logs
+//////////////
+function getTrackLogSuccess(trackLog) {
+    return {
+        type: types.GET_TRACK_LOG,
+        payload: trackLog
+    }
+}
+
+function getTrackLog() {
+    return async dispatch => {
+        let response = await axios.get('/api/getTrackLog');
+        dispatch(getTrackLogSuccess(response.data));
+    }
+}
 
 export {
-    saveTrackLog,
     getProjects,
-    getTasks
+    getTasks,
+    saveTrackLog,
+    getTrackLog
 }
