@@ -4,8 +4,9 @@ var repo = require('../repo');
 
 router.get('/', (req, res) => {
     console.log(req.headers)
-    let trackLog = repo.getTrackLog.getTrackLog(req.headers)
+    let trackLog = repo.editTrackLog.editTrackLog(req.headers)
     .then((trackLog) => {
+        console.log(trackLog)
         res.json({ success: true, trackLog: trackLog });
     });
 });

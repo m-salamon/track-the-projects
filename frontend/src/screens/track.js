@@ -38,6 +38,7 @@ class Track extends React.Component{
             teamId: '',
             userId: '',
             hasError: true,
+            startLogWasCalled: false,
             trackLogs: []
         }
         
@@ -63,14 +64,14 @@ class Track extends React.Component{
         this.setState({ inputs: inputs });
 
     }
-
+    
     blurHandler = () => {
          this.validateInput();  
     }
 
     validateInput = () => { 
        if(this.state.inputs.projectId == '' || this.state.inputs.taskId == ''){
-        this.state.hasError = true; 
+        this.state.hasError = true;
        }else{
         this.state.hasError = false;
        }
@@ -79,6 +80,7 @@ class Track extends React.Component{
     startLog = () => {
         this.validateInput();
         if(this.state.hasError){
+            this.setState({startLogWasCalled: true});
             return;
         }
         if(this.state.isLogStart){
@@ -141,15 +143,24 @@ class Track extends React.Component{
         
         //this needs a better workaround - the problem is i cant change the way state was initilized     
         this.setState({startTime: '00:00', endTime: '', timeDuration: '00:00:00', projectId: '', project: '', taskId: '', project: '', task: '', description: ''})
+
+        //get the newest log after its been saved
+        this.getTodaysLogs();
     }
 
+    getTodaysLogs = (logDate) => {
+        let state = Object.assign({}, this.state);
+        let filters = {
+             logDate: state.logDate 
+        };
+        this.props.getTrackLog(filters);
+    }
     
-
     async componentDidMount(){
         //get all projects from redux
         this.props.getProjects();  
         this.props.getTasks(); 
-        this.props.getTrackLog();
+        this.getTodaysLogs();
     }
 
     componentDidUpdate(){
@@ -170,7 +181,7 @@ class Track extends React.Component{
                 state.taskItems.push({name: 'task', label: item.name, value: item.name, id: item.id, hourly_rate: item.hourly_rate, project_ID: item.project_ID })
             })
         }
-        if (nextProps.getTrackLog) {
+        if (nextProps.getTrackLogItems) {
             state.trackLogs.length = 0;
             nextProps.getTrackLogItems.map(item => {
                 state.trackLogs.push(item)
@@ -181,10 +192,23 @@ class Track extends React.Component{
 
     render() {
         {this.validateInput()}
+        
         let errorClassName = '';
         if (this.state.hasError) {
             errorClassName = 'disabled';
         }
+
+        //ui visuel error handling
+        let projectErrorClassName = '', taskErrorClassName = '', projectInputHasError = '', taskInputHasError = '';
+        if(this.state.inputs.projectId == '' && this.state.startLogWasCalled){
+            projectErrorClassName = 'projectErrorClassName';
+            projectInputHasError = 'inputHasError';
+        }
+        if(this.state.inputs.taskId == '' && this.state.startLogWasCalled){
+            taskErrorClassName = 'taskErrorClassName';
+            taskInputHasError = 'inputHasError';
+        }
+
         return (
         <div>   
         <PageTop/>
@@ -202,10 +226,10 @@ class Track extends React.Component{
                             {/* project input */}
                                 <div className="p-sm-3  col-md-6 col-sm-12"> 
                                     <div className="form-group row"> 
-                                        <label className="col-sm-3 col-lg-2 col-form-label">Project</label>
+                                        <label className={"col-sm-3 col-lg-2 col-form-label " + ' ' + projectErrorClassName}>Project</label>
                                         <div className="col-sm-9 col-lg-10">
                                             <div className="input-group">
-                                                <DropdownSelector name="project" options={this.state.projectItems} placeholder="type project name..." className="btn-block" value={this.state.inputs.project} onChange={this.changeHandlerDropdown} />                                            
+                                                <DropdownSelector name="project" options={this.state.projectItems} placeholder="type project name..." className={"btn-block " + ' ' + projectInputHasError} value={this.state.inputs.project} onChange={this.changeHandlerDropdown} />                                            
                                                 <span className="input-group-btn">
                                                     <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>}  className="btn btn-secondary green-background dropdown-effects" type="button" data-toggle="tooltip" title="Create a new project" />
                                                 </span>
@@ -216,10 +240,10 @@ class Track extends React.Component{
 
                                 <div className="p-sm-3  col-md-6 col-sm-12"> {/* task input */}
                                     <div className="form-group row"> 
-                                        <label className="col-sm-3 col-lg-2 col-form-label">Task</label>
+                                        <label className={"col-sm-3 col-lg-2 col-form-label " + ' ' + taskErrorClassName}>Task</label>
                                         <div className="col-sm-9 col-lg-10">
                                             <div className="input-group">
-                                                <DropdownSelector name="task" options={this.state.taskItems} placeholder="type task name..." className="btn-block" value={this.state.inputs.task} onChange={this.changeHandlerDropdown} />
+                                                <DropdownSelector name="task" options={this.state.taskItems} placeholder="type task name..." className={"btn-block" + ' ' + taskInputHasError} value={this.state.inputs.task} onChange={this.changeHandlerDropdown} />
                                                 <span className="input-group-btn">
                                                     <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>}  className="btn btn-secondary green-background dropdown-effects" type="button" data-toggle="tooltip" title="Create a new task" />                                                
                                                 </span>
@@ -277,7 +301,7 @@ class Track extends React.Component{
                 <div className="col-md-6">
                     <h2>Today's Logs</h2>
                 </div>
-                {/* <div className="col-md-6 text-md-right">Monday september 4th 2017</div> */}
+                { /*<div className="col-md-6 text-md-right">Monday september 4th 2017</div>*/}
             </div>
             <hr className="hr-line mt-1" />
             <TrackLogList trackLogs={this.state.trackLogs}/>
@@ -304,7 +328,7 @@ function mapDispatchToProps(dispatch){
         //will store whatever is in local state into redux state
         getProjects: () => dispatch(getProjects()),
         getTasks: () => dispatch(getTasks()),
-        getTrackLog: () => dispatch(getTrackLog()),
+        getTrackLog: (state) => dispatch(getTrackLog(state)),
 
         saveTrackLog: (state) => dispatch(saveTrackLog(state))
         
@@ -312,5 +336,5 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Track);
-//export default reduxAware(Track);
+let reduxAware =  connect(mapStateToProps, mapDispatchToProps);
+export default reduxAware(Track);
