@@ -109,6 +109,17 @@
     border-left: 3px solid #ff0033;
 }
 
+.add-btn{
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.Select div{
+    border-top-right-radius:  0px;
+    border-bottom-right-radius:  0px;
+}
 /* ===================================================
   =======================  end  ========================
   ====================================================== */
+
+  

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
-
+import '../css/dropdownSelector.css';
 
 
 export default class Dropdown extends React.Component{

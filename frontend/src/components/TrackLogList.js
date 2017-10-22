@@ -1,14 +1,17 @@
 import * as React from 'react';
 import axios from 'axios';
+import moment from 'moment';
 import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { editTrackLog, deleteTrackLog } from '../actions/actions';
+import EditModal from '../components/EditModal';
+import { editTrackLog, deleteTrackLog, getTrackLog } from '../actions/actions';
 
 class TrackLogList extends React.Component{
     constructor() {
         super();
         this.state = {
-
+            logDate: moment().format('L'),
+            showModal: false
         }
     }
 
@@ -16,7 +19,14 @@ class TrackLogList extends React.Component{
     editHandler = (e) => {
         let logId = e.target.id;
         console.log('clickHandler', logId)
-        this.getLog(logId);   
+        this.setState({
+            showModal: false
+        }, () => {
+            this.setState({ showModal: true});
+        });
+        
+        this.editTrackLog(logId);
+         
     }
 
     deleteHandler = (e) => {
@@ -24,29 +34,36 @@ class TrackLogList extends React.Component{
         let item = {
             logId: logId 
        };
-        this.props.deleteTrackLog(item); 
+       let filters = {
+        logDate: this.state.logDate 
+    };
+        this.props.deleteTrackLog(item)
+        .then(this.props.getTrackLog(filters)); 
     }
 
-    getLog = (logId) => {
+    editTrackLog = (logId) => {
         let item = {
             logId: logId 
        };
         this.props.editTrackLog(item);
     }
 
-    componentWillReceiveProps(nextProps){
-        let state = Object.assign({}, this.state);
-        if (nextProps.editTrackLogItems) {
-            //state.projectItems.length = 0;
-            nextProps.editTrackLogItems.map(item => {
-                console.log(item)
-                //state.editTrackLogItems.push({name: 'project', label: item.name, value: item.name, id: item.id, client_ID: item.client_ID, user_ID: item.user_ID, team_ID: item.team_ID })
-            })
-        }
-        this.setState({ });
+    componentWillReceiveProps(){
+
+    }
+
+    clickHandler = () => {
+        
+        this.setState({
+            showModal: false
+        }, () => {
+            this.setState({ showModal: true});
+        });
+          
     }
 
     render() {
+         
         if(this.props.trackLogs.length == 0){
             return <div className="ml-4">No logs for today</div>
         }
@@ -70,7 +87,7 @@ class TrackLogList extends React.Component{
                     </div>
                     <div className="col-sm-3 col-xs-6">
                         <div className="btn-group float-right" role="group" aria-label="Third group">
-                        <button type="button" className="btn btn-secondary yellow-background f-1-2" data-toggle="tooltip" title="Edit the track log"><i className="fa fa-pencil" aria-hidden="true" onClick={this.editHandler} id={id}></i></button>
+                        <button type="button" className="btn btn-secondary yellow-background f-1-2" data-toggle="tooltip" title="Edit the track log"><i className="fa fa-pencil" aria-hidden="true" onClick={this.editHandler} id={id} ></i></button>
                         <button type="button" className="btn btn-secondary red-background f-1-2" data-toggle="tooltip" title="Delete the track log"><i className="fa fa-trash" aria-hidden="true" onClick={this.deleteHandler} id={id}></i></button>
                         </div>
                     </div>
@@ -80,6 +97,12 @@ class TrackLogList extends React.Component{
         });
         return (
         <div>
+        
+        <button color="danger" onClick={this.clickHandler}>I am a button</button>
+        {this.state.showModal ?
+            <EditModal toggle={this.state.showModal} editTrackLogItems={this.props.editTrackLogItems} ></EditModal> :
+            null
+         }
             {trackLogs}
         </div>
         );
@@ -87,7 +110,7 @@ class TrackLogList extends React.Component{
 }
 
 function mapStateToProps(state, prop){
-    console.log(state)
+    console.log('redux state',state)
     return {
         //will get props from redux to our local props
         editTrackLogItems: state.editTrackLogReducer,
@@ -100,7 +123,8 @@ function mapDispatchToProps(dispatch){
     return {
         //will store whatever is in local state into redux state
         editTrackLog: (state) => dispatch(editTrackLog(state)), 
-        deleteTrackLog: (state) => dispatch(deleteTrackLog(state))    
+        deleteTrackLog: (state) => dispatch(deleteTrackLog(state)),
+        getTrackLog: (state) => dispatch(getTrackLog(state))   
     }
 }
 

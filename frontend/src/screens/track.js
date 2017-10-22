@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import ReactDOM from 'react-dom';
 import '../css/track.css';
 import axios from 'axios';
 import moment from 'moment';
@@ -12,8 +13,9 @@ import DropdownSelector from '../components/DropdownSelector';
 import TrackLogList from '../components/TrackLogList';
 import { connect } from 'react-redux';
 import { getProjects, getTasks, saveTrackLog,  getTrackLog} from '../actions/actions';
-
 import Button from '../components/Button';
+import { Tooltip, UncontrolledTooltip } from 'reactstrap';
+
 
 class Track extends React.Component{
     constructor() {
@@ -155,7 +157,7 @@ class Track extends React.Component{
         };
         this.props.getTrackLog(filters);
     }
-    
+
     async componentDidMount(){
         //get all projects from redux
         this.props.getProjects();  
@@ -191,6 +193,7 @@ class Track extends React.Component{
     }
 
     render() {
+        
         {this.validateInput()}
         
         let errorClassName = '';
@@ -229,9 +232,10 @@ class Track extends React.Component{
                                         <label className={"col-sm-3 col-lg-2 col-form-label " + ' ' + projectErrorClassName}>Project</label>
                                         <div className="col-sm-9 col-lg-10">
                                             <div className="input-group">
-                                                <DropdownSelector name="project" options={this.state.projectItems} placeholder="type project name..." className={"btn-block " + ' ' + projectInputHasError} value={this.state.inputs.project} onChange={this.changeHandlerDropdown} />                                            
-                                                <span className="input-group-btn">
-                                                    <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>}  className="btn btn-secondary green-background dropdown-effects" type="button" data-toggle="tooltip" title="Create a new project" />
+                                                <DropdownSelector name="project" options={this.state.projectItems} placeholder="type project name..." className={"btn-block" + ' ' + projectInputHasError} value={this.state.inputs.project} onChange={this.changeHandlerDropdown} />                                            
+                                                <span className="input-group-btn" id="addProjectTooltip">
+                                                    <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>}  className="btn btn-secondary green-background dropdown-effects add-btn" type="button"/>
+                                                    <UncontrolledTooltip placement="top" target={"addProjectTooltip"} >Create a new project</UncontrolledTooltip>
                                                 </span>
                                             </div>
                                         </div>
@@ -244,8 +248,9 @@ class Track extends React.Component{
                                         <div className="col-sm-9 col-lg-10">
                                             <div className="input-group">
                                                 <DropdownSelector name="task" options={this.state.taskItems} placeholder="type task name..." className={"btn-block" + ' ' + taskInputHasError} value={this.state.inputs.task} onChange={this.changeHandlerDropdown} />
-                                                <span className="input-group-btn">
-                                                    <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>}  className="btn btn-secondary green-background dropdown-effects" type="button" data-toggle="tooltip" title="Create a new task" />                                                
+                                                <span className="input-group-btn" id="addTaskTooltip">
+                                                    <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>} className="btn btn-secondary green-background dropdown-effects add-btn" type="button"/>
+                                                    <UncontrolledTooltip placement="top" target={"addTaskTooltip"} >Create a new task</UncontrolledTooltip>                                         
                                                 </span>
                                             </div>
                                         </div>
@@ -313,7 +318,6 @@ class Track extends React.Component{
 }
 
 function mapStateToProps(state, prop){
-    console.log(state)
     return {
         //will get props from redux to our local props
         projectItems: state.getProjectReducer,

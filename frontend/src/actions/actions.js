@@ -46,7 +46,6 @@ function saveTrackLogSuccess(saveLog) {
 }
 
 function saveTrackLog(saveLog) {
-    console.log('SAVE LOG!',saveLog)
     return async dispatch => {
         let response = await axios.post('/api/saveTrackLog/', saveLog);
         dispatch(saveTrackLogSuccess(response.data));
@@ -64,6 +63,7 @@ function getTrackLogSuccess(trackLog) {
 }
 
 function getTrackLog(tracklog) {
+    console.log('track log date',tracklog)
     return async dispatch => {
         let response = await axios.get('/api/getTrackLog/', { headers: { logdate: tracklog.logDate} });
         dispatch(getTrackLogSuccess(response.data));
@@ -81,7 +81,6 @@ function editTrackLogSuccess(tracklog) {
 }
 
 function editTrackLog(tracklog) {
-    console.log('IN HERE',tracklog.logId)
     return async dispatch => {
         let response = await axios.get('/api/editTrackLog/', { headers: { logId: tracklog.logId} });
         dispatch(editTrackLogSuccess(response.data));
@@ -102,6 +101,9 @@ function deleteTrackLog(tracklog) {
     return async dispatch => {
         let response = await axios.post('/api/deleteTrackLog', {logid: tracklog.logId});
         dispatch(deleteTrackLogSuccess(response.data));
+        if (response.data.success) {
+            console.log('it works')
+        } 
     }
 }
 
