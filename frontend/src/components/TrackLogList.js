@@ -5,19 +5,30 @@ import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import EditModal from '../components/EditModal';
 import { editTrackLog, deleteTrackLog, getTrackLog } from '../actions/actions';
+import { Tooltip, UncontrolledTooltip } from 'reactstrap';
+import Button from '../components/Button';
 
 class TrackLogList extends React.Component{
     constructor() {
         super();
         this.state = {
             logDate: moment().format('L'),
-            showModal: false
+            showModal: false,
+            trackLogs: []
         }
     }
 
 
     editHandler = (e) => {
+        console.log('clicked!!')
+        //when icon is clicked its e.currentTarget - when button is clicked its e.target 
+        if(e.currentTarget){  
+            e.target = e.currentTarget;
+        }
+
         let logId = e.target.id;
+        console.log('clicked!!',e.target)
+
         console.log('clickHandler', logId)
         this.setState({
             showModal: false
@@ -30,13 +41,20 @@ class TrackLogList extends React.Component{
     }
 
     deleteHandler = (e) => {
+        //when icon is clicked its e.currentTarget - when button is clicked its e.target 
+
+        if(e.currentTarget){
+            e.target = e.currentTarget;
+        }
+
+        
         let logId = e.target.id;
         let item = {
             logId: logId 
        };
        let filters = {
         logDate: this.state.logDate 
-    };
+        };
         this.props.deleteTrackLog(item)
         .then(this.props.getTrackLog(filters)); 
     }
@@ -48,8 +66,16 @@ class TrackLogList extends React.Component{
         this.props.editTrackLog(item);
     }
 
-    componentWillReceiveProps(){
-
+    componentWillReceiveProps(nextProps){
+        console.log('in here')
+        let state = Object.assign({}, this.state);
+        if (nextProps.getTrackLogItems) {
+            state.trackLogs.length = 0;
+            nextProps.getTrackLogItems.map(item => {
+                state.trackLogs.push(item)
+            })
+        }
+        this.setState({ trackLogs: state.trackLogs});
     }
 
     clickHandler = () => {
@@ -62,12 +88,17 @@ class TrackLogList extends React.Component{
           
     }
 
+
+    async componentDidMount(){
+
+    }
+
     render() {
-         
-        if(this.props.trackLogs.length == 0){
+         console.log('trackLogs',this.props.trackLogs)
+        if(this.state.trackLogs.length == 0){
             return <div className="ml-4">No logs for today</div>
         }
-        let trackLogs = this.props.trackLogs.map((item) => {
+        let trackLogs = this.state.trackLogs.map((item) => {
             const { id, client, project, task, duration  } = item;
             return (
              <div key={item.id} id={item.id}>
@@ -87,8 +118,10 @@ class TrackLogList extends React.Component{
                     </div>
                     <div className="col-sm-3 col-xs-6">
                         <div className="btn-group float-right" role="group" aria-label="Third group">
-                        <button type="button" className="btn btn-secondary yellow-background f-1-2" data-toggle="tooltip" title="Edit the track log"><i className="fa fa-pencil" aria-hidden="true" onClick={this.editHandler} id={id} ></i></button>
-                        <button type="button" className="btn btn-secondary red-background f-1-2" data-toggle="tooltip" title="Delete the track log"><i className="fa fa-trash" aria-hidden="true" onClick={this.deleteHandler} id={id}></i></button>
+                            <Button type="button" onClick={this.editHandler}  id={id} className="btn btn-secondary yellow-background f-1-2" buttonName={<i className="fa fa-pencil" aria-hidden="true" id={id}></i>} />
+                            {/*<UncontrolledTooltip placement="left" target={"addTooltipEditButton"} >Edit the track log</UncontrolledTooltip>*/}                                         
+                            <Button type="button" onClick={this.deleteHandler}  id={id} className="btn btn-secondary red-background f-1-2" buttonName={<i className="fa fa-trash" aria-hidden="true"  id={id}></i>} />
+                            {/*<UncontrolledTooltip placement="top" target={"addTooltipDeleteButton"} >Delete the track log</UncontrolledTooltip>*/}
                         </div>
                     </div>
                 </div>
@@ -98,7 +131,6 @@ class TrackLogList extends React.Component{
         return (
         <div>
         
-        <button color="danger" onClick={this.clickHandler}>I am a button</button>
         {this.state.showModal ?
             <EditModal toggle={this.state.showModal} editTrackLogItems={this.props.editTrackLogItems} ></EditModal> :
             null

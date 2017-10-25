@@ -162,8 +162,10 @@ class Track extends React.Component{
         //get all projects from redux
         this.props.getProjects();  
         this.props.getTasks(); 
-        this.getTodaysLogs();
+        await this.getTodaysLogs();
     }
+
+
 
     componentDidUpdate(){
 

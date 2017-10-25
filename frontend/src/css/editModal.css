@@ -1,14 +1,62 @@
 /* ==================================================
 ================== copy this code====================
 ====================== bellow ======================= */
-.modal{
+
+.modal {
     color: #51586a;
 }
 
-.add-btn{
+.add-btn {
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
 }
+
+.DropdownSelector-project {
+    z-index: 2000;
+}
+
+.DropdownSelector-task {
+    z-index: 1999;
+}
+
+.DropdownSelector-startTime {
+    z-index: 1998;
+}
+
+.DropdownSelector-endTime {
+    z-index: 1997;
+}
+
+.DropdownSelector-AdditionalCost{
+    z-index: 1996;
+}
+
+.dropdown-effects {
+    padding: 7px 12px;
+}
+
+.dropdown-effects-addon-btn {
+    /* margin-right: -1px; */
+    height: 0px;
+    padding: 17px 12px;
+    z-index: 3000;
+}
+
+.DropdownSelector-startTime>.Select div {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.DropdownSelector-endTime .Select div {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.DropdownSelector-AdditionalCost .Select div {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
 
 /* ===================================================
 =======================  end  ========================
