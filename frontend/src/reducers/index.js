@@ -5,6 +5,7 @@ import getTaskReducer from './task';
 import getTrackLogReducer from './getTrackLog';
 import editTrackLogReducer from './editTrackLog';
 import deleteTrackLogReducer from './deleteTrackLog';
+import updateTrackLogReducer from './updateTrackLog';
 
 const appreducer = combineReducers({
     getProjectReducer,
@@ -12,7 +13,8 @@ const appreducer = combineReducers({
     saveTrackLogReducer,
     getTrackLogReducer,
     editTrackLogReducer,
-    deleteTrackLogReducer
+    deleteTrackLogReducer,
+    updateTrackLogReducer
 })
 
 export default appreducer;

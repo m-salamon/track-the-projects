@@ -151,9 +151,8 @@ class Track extends React.Component{
     }
 
     getTodaysLogs = (logDate) => {
-        let state = Object.assign({}, this.state);
         let filters = {
-             logDate: state.logDate 
+             logDate: this.state.logDate 
         };
         this.props.getTrackLog(filters);
     }
@@ -162,7 +161,7 @@ class Track extends React.Component{
         //get all projects from redux
         this.props.getProjects();  
         this.props.getTasks(); 
-        await this.getTodaysLogs();
+         this.getTodaysLogs();
     }
 
 

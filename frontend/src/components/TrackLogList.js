@@ -20,34 +20,26 @@ class TrackLogList extends React.Component{
 
 
     editHandler = (e) => {
-        console.log('clicked!!')
         //when icon is clicked its e.currentTarget - when button is clicked its e.target 
         if(e.currentTarget){  
             e.target = e.currentTarget;
         }
-
         let logId = e.target.id;
-        console.log('clicked!!',e.target)
-
-        console.log('clickHandler', logId)
         this.setState({
             showModal: false
         }, () => {
             this.setState({ showModal: true});
         });
         
-        this.editTrackLog(logId);
-         
+        this.editTrackLog(logId);        
     }
 
-    deleteHandler = (e) => {
+     deleteHandler = async (e) => {
         //when icon is clicked its e.currentTarget - when button is clicked its e.target 
-
         if(e.currentTarget){
             e.target = e.currentTarget;
         }
 
-        
         let logId = e.target.id;
         let item = {
             logId: logId 
@@ -55,8 +47,9 @@ class TrackLogList extends React.Component{
        let filters = {
         logDate: this.state.logDate 
         };
-        this.props.deleteTrackLog(item)
-        .then(this.props.getTrackLog(filters)); 
+          this.props.deleteTrackLog(item)
+          .then(() => { this.props.getTrackLog(filters) });
+             
     }
 
     editTrackLog = (logId) => {
@@ -67,7 +60,7 @@ class TrackLogList extends React.Component{
     }
 
     componentWillReceiveProps(nextProps){
-        console.log('in here')
+        console.log('REDUX STATE', nextProps)
         let state = Object.assign({}, this.state);
         if (nextProps.getTrackLogItems) {
             state.trackLogs.length = 0;
@@ -94,7 +87,7 @@ class TrackLogList extends React.Component{
     }
 
     render() {
-         console.log('trackLogs',this.props.trackLogs)
+        console.log('IN RENDER',this.state)
         if(this.state.trackLogs.length == 0){
             return <div className="ml-4">No logs for today</div>
         }
@@ -142,7 +135,6 @@ class TrackLogList extends React.Component{
 }
 
 function mapStateToProps(state, prop){
-    console.log('redux state',state)
     return {
         //will get props from redux to our local props
         editTrackLogItems: state.editTrackLogReducer,

@@ -63,7 +63,7 @@ function getTrackLogSuccess(trackLog) {
 }
 
 function getTrackLog(tracklog) {
-    console.log('track log date',tracklog)
+    console.log('redux getTrackLog')
     return async dispatch => {
         let response = await axios.get('/api/getTrackLog/', { headers: { logdate: tracklog.logDate} });
         dispatch(getTrackLogSuccess(response.data));
@@ -88,7 +88,7 @@ function editTrackLog(tracklog) {
 }
 
 ////////////////
-// get logs
+// delete logs
 //////////////
 function deleteTrackLogSuccess(deleteLog) {
     return {
@@ -99,11 +99,26 @@ function deleteTrackLogSuccess(deleteLog) {
 
 function deleteTrackLog(tracklog) {
     return async dispatch => {
-        let response = await axios.post('/api/deleteTrackLog', {logid: tracklog.logId});
-        dispatch(deleteTrackLogSuccess(response.data));
-        if (response.data.success) {
-            console.log('it works')
-        } 
+        let response = await axios.post('/api/deleteTrackLog', {logid: tracklog.logId})
+         dispatch(deleteTrackLogSuccess(response.data));
+    }
+}
+
+////////////////
+// delete logs
+//////////////
+function updateTrackLogSuccess(updateLog) {
+    return {
+        type: types.UPDATE_TRACK_LOG,
+        updateLog
+    }
+}
+
+function updateTrackLog(updateLog) {
+    console.log('updateLog',updateLog)
+    return async dispatch => {
+        let response = await axios.post('/api/updateTrackLog/', updateLog)
+         dispatch(updateTrackLogSuccess(response.data));       
     }
 }
 
@@ -113,5 +128,6 @@ export {
     saveTrackLog,
     editTrackLog,
     getTrackLog,
-    deleteTrackLog
+    deleteTrackLog,
+    updateTrackLog
 }

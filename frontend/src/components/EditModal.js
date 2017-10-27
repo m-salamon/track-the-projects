@@ -1,27 +1,29 @@
 import * as React from 'react';
 import axios from 'axios';
 import moment from 'moment';
-//import 'bootstrap/dist/css/bootstrap.css';
 import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import {  } from '../actions/actions';
 import DropdownSelector from '../components/DropdownSelector';
+import Datepicker from '../components/Datepicker';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import Button from '../components/Button';
-import { getProjects, getTasks, saveTrackLog } from '../actions/actions';
+import { getProjects, getTasks, saveTrackLog, updateTrackLog, getTrackLog } from '../actions/actions';
 import '../css/editModal.css';
 
 class EditModal extends React.Component{
     constructor() {
         super();
         this.state = {
+            logDate: moment().format('L'),
             modal: true,
             projectItems: [],
             taskItems: [],
             startTimeItems: [],
             endTimeItems: [],
             inputs: {
+                id: '',
                 projectId: '',
                 project: '',
                 taskId: '',
@@ -30,6 +32,8 @@ class EditModal extends React.Component{
                 startTime: {},
                 endTime: {},
                 duration: '',
+                date: '',
+                startDate: '',
                 additionalCost: ''
             }
         }
@@ -39,6 +43,11 @@ class EditModal extends React.Component{
         this.setState({
             modal: !this.state.modal
         });
+
+        let filters = {
+            logDate: this.state.logDate 
+            };
+           this.props.getTrackLog(filters);
     }
 
     changeHandlerDropdown = (e) => {
@@ -129,22 +138,23 @@ class EditModal extends React.Component{
             inputs.project = nextProps.editTrackLogItems[0].project
             //input.projectId
             inputs.projectId = nextProps.editTrackLogItems[0].projectId
-            //task.task
+            //inputs.task
             inputs.task = nextProps.editTrackLogItems[0].task
-            //task.taskId
+            //inputs.taskId
             inputs.taskId = nextProps.editTrackLogItems[0].taskId
-            //task.duration
+            //inputs.duration
             inputs.duration = nextProps.editTrackLogItems[0].duration
-            //task.description
+            //inputs.description
             inputs.description = nextProps.editTrackLogItems[0].description
-            //task.date
-            inputs.date = nextProps.editTrackLogItems[0].date
-
+            //inputs.date
+            inputs.startDate = moment(nextProps.editTrackLogItems[0].date)
+            //inputs.id
+            inputs.id = nextProps.editTrackLogItems[0].id
 
             this.setState({ inputs: inputs });
         }
 
-        //24 hour time picker
+        //24 hour time picker startTimeItems state
         let startTimeItems = [];
         for(let i = 1; i <= 12; i++){
             startTimeItems.push({name: 'startTime', label: i+':00 AM', value: i+':00 AM'},{name: 'startTime', label: i+':15 AM', value: i+':15 AM'},{name: 'startTime', label: i+':30 AM', value: i+':30 AM'},{name: 'startTime', label: i+':45 AM', value: i+':45 AM'}); 
@@ -153,6 +163,7 @@ class EditModal extends React.Component{
             startTimeItems.push({name: 'startTime', label: i+':00 PM', value: i+':00 PM'},{name: 'startTime', label: i+':15 PM', value: i+':15 PM'},{name: 'startTime', label: i+':30 PM', value: i+':30 PM'},{name: 'startTime', label: i+':45 PM', value: i+':45 PM'}); 
         }
 
+        //24 hour time picker endTimeItems state
         let endTimeItems = [];
         for(let i = 1; i <= 12; i++){
             endTimeItems.push({name: 'endTime', label: i+':00 AM', value: i+':00 AM'},{name: 'endTime', label: i+':15 AM', value: i+':15 AM'},{name: 'endTime', label: i+':30 AM', value: i+':30 AM'},{name: 'endTime', label: i+':45 AM', value: i+':45 AM'}); 
@@ -180,6 +191,35 @@ class EditModal extends React.Component{
         
     }
 
+    datePickerHandleChange = (date) => {
+        let inputs = Object.assign({}, this.state.inputs);
+        inputs.startDate = date;
+        this.setState({
+            inputs: inputs
+        });
+        
+      }
+
+    updateTrackLog = () => {
+    let inputs = Object.assign({}, this.state.inputs);
+    let trackLogState = {
+            id: inputs.id,
+            startTime: moment(inputs.startTime.value, "HH:mm:ss A").format('h:mma'),
+            endTime: moment(inputs.endTime.value, "HH:mm:ss A").format('h:mma'),
+            date: inputs.startDate.format('L').toString(),
+            timeDuration: inputs.duration,
+            projectId: inputs.projectId,
+            taskId: inputs.taskId,
+            description: inputs.description,
+            //teamId: inputs.teamId,
+            //userId: inputs.userId,
+            additionalCost: inputs.additionalCost 
+    }
+    this.props.updateTrackLog(trackLogState);
+    //close the modal
+    this.toggle();
+    }  
+
     async componentDidMount(){
         //get all projects from redux
         this.props.getProjects();  
@@ -194,7 +234,7 @@ class EditModal extends React.Component{
     }
 
     render() {
-        console.log(this.state)
+
         let modalItems = this.props.editTrackLogItems.map((item) => {
             const { id, client, project, task, date, startTime, endTime, duration, description, additionalCost, projectId, taskId} = item;
             return (
@@ -293,28 +333,6 @@ class EditModal extends React.Component{
                     </div>
                     {/*<!-- /.duration input -->*/}
 
-                    {/*<!-- additional cost input -->
-                    <div className="form-group row">
-                    <label className="col-sm-3 col-lg-2 col-form-label">Additional cost</label>
-                    <div className="col-sm-9 col-lg-10">
-                        <div className="input-group DropdownSelector-AdditionalCost">
-                        <span className="input-group-addon dropdown-effects-addon-btn" id="btnGroupAddon">
-                            <i className="fa fa-usd" aria-hidden="true"></i>
-                        </span>
-                        <DropdownSelector name="endTime" value={this.state.inputs.endTime} onChange={this.changeHandlerDropdown} searchable={false} options={this.state.additionalCostItems} placeholder="additional cost" className="btn-block DropdownSelector-AdditionalCost" />
-                            <span className="input-group-btn" id="incrementMoneyTooltip">
-                                <Button type="button" onClick={this.changeHandlerIncrement} title="dollarIncrement" name="dollarIncrement"  className="btn btn-secondary dropdown-effects" buttonName={<i className="fa fa-plus" name="timeIncrement"  aria-hidden="true"></i>}/>
-                                <UncontrolledTooltip placement="top" target={"incrementMoneyTooltip"} >Increment by 10 dollars"</UncontrolledTooltip>
-                            </span>
-                            <span className="input-group-btn" id="decrementMoneyTooltip">
-                                <Button type="button" onClick={this.changeHandlerIncrement} title="dollarIncrement" name="dollarDecrement" className="btn btn-secondary dropdown-effects"  buttonName={<i className="fa fa-minus" name="timeDecrement"  aria-hidden="true"></i>} />
-                                <UncontrolledTooltip placement="top" target={"decrementMoneyTooltip"} >Decrement by 10 dollars</UncontrolledTooltip>
-                            </span>
-                        </div>
-                    </div>
-                    </div>
-                    <!-- /.additional cost input -->*/}
-
                     {/*<!-- additional cost input -->*/}
                     <div className="form-group row">
                         <label  className="col-sm-3 col-lg-2 col-form-label">Additional cost</label>
@@ -344,7 +362,12 @@ class EditModal extends React.Component{
                         <div className="col-sm-9 col-lg-10">
                             <div className="input-group">
                                 <span className="input-group-addon" id="btnGroupAddon"><i className="fa fa-calendar-o" aria-hidden="true"></i></span>
-                                <input type="date"  className="form-control" aria-label="Text input with dropdown button" placeholder="additional cost"/>
+                                {/*<input type="date"  className="form-control" aria-label="Text input with dropdown button" placeholder="additional cost"/>**/}
+                                <Datepicker
+                                selected={this.state.inputs.startDate}
+                                className="DropdownSelector-datepicker"
+                                onChange={this.datePickerHandleChange}
+                                />
                             </div>
                         </div>
                     </div>
@@ -355,8 +378,8 @@ class EditModal extends React.Component{
 
                 {/*<!-- .Modal footer-->*/}
                 <ModalFooter>
-                    <button type="button" className="btn btn-secondary" onClick={this.toggle}>Cancel</button>{' '}
-                    <button type="button" className="btn btn-primary" onClick={this.toggle}>Save log</button>
+                    <button type="button" className="btn btn-secondary" name='cancel' onClick={this.toggle} >Cancel</button>
+                    <button type="button" className="btn btn-primary green-background" name='save' onClick={this.updateTrackLog} >Save</button>
                 </ModalFooter>
                 {/*<!-- /.Modal footer-->*/}
              </Modal>
@@ -388,7 +411,10 @@ function mapDispatchToProps(dispatch){
         //will store whatever is in local state into redux state
         getProjects: () => dispatch(getProjects()),
         getTasks: () => dispatch(getTasks()),
-        saveTrackLog: (state) => dispatch(saveTrackLog(state))
+        saveTrackLog: (state) => dispatch(saveTrackLog(state)),
+        updateTrackLog: (state) => dispatch(updateTrackLog(state)),
+        getTrackLog: (state) => dispatch(getTrackLog(state))   
+        
     }
 }
 

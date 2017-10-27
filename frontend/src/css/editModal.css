@@ -11,6 +11,22 @@
     border-bottom-left-radius: 0px;
 }
 
+.react-datepicker-popper{
+    z-index: 2001;
+}
+
+.DropdownSelector-datepicker{
+    display: flex;
+    width: 100%;
+    background-color: #fff;
+    padding: .5rem .75rem;
+    font-size: 1rem;
+    border-top-right-radius: 0.25rem;;
+    border-bottom-right-radius: 0.25rem;;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
 .DropdownSelector-project {
     z-index: 2000;
 }
@@ -30,6 +46,8 @@
 .DropdownSelector-AdditionalCost{
     z-index: 1996;
 }
+
+
 
 .dropdown-effects {
     padding: 7px 12px;
