@@ -14,6 +14,7 @@ function getProjectsSuccess(projectItems) {
 function getProjects() {
     return async dispatch => {
         let response = await axios.get(`/api/projects/getProjectItems`);
+        console.log('response data', response.data)
         dispatch(getProjectsSuccess(response.data));
     }
 }
@@ -122,6 +123,41 @@ function updateTrackLog(updateLog) {
     }
 }
 
+////////////////
+// manage add client
+//////////////
+function addClientSuccess(items) {
+    return {
+        type: types.ADD_CLIENT,
+        items
+    }
+}
+
+function addClient(items) {
+    return async dispatch => {
+        let response = await axios.post('/api/manage/addClient', items);
+        dispatch(saveTrackLogSuccess(response.data));
+    }
+}
+
+////////////////
+// manage get client
+//////////////
+function getClientSuccess(client) {
+    return {
+        type: types.GET_CLIENT,
+        payload: client
+    }
+}
+
+function getClient() {
+    return async dispatch => {
+        let response = await axios.get('/api/manage/getClient');
+        dispatch(getClientSuccess(response.data));
+    }
+}
+
+
 export {
     getProjects,
     getTasks,
@@ -129,5 +165,7 @@ export {
     editTrackLog,
     getTrackLog,
     deleteTrackLog,
-    updateTrackLog
+    updateTrackLog,
+    addClient,
+    getClient
 }

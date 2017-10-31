@@ -379,7 +379,7 @@ class EditModal extends React.Component{
                 {/*<!-- .Modal footer-->*/}
                 <ModalFooter>
                     <button type="button" className="btn btn-secondary" name='cancel' onClick={this.toggle} >Cancel</button>
-                    <button type="button" className="btn btn-primary green-background" name='save' onClick={this.updateTrackLog} >Save</button>
+                    <button type="button" className="btn btn-primary blue-background" name='save' onClick={this.updateTrackLog} >Save</button>
                 </ModalFooter>
                 {/*<!-- /.Modal footer-->*/}
              </Modal>
@@ -420,3 +420,5 @@ function mapDispatchToProps(dispatch){
 
 let reduxAware =  connect(mapStateToProps, mapDispatchToProps);
 export default reduxAware(EditModal);
+
+

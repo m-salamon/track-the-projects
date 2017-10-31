@@ -87,7 +87,6 @@ class TrackLogList extends React.Component{
     }
 
     render() {
-        console.log('IN RENDER',this.state)
         if(this.state.trackLogs.length == 0){
             return <div className="ml-4">No logs for today</div>
         }
