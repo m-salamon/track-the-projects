@@ -132,7 +132,6 @@ function addClientSuccess(items) {
         items
     }
 }
-
 function addClient(items) {
     return async dispatch => {
         let response = await axios.post('/api/manage/addClient', items);
@@ -156,7 +155,36 @@ function getClient() {
         dispatch(getClientSuccess(response.data));
     }
 }
-
+////////////////
+// delete client
+//////////////
+function deleteClientSuccess(items) {
+    return {
+        type: types.DELETE_CLIENT,
+        items
+    }
+}
+function deleteClient(items) {
+    return async dispatch => {
+        let response = await axios.post('/api/manage/deleteClient', items);
+        dispatch(saveTrackLogSuccess(response.data));
+    }
+}
+////////////////
+// edit client
+//////////////
+function editClientSuccess(items) {
+    return {
+        type: types.EDIT_CLIENT,
+        items
+    }
+}
+function editClient(items) {
+    return async dispatch => {
+        let response = await axios.post('/api/manage/editClient', items);
+        dispatch(editClientSuccess(response.data));
+    }
+}
 
 export {
     getProjects,
@@ -167,5 +195,7 @@ export {
     deleteTrackLog,
     updateTrackLog,
     addClient,
-    getClient
+    getClient,
+    deleteClient,
+    editClient
 }

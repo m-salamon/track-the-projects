@@ -44,6 +44,7 @@ class manageClients extends React.Component{
     }
 
     saveClient = () => {
+    let inputs = Object.assign({}, this.state.inputs);
     let items = {
             name: this.state.inputs.name,
             email: this.state.inputs.email,
@@ -51,7 +52,29 @@ class manageClients extends React.Component{
             address: this.state.inputs.address
         }
 
-        this.props.addClient(items);
+        this.props.addClient(items)
+        .then(() => this.setState(prevState => ({
+            inputs: {
+                ...prevState.inputs,
+                name: '',
+                email: '',
+                phone: '',
+                address: ''
+            }
+        })))
+        .then(() => this.props.getClient());
+    }
+
+    clear = () => {
+        this.setState(prevState => ({
+            inputs: {
+                ...prevState.inputs,
+                name: '',
+                email: '',
+                phone: '',
+                address: ''
+            }
+        }));
     }
 
     componentDidMount(){
@@ -66,9 +89,6 @@ class manageClients extends React.Component{
             state.clients.length = 0;
             state.clients = nextProps.clients;
         }
-
-        
-
         this.setState({clients: state.clients})
     }
 
@@ -104,7 +124,7 @@ class manageClients extends React.Component{
                     <Input type="text" name="address" onBlur={this.blurHandler} value={this.state.inputs.address} onChange={this.changeHandler} required={false} type="textarea" className="form-control" placeholder="address" />
                 </div>
                 <div className="">
-                    <button type="submit" className="btn btn-secondary mr-2">Clear</button>
+                    <Button buttonName={'Clear'}  onClick={this.clear} className="btn btn-secondary mr-2" type="button"/>                    
                     <Button buttonName={'Save Client'}  onClick={this.saveClient} className="btn btn-primary blue-background" type="button"/>
                 </div>
             </div>
