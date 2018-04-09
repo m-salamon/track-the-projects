@@ -72,7 +72,7 @@ function getTrackLog(tracklog) {
 }
 
 ////////////////
-// get logs
+// edit track logs
 //////////////
 function editTrackLogSuccess(tracklog) {
     return {
@@ -106,7 +106,7 @@ function deleteTrackLog(tracklog) {
 }
 
 ////////////////
-// delete logs
+// update logs
 //////////////
 function updateTrackLogSuccess(updateLog) {
     return {
@@ -173,18 +173,39 @@ function deleteClient(items) {
 ////////////////
 // edit client
 //////////////
-function editClientSuccess(items) {
+function editClientSuccess(item) {
     return {
         type: types.EDIT_CLIENT,
-        items
+        payload: item
     }
 }
-function editClient(items) {
+function editClient(item) {
+    console.log(item)
     return async dispatch => {
-        let response = await axios.post('/api/manage/editClient', items);
+        let response = await axios.get('/api/manage/editClient', { headers: { id: item.id} });
+        console.log('res',response)
         dispatch(editClientSuccess(response.data));
     }
 }
+
+////////////////
+// update item
+//////////////
+function updateItemSuccess(updateItem) {
+    return {
+        type: types.UPDATE_ITEM,
+        updateItem
+    }
+}
+
+function updateItem(updateItem) {
+    console.log('updateItem',updateItem)
+    return async dispatch => {
+        let response = await axios.post('/api/manage/updateItem/', updateItem)
+         dispatch(updateItemSuccess(response.data));       
+    }
+}
+
 
 export {
     getProjects,
@@ -197,5 +218,6 @@ export {
     addClient,
     getClient,
     deleteClient,
-    editClient
+    editClient,
+    updateItem
 }

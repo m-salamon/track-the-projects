@@ -8,6 +8,7 @@ exports.up = function (knex, Promise) {
     table.boolean('isVerified');
     table.string('password');
     table.string('team_ID');
+    table.string('timeStamp');
   });
 };
 

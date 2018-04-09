@@ -15,7 +15,9 @@ import { addClient, getClient } from '../actions/actions';
 import Button from '../components/Button';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import Input from '../components/Input';
+import ToastrMsg from '../components/toastr';
 
+var thisIsMyCopy = '<p>copy copy copy <strong>strong copy</strong></p>';
 
 class manageClients extends React.Component{
     constructor() {
@@ -28,7 +30,8 @@ class manageClients extends React.Component{
                 email: '',
                 phone: '',
                 address: ''
-            }
+            },
+            toastrMsg: false
         }
         
     }
@@ -62,7 +65,9 @@ class manageClients extends React.Component{
                 address: ''
             }
         })))
-        .then(() => this.props.getClient());
+        .then(() => this.props.getClient())
+        .then(() => this.setState({toastrMsg: true}))
+        .then(() => this.setState({toastrMsg: false}))
     }
 
     clear = () => {
@@ -80,7 +85,6 @@ class manageClients extends React.Component{
     componentDidMount(){
         //get all projects from redux
         this.props.getClient();  
-
     }
 
     componentWillReceiveProps(nextProps){
@@ -92,12 +96,14 @@ class manageClients extends React.Component{
         this.setState({clients: state.clients})
     }
 
+
     
     render() { 
         return (
         <div>   
         <PageTop/>
         <div className="container">
+ 
         {/* page title */} 
         <PageTitle title={this.state.title}/> 
         
@@ -127,9 +133,9 @@ class manageClients extends React.Component{
                     <Button buttonName={'Clear'}  onClick={this.clear} className="btn btn-secondary mr-2" type="button"/>                    
                     <Button buttonName={'Save Client'}  onClick={this.saveClient} className="btn btn-primary blue-background" type="button"/>
                 </div>
+                {this.state.toastrMsg ? <ToastrMsg type="success" msg="Client succesfuly saved" title="" /> : null}
             </div>
         </div>
-
         <hr className="hr-line mt-1 mt-5" />
         <ManageItems items={this.state.clients}/>
         </div>   
@@ -142,7 +148,7 @@ class manageClients extends React.Component{
 function mapStateToProps(state, prop){
     return {
         //will get props from redux to our local props
-        clients: state.manageReducer
+        clients: state.manageReducer.client
     }
     
 }

@@ -6,6 +6,7 @@ exports.up = function (knex, Promise) {
     table.string('email');
     table.string('phone');
     table.string('address');
+    table.string('timeStamp');
   });
 };
 

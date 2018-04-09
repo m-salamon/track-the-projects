@@ -9,6 +9,7 @@ exports.up = function (knex, Promise) {
     table.boolean('bill_by_task');
     table.boolean('bill_by_user');
     table.string('notes');
+    table.string('timeStamp');
   });
 };
 

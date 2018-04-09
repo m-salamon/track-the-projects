@@ -202,7 +202,7 @@ class Track extends React.Component{
             errorClassName = 'disabled';
         }
 
-        //ui visuel error handling
+        //ui visual error handling
         let projectErrorClassName = '', taskErrorClassName = '', projectInputHasError = '', taskInputHasError = '';
         if(this.state.inputs.projectId == '' && this.state.startLogWasCalled){
             projectErrorClassName = 'projectErrorClassName';

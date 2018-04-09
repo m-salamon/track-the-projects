@@ -4,6 +4,7 @@ exports.up = function (knex, Promise) {
     table.increments('id').primary();
     table.string('name');
     table.string('admin_ID');
+    table.string('timeStamp');
   });
 };
 
