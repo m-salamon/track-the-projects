@@ -17,7 +17,8 @@ class ModalComponent extends React.Component {
         super();
         this.state = {
             modal: true,
-            item: []
+            item: [],
+            action: ''
         }
     }
 
@@ -35,8 +36,10 @@ class ModalComponent extends React.Component {
     }
 
     updateItem = () => {
-        let item = this.state.item
-        console.log('item', item)
+        let item = {
+            item: this.state.item,
+            action: this.state.action
+        }
         this.props.updateItem(item);
         //close the modal
         this.toggle();
@@ -48,7 +51,7 @@ class ModalComponent extends React.Component {
     }
 
     componentDidMount() {
-
+        this.setState({ action: this.props.action })
 
     }
     componentWillMount() {

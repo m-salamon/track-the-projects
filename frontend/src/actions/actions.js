@@ -124,67 +124,69 @@ function updateTrackLog(updateLog) {
 }
 
 ////////////////
-// manage add client
+// add client
 //////////////
-function addClientSuccess(items) {
+function addItemSuccess(item) {
     return {
-        type: types.ADD_CLIENT,
-        items
+        type: types.ADD_ITEM,
+        item
     }
 }
-function addClient(items) {
+function addItem(item) {
+    console.log('items', item)
     return async dispatch => {
-        let response = await axios.post('/api/manage/addClient', items);
-        dispatch(saveTrackLogSuccess(response.data));
+        let response = await axios.post('/api/manage/addItem', item);
+        dispatch(addItemSuccess(response.data));
     }
 }
 
 ////////////////
-// manage get client
+// get item
 //////////////
-function getClientSuccess(client) {
+function getItemSuccess(client) {
     return {
-        type: types.GET_CLIENT,
+        type: types.GET_ITEM,
         payload: client
     }
 }
 
-function getClient() {
+function getItem(item) {
+    console.log('!!',item)
     return async dispatch => {
-        let response = await axios.get('/api/manage/getClient');
-        dispatch(getClientSuccess(response.data));
+        let response = await axios.get('/api/manage/getItem',  { headers: { action: item.action} });
+        dispatch(getItemSuccess(response.data));
     }
 }
 ////////////////
-// delete client
+// delete item
 //////////////
-function deleteClientSuccess(items) {
+function deleteItemSuccess(items) {
     return {
-        type: types.DELETE_CLIENT,
+        type: types.DELETE_ITEM,
         items
     }
 }
-function deleteClient(items) {
+function deleteItem(items) {
     return async dispatch => {
-        let response = await axios.post('/api/manage/deleteClient', items);
-        dispatch(saveTrackLogSuccess(response.data));
+        let response = await axios.post('/api/manage/deleteItem', items);
+        dispatch(deleteItemSuccess(response.data));
     }
 }
 ////////////////
-// edit client
+// edit item
 //////////////
-function editClientSuccess(item) {
+function editItemSuccess(item) {
     return {
-        type: types.EDIT_CLIENT,
+        type: types.EDIT_ITEM,
         payload: item
     }
 }
-function editClient(item) {
+function editItem(item) {
     console.log(item)
     return async dispatch => {
-        let response = await axios.get('/api/manage/editClient', { headers: { id: item.id} });
+        let response = await axios.get('/api/manage/editItem', { headers: { id: item.id, action: item.action} });
         console.log('res',response)
-        dispatch(editClientSuccess(response.data));
+        dispatch(editItemSuccess(response.data));
     }
 }
 
@@ -199,9 +201,8 @@ function updateItemSuccess(updateItem) {
 }
 
 function updateItem(updateItem) {
-    console.log('updateItem',updateItem)
     return async dispatch => {
-        let response = await axios.post('/api/manage/updateItem/', updateItem)
+        let response = await axios.post('/api/manage/updateItem', updateItem)
          dispatch(updateItemSuccess(response.data));       
     }
 }
@@ -215,9 +216,9 @@ export {
     getTrackLog,
     deleteTrackLog,
     updateTrackLog,
-    addClient,
-    getClient,
-    deleteClient,
-    editClient,
+    addItem,
+    getItem,
+    deleteItem,
+    editItem,
     updateItem
 }

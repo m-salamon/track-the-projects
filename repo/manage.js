@@ -1,42 +1,35 @@
 var knex = require('./config');
 
-function addClient(items) {
-    items.timeStamp = knex.fn.now();
-    return knex('clients')
-        .insert(items)
+function addItem(item) {
+    item.items.timeStamp = knex.fn.now();
+    return knex(item.action)
+        .insert(item.items)
 }
 
-function getClient(items) {
-    return knex('clients').select().orderBy('id', 'desc');;
+function getItem(item) {
+    return knex(item.action).select().orderBy('id', 'desc');;
 }
 
-function editClient(headers) {
-    return knex('clients as c')
+function editItem(item) {
+    return knex(item.action)
         .select('*')
-        .where('id', headers.id);
+        .where('id', item.id);
 }
 
-function deleteClient(items) {
-    return knex('clients')
+function deleteItem(item) {
+    return knex(item.action)
         .del()
-        .where('id', items.id);
-}
-
-function updateItem(items) {
-    return knex('clients')
-        .del()
-        .where('id', items.id);
+        .where('id', item.id);
 }
 
 function updateItem(item) {
-    console.log('ITEM ',item)
-    return knex('clients')
+    return knex(item.action)
     .update(
-        item[0]
+        item.item[0]
     )
-    .where('id', item[0].id);
+    .where('id', item.item[0].id);
 }
 
 
-module.exports = { addClient, getClient, editClient, updateItem };
+module.exports = { addItem, getItem, editItem, deleteItem, updateItem };
 

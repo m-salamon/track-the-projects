@@ -8,7 +8,7 @@ import ModalComponent from '../components/ModalComponent';
 import { } from '../actions/actions';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import Button from '../components/Button';
-import { addClient, getClient, deleteClient, editClient } from '../actions/actions';
+import { getItem, deleteItem, editItem } from '../actions/actions';
 
 class ManageItems extends React.Component {
     constructor() {
@@ -16,7 +16,8 @@ class ManageItems extends React.Component {
         this.state = {
             modal: false,
             items: [],
-            item: []
+            item: [],
+            action: ''
         }
     }
 
@@ -34,16 +35,17 @@ class ManageItems extends React.Component {
             e.target = e.currentTarget;
         }
         let id = e.target.id;
-        this.editClient(id);
-        
+        this.editItem(id);
+
     }
 
-    editClient = (id) => {
+    editItem = (id) => {
         let item = {
-            id: id
+            id: id,
+            action: this.state.action
         };
-        this.props.editClient(item)
-        
+        this.props.editItem(item)
+
     }
 
     deleteHandler = async (e) => {
@@ -52,10 +54,11 @@ class ManageItems extends React.Component {
             e.target = e.currentTarget;
         }
         let item = {
-            id: e.target.id
+            id: e.target.id,
+            action: this.state.action
         };
-        this.props.deleteClient(item)
-            .then(() => { this.props.getClient() });
+        this.props.deleteItem(item)
+            .then(() => { this.props.getItem(item) });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -63,13 +66,14 @@ class ManageItems extends React.Component {
         if (nextProps.itemReducer) {
             item.length = 0;
             item = nextProps.itemReducer;
-           this.toggle();
+            this.toggle();
         }
         this.setState({ item: item })
-       
+
     }
 
     componentDidMount() {
+        this.setState({ action: this.props.action })
 
     }
 
@@ -79,6 +83,8 @@ class ManageItems extends React.Component {
 
     render() {
 
+        console.log(this.state)
+
         if (this.props.items.length == 0) {
             return <div className="ml-4">No Items</div>
         }
@@ -87,23 +93,30 @@ class ManageItems extends React.Component {
             var key = Object.keys(this.props.items[0]);
             return (
                 <tr className="text-medium-dark">
-                    {key.includes('name') ? <th>Name</th> : <th></th>}
-                    {key.includes('email') ? <th>Email</th> : <th></th>}
-                    {key.includes('phone') ? <th>Phone</th> : <th></th>}
-                    {key.includes('address') ? <th>Address</th> : <th></th>}
+                    {key.includes('name') ? <th>Name</th> : null}
+                    {key.includes('email') ? <th>Email</th> : null}
+                    {key.includes('phone') ? <th>Phone</th> : null}
+                    {key.includes('address') ? <th>Address</th> : null}
+                    {key.includes('project') ? <th>Project</th> : null}
+                    {key.includes('projectrate') ? <th>Project Rate</th> : null}
+                    {key.includes('billby') ? <th>Bill By</th> : null}
                     <th></th>
                 </tr>);
         }
 
         let body = () => {
+            var key = Object.keys(this.props.items[0]);
             return this.props.items.map((item, index) => {
-                const { id, name, email, phone, address } = item;
+                const { id } = item;
                 return (
                     <tr key={id}>
-                        <th> {name}</th>
-                        <td>{email}</td>
-                        <td>{phone}</td>
-                        <td>{address}</td>
+                        {key.includes('name') ? <th>{item.name}</th> : null}
+                        {key.includes('email') ? <th>{item.email}</th> : null}
+                        {key.includes('phone') ? <th>{item.phone}</th> : null}
+                        {key.includes('address') ? <th>{item.address}</th> : null}
+                        {key.includes('project') ? <th>{item.project}</th> : null}
+                        {key.includes('projectrate') ? <th>{item.projectrate}</th> : null}
+                        {key.includes('billby') ? <th>{item.billby}</th> : null}
                         <td>
                             <div className="btn-group float-right" role="group" aria-label="Third group">
                                 <span className="input-group-btn" id="addTooltipEditButton">
@@ -122,7 +135,7 @@ class ManageItems extends React.Component {
 
         return (
             <div>
-                {this.state.modal && <ModalComponent isOpen={this.state.modal} item={this.props.itemReducer} ></ModalComponent>}
+                {this.state.modal && <ModalComponent isOpen={this.state.modal} item={this.props.itemReducer} action={this.state.action}></ModalComponent>}
 
 
                 <div className="row mt-5">
@@ -154,9 +167,9 @@ function mapStateToProps(state, prop) {
 function mapDispatchToProps(dispatch) {
     return {
         //will store whatever is in local state into redux state
-        deleteClient: (state) => dispatch(deleteClient(state)),
-        getClient: (state) => dispatch(getClient(state)),
-        editClient: (state) => dispatch(editClient(state)),
+        deleteItem: (state) => dispatch(deleteItem(state)),
+        getItem: (state) => dispatch(getItem(state)),
+        editItem: (state) => dispatch(editItem(state)),
     }
 }
 
