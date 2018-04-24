@@ -157,6 +157,7 @@ class Track extends React.Component{
         this.props.getTrackLog(filters);
     }
 
+    // good for AJAX: fetch, ajax, or subscriptions. - fires before initial 'render'
     async componentDidMount(){
         //get all projects from redux
         this.props.getProjects();  
@@ -165,11 +166,12 @@ class Track extends React.Component{
     }
 
 
-
+    // invoked immediately after DOM updates
     componentDidUpdate(){
 
     }
 
+    // invoked every time component recieves new props.
     componentWillReceiveProps(nextProps){
         let state = Object.assign({}, this.state);
         if (nextProps.projectItems) {
