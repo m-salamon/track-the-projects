@@ -98,6 +98,7 @@ class manageClients extends React.Component {
                 phone: '',
                 address: ''
             }
+            
         }));
     }
 
@@ -116,7 +117,9 @@ class manageClients extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
+        
         let state = Object.assign({}, this.state);
+        
         if (nextProps.clients) {
             state.clients.length = 0;
             state.clients = nextProps.clients;
@@ -127,6 +130,7 @@ class manageClients extends React.Component {
 
 
     render() {
+        
         return (
             <div>
                 <PageTop />
@@ -165,7 +169,7 @@ class manageClients extends React.Component {
                         </div>
                     </div>
                     <hr className="hr-line mt-1 mt-5" />
-                    <ManageItems items={this.state.clients} action={this.state.action} />
+                    <ManageItems items={this.state.clients} action={this.state.action} updatetitle="Update Client" />
                 </div>
                 <PageBottom />
             </div>
