@@ -11,6 +11,7 @@ exports.up = function (knex, Promise) {
         table.string('duration');
         table.string('description');
         table.string('additional_cost');
+        table.string('timeStamp');
     });
 };
 

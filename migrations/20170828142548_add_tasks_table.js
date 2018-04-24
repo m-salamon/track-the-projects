@@ -5,6 +5,7 @@ exports.up = function (knex, Promise) {
     table.string('name');
     table.string('hourly_rate');
     table.string('project_ID');
+    table.string('timeStamp');
   });
 };
 
