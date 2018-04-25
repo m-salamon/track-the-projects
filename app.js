@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var authRouter = require('./authRoutes/index');
 
 var app = express();
 
@@ -30,6 +31,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //routes
 app.use('/api', index);
+
+//unethenticated routes
+app.use('/auth', authRouter);
 
 app.use('/users', users);
 

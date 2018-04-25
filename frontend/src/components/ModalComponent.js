@@ -9,7 +9,7 @@ import DropdownSelector from '../components/DropdownSelector';
 import Datepicker from '../components/Datepicker';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import Button from '../components/Button';
-import {  updateItem, getItem } from '../actions/actions';
+import { updateItem, getItem } from '../actions/actions';
 import '../css/editModal.css';
 import ToastrMsg from '../components/toastr';
 
@@ -28,16 +28,15 @@ class ModalComponent extends React.Component {
 		this.setState({
 			modal: !this.state.modal
 		});
-
 	}
 
 	toggleToastrMsg = () => {
 		this.setState({
-				toastrMsg: true
+			toastrMsg: true
 		}, () => {
-				this.setState({ toastrMsg: !this.state.toastrMsg })
+			this.setState({ toastrMsg: !this.state.toastrMsg })
 		});
-}
+	}
 
 	changeHandler = (e) => {
 		let state = Object.assign({}, this.state);
@@ -52,7 +51,7 @@ class ModalComponent extends React.Component {
 		}
 		this.props.updateItem(item)
 			.then(() => { this.props.getItem(item) })
-			.then(() => this.toggleToastrMsg() )
+			.then(() => this.toggleToastrMsg())
 		//close the modal
 		this.toggle();
 	}
