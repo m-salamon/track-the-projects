@@ -7,7 +7,9 @@ router.post('/', (req, res) => {
     let updateLog = repo.updateTrackLog.updateTrackLog(req.body)
     .then((updateLog) => {
         res.json({ success: true, updateLog: updateLog });
-    });
+    }).catch(err => {
+        console.error(err)
+    })
     
 });
 

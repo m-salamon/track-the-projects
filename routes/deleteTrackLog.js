@@ -9,7 +9,6 @@ router.post('/', (req, res) => {
         res.json({ success: true, trackLog: trackLog });
     }).catch(err => {
         console.error(err)
-        res.send("oops");
     });
 });
 

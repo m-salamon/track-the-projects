@@ -6,7 +6,9 @@ router.post('/', (req, res) => {
     let saveLog = repo.saveTrackLog.saveTrackLog(req.body)
     .then((saveLog) => {
         res.json({ success: true, saveLog: saveLog });
-    });
+    }).catch(err => {
+        console.error(err)
+    })
     
 });
 

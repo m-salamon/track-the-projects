@@ -6,7 +6,9 @@ router.get('/getProjectItems', (req, res) => {
     let projectItems = repo.projects.getProjectItems()
     .then((projectItems) => {
         res.json({ success: true, projectItems: projectItems });
-    });
+    }).catch(err => {
+        console.error(err)
+    })
     
 });
 
