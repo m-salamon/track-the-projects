@@ -7,6 +7,8 @@ class Main extends React.Component {
         return (
             <div>
                 <p>In the main page!</p>
+                LOGIN
+                <button><Link to='/login'>track</Link></button>
                 COMPONENTS
                 <button><Link to='/navbarSide'>navbar side</Link></button>
                 <br/>SCREENS

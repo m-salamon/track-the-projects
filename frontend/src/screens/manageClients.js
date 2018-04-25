@@ -107,7 +107,6 @@ class manageClients extends React.Component {
         var item = {
             action: this.state.action
         }
-        console.log(item)
         this.props.getItem(item);
     }
 
