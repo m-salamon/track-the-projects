@@ -5,6 +5,7 @@ import '../css/manage.css';
 import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ModalComponent from '../components/ModalComponent';
+import ModalSimple from '../components/ModalSimple';
 import { } from '../actions/actions';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import Button from '../components/Button';
@@ -15,9 +16,10 @@ class ManageItems extends React.Component {
 		super();
 		this.state = {
 			modal: false,
+			modalsimple: false,
 			items: [],
 			item: [],
-			action: ''
+			action: '',
 		}
 	}
 
@@ -48,7 +50,19 @@ class ManageItems extends React.Component {
 
 	}
 
-	deleteHandler = async (e) => {
+	deleteHandler = (e) => {
+		let modalsimple = Object.assign({}, this.state.itemodalsimplem);
+		modalsimple = true
+		this.setState({
+			modalsimple
+		});
+
+
+		if (modalsimple) {
+			console.log('HEY!!')
+			return
+		}
+
 		//when icon is clicked its e.currentTarget - when button is clicked its e.target 
 		if (e.currentTarget) {
 			e.target = e.currentTarget;
@@ -60,6 +74,10 @@ class ManageItems extends React.Component {
 		this.props.deleteItem(item)
 			.then(() => { this.props.getItem(item) });
 	}
+
+	onClick = (component, event) => {
+		console.log('YEY BUDDY ',component, event);
+    }
 
 	componentWillReceiveProps(nextProps) {
 		let item = Object.assign({}, this.state.item);
@@ -136,6 +154,7 @@ class ManageItems extends React.Component {
 		return (
 			<div>
 				{this.state.modal && <ModalComponent isOpen={this.state.modal} item={this.props.itemReducer} action={this.state.action} updatetitle={this.props.updatetitle} ></ModalComponent>}
+				{this.state.modalsimple && <ModalSimple isOpen={this.state.modalsimple} updatetitle="Are you sure?" body="You'll lose the information!" onClick={this.onClick} />}
 
 				<div className="row mt-5">
 					<div className="col-md-12">

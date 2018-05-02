@@ -130,10 +130,9 @@ class manageClients extends React.Component {
 
     render() {
         
-        return (
-            <div>
-                <PageTop />
-                <div className="container">
+        return ([
+                <PageTop key="1"/>,
+                <div key="2" className="container">
 
                     {/* page title */}
                     <PageTitle title={this.state.title} />
@@ -169,10 +168,10 @@ class manageClients extends React.Component {
                     </div>
                     <hr className="hr-line mt-1 mt-5" />
                     <ManageItems items={this.state.clients} action={this.state.action} updatetitle="Update Client" />
-                </div>
-                <PageBottom />
-            </div>
-        );
+                </div>,
+               
+                <PageBottom key="3"/>
+            ]);
     }
 }
 

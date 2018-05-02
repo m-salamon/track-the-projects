@@ -25,7 +25,7 @@ class Input extends React.Component{
     }
 
     componentWillMount() {
-
+ 
     }
 
     render() {

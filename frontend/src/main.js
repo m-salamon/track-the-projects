@@ -8,11 +8,12 @@ class Main extends React.Component {
             <div>
                 <p>In the main page!</p>
                 LOGIN
-                <button><Link to='/login'>track</Link></button>
-                COMPONENTS
+                <button><Link to='/login'>login</Link></button>
+                <br/>COMPONENTS
                 <button><Link to='/navbarSide'>navbar side</Link></button>
                 <br/>SCREENS
                 <button><Link to='/track'>track</Link></button>
+                <button><Link to='/manageClients'>manageClients</Link></button>
             </div>
         )
     }
