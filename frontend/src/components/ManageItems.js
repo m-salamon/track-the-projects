@@ -20,6 +20,7 @@ class ManageItems extends React.Component {
 			items: [],
 			item: [],
 			action: '',
+			itemToDelete: ''
 		}
 	}
 
@@ -27,8 +28,11 @@ class ManageItems extends React.Component {
 	toggle = () => {
 		this.setState({
 			modal: !this.state.modal
-		}, () => { this.setState({ modal: true }) }
-		);
+		}, () => { this.setState({ modal: false }) });
+	}
+
+	simpleModalToggle = () => {
+		this.setState({ modalsimple: !this.state.modalsimple });
 	}
 
 	editHandler = (e) => {
@@ -51,33 +55,28 @@ class ManageItems extends React.Component {
 	}
 
 	deleteHandler = (e) => {
-		let modalsimple = Object.assign({}, this.state.itemodalsimplem);
-		modalsimple = true
-		this.setState({
-			modalsimple
-		});
-
-
-		if (modalsimple) {
-			console.log('HEY!!')
-			return
-		}
-
-		//when icon is clicked its e.currentTarget - when button is clicked its e.target 
 		if (e.currentTarget) {
 			e.target = e.currentTarget;
 		}
+		this.setState({ itemToDelete: e.target.id })
+		this.simpleModalToggle()
+	}
+
+	deleteItem = () => {
+		console.log()
 		let item = {
-			id: e.target.id,
+			id: this.state.itemToDelete,
 			action: this.state.action
 		};
 		this.props.deleteItem(item)
 			.then(() => { this.props.getItem(item) });
+
+		this.simpleModalToggle()
 	}
 
 	onClick = (component, event) => {
-		console.log('YEY BUDDY ',component, event);
-    }
+		console.log('YEY BUDDY ', component, event);
+	}
 
 	componentWillReceiveProps(nextProps) {
 		let item = Object.assign({}, this.state.item);
@@ -100,8 +99,6 @@ class ManageItems extends React.Component {
 	}
 
 	render() {
-
-		console.log(this.state)
 
 		if (this.props.items.length == 0) {
 			return <div className="ml-4">No Items</div>
@@ -151,10 +148,11 @@ class ManageItems extends React.Component {
 			});
 		}
 
+		console.log('parent ', this.state.modalsimple)
 		return (
 			<div>
 				{this.state.modal && <ModalComponent isOpen={this.state.modal} item={this.props.itemReducer} action={this.state.action} updatetitle={this.props.updatetitle} ></ModalComponent>}
-				{this.state.modalsimple && <ModalSimple isOpen={this.state.modalsimple} updatetitle="Are you sure?" body="You'll lose the information!" onClick={this.onClick} />}
+				{this.state.modalsimple && <ModalSimple isOpen={this.state.modalsimple} updatetitle="Are you sure?" body="You'll lose the information!" deleteItem={this.deleteItem} />}
 
 				<div className="row mt-5">
 					<div className="col-md-12">

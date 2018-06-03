@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "nodemon ./bin/www",
     "knex-init": "npm-run knex init",
     "migrate-latest": "npm-run knex migrate:latest"
   },
