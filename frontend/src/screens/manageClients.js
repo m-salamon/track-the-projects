@@ -47,10 +47,8 @@ class manageClients extends React.Component {
     }
 
     handleKeyPress = (event) => {
-        console.log('hey')
         if (event.key == 'Enter') {
             this.saveClient()
-            console.log('enter press here! ')
         }
     };
 

@@ -7,17 +7,18 @@ export default  class ToastrMsg extends React.Component {
           this.state = {
                type: '',
                title: '',
-               msg: 'hey buddy!'
+               msg: ''
           }
      }
 
      toastrMsg = (type, title, msg) => {
           toastr.options = {
+               "closeButton": true,
                "newestOnTop": true,
                "progressBar": false,
                "preventDuplicates": true,
                "positionClass": "toast-top-center",
-               "timeOut": "4000",
+               "timeOut": "3000",
                "hideEasing": "linear",
                "showMethod": "fadeIn",
                "hideMethod": "fadeOut"

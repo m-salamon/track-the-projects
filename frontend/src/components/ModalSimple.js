@@ -11,47 +11,23 @@ class ModalSimple extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			modal: false,
-			toastrMsg: false,
-			delete: true
+			toastrMsg: false
 		}
 	}
 
-	toggle = () => {
-		this.setState({ modal: !this.state.modal })
-	}
 
 	toggleToastrMsg = () => {
 		this.setState({
-			toastrMsg: true
-		}, () => {
-			this.setState({ toastrMsg: !this.state.toastrMsg })
+			toastrMsg: !this.state.toastrMsg
 		});
 	}
 
-	clickHandler = () => {
-		this.toggle()
-		this.props.deleteItem()
-	}
-
-	componentDidUpdate() {
-
-	}
-
-	componentDidMount() {
-		this.setState({ modal: !this.state.modal });
-	}
-	componentWillMount() {
-
-	}
-
 	render() {
-
-
-		console.log('child', this.state.modal)
+		console.log()
+		
 		return (
 			<div>
-				<Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+				<Modal isOpen={true} onClick={this.props.handleClose} className={this.props.className}>
 					<ModalHeader toggle={this.toggle}>{this.props.updatetitle}</ModalHeader>
 					{/*<!-- .Modal body -->*/}
 					<ModalBody>
@@ -60,12 +36,11 @@ class ModalSimple extends React.Component {
 					{/*<!-- /.Modal body -->*/}
 					{/*<!-- .Modal footer -->*/}
 					<ModalFooter>
-						<button type="button" className="btn btn-secondary" name='cancel' onClick={this.toggle} >Cancel</button>
-						<button onClick={this.clickHandler} type="button" className="btn btn-primary red-background" name='delete' >Delete</button>
+						<button type="button" className="btn btn-secondary" name='cancel' onClick={this.props.handleClose} >Cancel</button>
+						<button onClick={this.props.deleteItem} type="button" className="btn btn-primary red-background" name='delete' >Delete</button>
 					</ModalFooter>
 					{/*<!-- /.Modal footer -->*/}
 				</Modal>
-				{this.state.toastrMsg ? <ToastrMsg type="success" msg="Succesfuly Deleted" title="" /> : null}
 			</div>
 		);
 	}

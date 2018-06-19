@@ -10,6 +10,8 @@ import { } from '../actions/actions';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import Button from '../components/Button';
 import { getItem, deleteItem, editItem } from '../actions/actions';
+import ToastrMsg from '../components/toastr';
+
 
 class ManageItems extends React.Component {
 	constructor() {
@@ -17,22 +19,30 @@ class ManageItems extends React.Component {
 		this.state = {
 			modal: false,
 			modalsimple: false,
+			showSimpleModal: false,
 			items: [],
 			item: [],
 			action: '',
-			itemToDelete: ''
+			itemToDelete: '',
+			toastrMsg: ''
 		}
 	}
 
 
 	toggle = () => {
-		this.setState({
-			modal: !this.state.modal
-		}, () => { this.setState({ modal: false }) });
+		this.setState({ modal: !this.state.modal }, () => { this.setState({ modal: false }) });
 	}
 
-	simpleModalToggle = () => {
-		this.setState({ modalsimple: !this.state.modalsimple });
+	toggleToastrMsg = () => {
+		this.setState({ toastrMsg: !this.state.toastrMsg }, () => { this.setState({ toastrMsg: false }) });
+	}
+
+	hideSimpleModal = () => {
+		this.setState({ modalsimple: false });
+	}
+
+	showSimpleModal = () => {
+		this.setState({ modalsimple: true });
 	}
 
 	editHandler = (e) => {
@@ -59,23 +69,20 @@ class ManageItems extends React.Component {
 			e.target = e.currentTarget;
 		}
 		this.setState({ itemToDelete: e.target.id })
-		this.simpleModalToggle()
+		this.showSimpleModal()
 	}
 
-	deleteItem = () => {
-		console.log()
+	deleteItem = async () => {
 		let item = {
 			id: this.state.itemToDelete,
 			action: this.state.action
 		};
 		this.props.deleteItem(item)
-			.then(() => { this.props.getItem(item) });
+			.then(() => { this.props.getItem(item) })
+			.then(() => { this.hideSimpleModal() })
+			.then(() => { this.toggleToastrMsg() })
 
-		this.simpleModalToggle()
-	}
 
-	onClick = (component, event) => {
-		console.log('YEY BUDDY ', component, event);
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -148,11 +155,13 @@ class ManageItems extends React.Component {
 			});
 		}
 
-		console.log('parent ', this.state.modalsimple)
 		return (
 			<div>
+				{this.state.toastrMsg && <ToastrMsg type="info" msg="Succesfuly Deleted" title="" /> }
+				
+				////! do this
 				{this.state.modal && <ModalComponent isOpen={this.state.modal} item={this.props.itemReducer} action={this.state.action} updatetitle={this.props.updatetitle} ></ModalComponent>}
-				{this.state.modalsimple && <ModalSimple isOpen={this.state.modalsimple} updatetitle="Are you sure?" body="You'll lose the information!" deleteItem={this.deleteItem} />}
+				{this.state.modalsimple && <ModalSimple isOpen={this.state.showSimpleModal} handleClose={this.hideSimpleModal} deleteItem={this.deleteItem} updatetitle="Are you sure?" body="You'll lose the information!" deleteItem={this.deleteItem} />}
 
 				<div className="row mt-5">
 					<div className="col-md-12">
