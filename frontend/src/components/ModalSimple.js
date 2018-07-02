@@ -15,20 +15,13 @@ class ModalSimple extends React.Component {
 		}
 	}
 
-
-	toggleToastrMsg = () => {
-		this.setState({
-			toastrMsg: !this.state.toastrMsg
-		});
-	}
-
 	render() {
 		console.log()
 		
 		return (
 			<div>
-				<Modal isOpen={true} onClick={this.props.handleClose} className={this.props.className}>
-					<ModalHeader toggle={this.toggle}>{this.props.updatetitle}</ModalHeader>
+				<Modal isOpen={true} className={this.props.className}>
+					<ModalHeader toggle={this.props.handleClose}>{this.props.updatetitle}</ModalHeader>
 					{/*<!-- .Modal body -->*/}
 					<ModalBody>
 						{this.props.body}
@@ -36,8 +29,8 @@ class ModalSimple extends React.Component {
 					{/*<!-- /.Modal body -->*/}
 					{/*<!-- .Modal footer -->*/}
 					<ModalFooter>
-						<button type="button" className="btn btn-secondary" name='cancel' onClick={this.props.handleClose} >Cancel</button>
-						<button onClick={this.props.deleteItem} type="button" className="btn btn-primary red-background" name='delete' >Delete</button>
+						<button type="button" className="btn btn-secondary" onClick={this.props.handleClose} name='cancel' >Cancel</button>
+						<button type="button" className="btn btn-primary red-background"  onClick={this.props.deleteItem}  name='delete' >Delete</button>
 					</ModalFooter>
 					{/*<!-- /.Modal footer -->*/}
 				</Modal>

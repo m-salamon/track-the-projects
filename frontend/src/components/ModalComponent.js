@@ -4,7 +4,6 @@ import moment from 'moment';
 import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { } from '../actions/actions';
 import DropdownSelector from '../components/DropdownSelector';
 import Datepicker from '../components/Datepicker';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
@@ -24,12 +23,6 @@ class ModalComponent extends React.Component {
 		}
 	}
 
-	toggle = () => {
-		this.setState({
-			modal: !this.state.modal
-		});
-	}
-
 	toggleToastrMsg = () => {
 		this.setState({
 			toastrMsg: true
@@ -40,45 +33,36 @@ class ModalComponent extends React.Component {
 
 	changeHandler = (e) => {
 		let state = Object.assign({}, this.state);
-		state.item[0][e.target.name] = e.target.value; //item is an array thats why we need to populate the spot [0]
+		state.item[0][e.target.name] = e.target.value; //item is an array thats why we need to populate the index [0]
 		this.setState(state);
 	}
 
-	updateItem = () => {
+	updateItem = async () => {
 		let item = {
 			item: this.state.item,
 			action: this.state.action
 		}
-		this.props.updateItem(item)
-			.then(() => { this.props.getItem(item) })
-			.then(() => this.toggleToastrMsg())
-		//close the modal
-		this.toggle();
-	}
-
-
-	componentDidUpdate() {
+		await this.props.updateItem(item)
+		await this.props.getItem(item)
+		this.toggleToastrMsg()
+		this.props.handleClose()
 
 	}
 
 	componentDidMount() {
 		this.setState({ action: this.props.action })
-
 	}
 	componentWillMount() {
-		let item = Object.assign({}, this.state.item);
-		item = this.props.item
-		this.setState({ item: item })
+		this.setState({ item: this.props.item })
 	}
 
 	render() {
-		console.log(this.state)
-		// console.log(this.state.item[0]['name'])
 		let body = () => {
 			var key = Object.keys(this.state.item[0]);
 			return (
 				key.map((k) => {
-					if (k == 'id' || k == 'timeStamp') return
+					console.log(this.state.item[0][k])
+					if (k == 'id' || k == 'timeStamp' || k == 'user_ID' || k == 'team_ID') return
 					return (
 						<div key={k} id={k} className="form-group row">
 							<label className="col-sm-3 col-lg-2 col-form-label">{k}</label>
@@ -93,8 +77,10 @@ class ModalComponent extends React.Component {
 
 		return (
 			<div>
-				<Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-					<ModalHeader toggle={this.toggle}>{this.props.updatetitle}</ModalHeader>
+				{this.state.toastrMsg ? <ToastrMsg type="success" msg="Succesfuly updated" title="" /> : null}
+
+				<Modal isOpen={true} className={this.props.className}>
+					<ModalHeader toggle={this.props.handleClose}>{this.props.updatetitle}</ModalHeader>
 					{/*<!-- .Modal body -->*/}
 					<ModalBody>
 						{body()}
@@ -102,12 +88,11 @@ class ModalComponent extends React.Component {
 					{/*<!-- /.Modal body -->*/}
 					{/*<!-- .Modal footer -->*/}
 					<ModalFooter>
-						<button type="button" className="btn btn-secondary" name='cancel' onClick={this.toggle} >Cancel</button>
-						<button type="button" className="btn btn-primary blue-background" name='save' onClick={this.updateItem} >Save</button>
+						<button type="button" className="btn btn-secondary" onClick={this.props.handleClose} name='cancel' >Cancel</button>
+						<button type="button" className="btn btn-primary blue-background" onClick={this.updateItem} name='save' >Save</button>
 					</ModalFooter>
 					{/*<!-- /.Modal footer -->*/}
 				</Modal>
-				{this.state.toastrMsg ? <ToastrMsg type="success" msg="Succesfuly updated" title="" /> : null}
 			</div>
 		);
 	}
