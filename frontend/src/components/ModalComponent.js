@@ -62,7 +62,7 @@ class ModalComponent extends React.Component {
 			return (
 				key.map((k) => {
 					console.log(this.state.item[0][k])
-					if (k == 'id' || k == 'timeStamp' || k == 'user_ID' || k == 'team_ID') return
+					if (k == 'id' || k == 'timeStamp' || k == 'userId' || k == 'teamId' || k == 'createdAt') return
 					return (
 						<div key={k} id={k} className="form-group row">
 							<label className="col-sm-3 col-lg-2 col-form-label">{k}</label>
@@ -114,5 +114,4 @@ function mapDispatchToProps(dispatch) {
 	}
 }
 
-let reduxAware = connect(mapStateToProps, mapDispatchToProps);
-export default reduxAware(ModalComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(ModalComponent)

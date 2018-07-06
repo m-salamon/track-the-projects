@@ -2,13 +2,14 @@
 exports.up = function (knex, Promise) {
   return knex.schema.createTable('clients', table => {
     table.increments('id').primary();
-    table.string('name');
-    table.string('email');
-    table.string('phone');
-    table.string('address');
-    table.integer('user_ID');
-    table.integer('team_ID');
-    table.string('timeStamp');
+    table.string('name').notNullable()
+    table.string('email').notNullable()
+    table.string('phone').notNullable()
+    table.string('address').notNullable()
+    table.integer('userId').notNullable()
+    table.integer('teamId').notNullable()
+    table.timestamp('createdAt').default(knex.fn.now())
+    table.timestamp('timeStamp').default(knex.fn.now())  
   });
 };
 

@@ -114,13 +114,13 @@ class EditModal extends React.Component{
         if (nextProps.projectItems) {
             state.projectItems.length = 0;
             nextProps.projectItems.map(item => {
-                state.projectItems.push({name: 'project', label: item.name, value: item.name, id: item.id, client_ID: item.client_ID, user_ID: item.user_ID, team_ID: item.team_ID })
+                state.projectItems.push({name: 'project', label: item.name, value: item.name, id: item.id, clientId: item.clientId, userId: item.userId, teamId: item.teamId })
             })
         }
         if (nextProps.taskItems) {
             state.taskItems.length = 0;
             nextProps.taskItems.map(item => {
-                state.taskItems.push({name: 'task', label: item.name, value: item.name, id: item.id, hourly_rate: item.hourly_rate, project_ID: item.project_ID })
+                state.taskItems.push({name: 'task', label: item.name, value: item.name, id: item.id, hourlyRate: item.hourlyRate, projectId: item.projectId })
             })
         }
         //preset all inputs in the modal to be filled in

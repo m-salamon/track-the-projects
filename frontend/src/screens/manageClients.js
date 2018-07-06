@@ -17,7 +17,7 @@ import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import Input from '../components/Input';
 import ToastrMsg from '../components/toastr';
 
-var thisIsMyCopy = '<p>copy copy copy <strong>strong copy</strong></p>';
+
 
 class manageClients extends React.Component {
     constructor() {

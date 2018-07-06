@@ -1,17 +1,18 @@
 exports.up = function (knex, Promise) {
     return knex.schema.createTable('track', table => {
         table.increments('id').primary();
-        table.integer('project_ID');
-        table.integer('task_ID');
-        table.integer('user_ID');
-        table.integer('team_ID');
-        table.string('date');
-        table.string('start_time');
-        table.string('end_time');
-        table.string('duration');
-        table.string('description');
-        table.string('additional_cost');
-        table.string('timeStamp');
+        table.integer('projectId').notNullable()
+        table.integer('taskId').notNullable()
+        table.integer('userID').notNullable()
+        table.integer('teamId').notNullable()
+        table.string('date').notNullable()
+        table.string('startTime').notNullable()
+        table.string('endTime').notNullable()
+        table.string('duration').notNullable()
+        table.string('description').notNullable()
+        table.string('additionalCost').notNullable()
+        table.timestamp('createdAt').default(knex.fn.now())
+        table.timestamp('timeStamp').default(knex.fn.now())  
     });
 };
 

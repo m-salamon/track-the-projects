@@ -14,6 +14,7 @@ class Main extends React.Component {
                 <br/>SCREENS
                 <button><Link to='/track'>track</Link></button>
                 <button><Link to='/manageClients'>manageClients</Link></button>
+                <button><Link to='/manageProjects'>manage Projects</Link></button>
             </div>
         )
     }

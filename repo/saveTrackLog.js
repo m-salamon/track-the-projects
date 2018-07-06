@@ -3,7 +3,7 @@ var knex = require('./config');
 function saveTrackLog(item) {
     return knex('track')
     .insert(
-        { project_ID: item.projectId, task_ID: item.taskId, user_ID: item.userId, team_ID: item.teamId, date: item.date, start_time: item.startTime,end_time: item.endTime, duration: item.timeDuration, description: item.description, additional_cost: item.additionalCost });
+        { projectId: item.projectId, taskId: item.taskId, userId: item.userId, teamId: item.teamId, date: item.date, startTime: item.startTime,endTime: item.endTime, duration: item.timeDuration, description: item.description, additionalCost: item.additionalCost });
 }
 
 module.exports = { saveTrackLog };

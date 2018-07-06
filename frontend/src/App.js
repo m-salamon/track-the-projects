@@ -4,6 +4,7 @@ import Main from './main';
 import NavbarSide from './components/NavbarSide';
 import Track from './screens/track';
 import manageClients from './screens/manageClients';
+import manageProjects from './screens/manageProjects';
 import Login from './screens/login';
 
 class App extends Component {
@@ -17,6 +18,7 @@ class App extends Component {
             <Route exact path="/navbarSide" component={NavbarSide} />
             <Route exact path="/track" component={Track} />
             <Route exact path="/manageClients" component={manageClients} />
+            <Route exact path="/manageProjects" component={manageProjects} />
           </div>
         </BrowserRouter>
       </div>
