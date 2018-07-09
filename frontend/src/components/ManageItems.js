@@ -49,7 +49,7 @@ class ManageItems extends React.Component {
 
 	editHandler = async (e) => {
 		//when icon is clicked its e.currentTarget - when button is clicked its e.target 
-		if (e.currentTarget) { e.target = e.currentTarget; }
+		if (e.currentTarget) { e.target = e.currentTarget }
 		let item = {
 			id: e.target.id,
 			action: this.state.action
@@ -76,29 +76,34 @@ class ManageItems extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		let item = Object.assign({}, this.state.item);
-		if (nextProps.itemReducer) {
-			item.length = 0;
-			item = nextProps.itemReducer;
-			//	this.toggle();
-		}
-		this.setState({ item: item })
+		let state = Object.assign({}, this.state);
 
+		if (nextProps.getItems) {
+
+			state.items.length = 0;
+			state.items = nextProps.getItems;
+		}
+
+		if (nextProps.editItemReducer) {
+			state.item.length = 0;
+			state.item = nextProps.editItemReducer;
+		}
+		this.setState(state)
 	}
 
 	componentDidMount() {
 		this.setState({ action: this.props.action })
-
 	}
 
 	render() {
 
-		if (this.props.items.length == 0) {
+		
+		if (this.state.items.length == 0) {
 			return <div className="ml-4">No Items</div>
 		}
 
 		let header = () => {
-			var key = Object.keys(this.props.items[0]);
+			var key = Object.keys(this.state.items[0]);
 			return (
 				<tr className="text-medium-dark">
 					{key.includes('name') ? <th>Name</th> : null}
@@ -106,15 +111,20 @@ class ManageItems extends React.Component {
 					{key.includes('phone') ? <th>Phone</th> : null}
 					{key.includes('address') ? <th>Address</th> : null}
 					{key.includes('project') ? <th>Project</th> : null}
-					{key.includes('projectrate') ? <th>Project Rate</th> : null}
-					{key.includes('billby') ? <th>Bill By</th> : null}
+
+					{key.includes('projectName') ? <th>Project Name</th> : null}
+					{key.includes('clientName') ? <th>Client Name</th> : null}
+					{key.includes('billByProject') ? <th>Bill By Project</th> : null}
+					{key.includes('billByTask') ? <th>Bill By Task</th> : null}
+					{key.includes('billByUser') ? <th>Bill By User</th> : null}
+					{key.includes('projectRate') ? <th>Project Rate</th> : null}
 					<th></th>
 				</tr>);
 		}
 
 		let body = () => {
-			var key = Object.keys(this.props.items[0]);
-			return this.props.items.map((item, index) => {
+			var key = Object.keys(this.state.items[0]);
+			return this.state.items.map((item, index) => {
 				const { id } = item;
 				return (
 					<tr key={id}>
@@ -123,8 +133,14 @@ class ManageItems extends React.Component {
 						{key.includes('phone') ? <th>{item.phone}</th> : null}
 						{key.includes('address') ? <th>{item.address}</th> : null}
 						{key.includes('project') ? <th>{item.project}</th> : null}
-						{key.includes('projectrate') ? <th>{item.projectrate}</th> : null}
-						{key.includes('billby') ? <th>{item.billby}</th> : null}
+
+						{key.includes('projectName') ? <th>{item.projectName}</th> : null}
+						{key.includes('clientName') ? <th>{item.clientName}</th> : null}
+						{key.includes('billByProject') ? <th>{item.billByProject == 1 ? 'Yes' : ''}</th> : null}
+						{key.includes('billByTask') ? <th>{item.billByTask == 1 ? 'Yes' : ''}</th> : null}
+						{key.includes('billByUser') ? <th>{item.billByUser == 1 ? 'Yes' : ''}</th> : null}
+						{key.includes('projectRate') ? <th>{item.projectRate}</th> : null}
+
 						<td>
 							<div className="btn-group float-right" role="group" aria-label="Third group">
 								<span className="input-group-btn" id="addTooltipEditButton">
@@ -145,7 +161,7 @@ class ManageItems extends React.Component {
 			<div>
 				{this.state.toastrMsg && <ToastrMsg type="warning" msg="Succesfuly Deleted" title="" />}
 
-				{this.state.modal && <ModalComponent handleClose={this.hideModal} item={this.props.itemReducer} action={this.state.action} updatetitle={this.props.updatetitle}></ModalComponent>}
+				{this.state.modal && <ModalComponent handleClose={this.hideModal} item={this.state.item} action={this.state.action} updatetitle={this.props.updatetitle}></ModalComponent>}
 				{this.state.modalsimple && <ModalSimple handleClose={this.hideSimpleModal} deleteItem={this.deleteItem} updatetitle="Are you sure?" body="You'll lose the information!" />}
 
 				<div className="row mt-5">
@@ -168,7 +184,8 @@ class ManageItems extends React.Component {
 function mapStateToProps(state, prop) {
 	return {
 		//will get props from redux to our local props
-		itemReducer: state.manageReducer.item
+		editItemReducer: state.manageReducer.editItem,
+		getItems: state.manageReducer.getItems
 
 	}
 
@@ -183,5 +200,4 @@ function mapDispatchToProps(dispatch) {
 	}
 }
 
-let reduxAware = connect(mapStateToProps, mapDispatchToProps);
-export default reduxAware(ManageItems);
+export default connect(mapStateToProps, mapDispatchToProps)(ManageItems);

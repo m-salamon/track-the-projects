@@ -1,7 +1,7 @@
 import * as React from 'react';
 import validateEmail from '../utils/validateEmail';
 
-class Input extends React.Component{
+class Input extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -20,25 +20,16 @@ class Input extends React.Component{
     }
 
 
-    componentDidUpdate() {
-       
-    }
-
-    componentWillMount() {
- 
-    }
-
     render() {
-
         return (
-                <input className={this.props.className}
-                    type={this.props.type}
-                    name={this.props.name}
-                    placeholder={this.props.placeholder}
-                    onChange={this.changeHandler}
-                    onBlur={this.blurHandler}
-                    value={this.props.value} />
-                );
+            <input className={this.props.className}
+                type={this.props.type}
+                name={this.props.name}
+                placeholder={this.props.placeholder}
+                onChange={this.changeHandler}
+                onBlur={this.blurHandler}
+                value={this.props.value} />
+        );
     }
 }
 

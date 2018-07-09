@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import '../css/manage.css';
 import moment from 'moment';
 import { RouteComponentProps } from 'react-router-dom';
+import { getClients } from '../actions/actions';
 import PageTop from './pageTop';
 import PageBottom from './pageBottom';
 import PageTitle from '../components/PageTitle';
@@ -20,255 +21,247 @@ import ToastrMsg from '../components/toastr';
 
 
 class manageProjects extends React.Component {
-     constructor() {
-          super();
-          this.state = {
-               title: 'Add Project',
-               projects: [],
-               inputs: {
-                    name: '',
-                    clientName: '',
-                    projectRate: '',
-                    billByProject: '',
-                    billByTask: '',
-                    billByUser: '',
-                    notes: '',
-               },
-               toastrMsg: false,
-               action: 'projects'
-          }
-     }
+    constructor() {
+        super();
+        this.state = {
+            title: 'Add Project',
+            clients: [],
+            items: [],
+            inputs: {
+                projectName: '',
+                clientName: '',
+                clientId: '',
+                projectRate: '',
+                billByProject: true,
+                billByTask: false,
+                billByUser: false,
+                notes: '',
+            },
+            toastrMsg: false,
+            action: 'projects'
+        }
+    }
 
-     changeHandler = (e) => {
-          let inputs = Object.assign({}, this.state.inputs);
-          inputs[e.target.name] = e.target.value;
-          this.setState({ inputs: inputs });
-     }
+    changeHandler = (e) => {
+        let inputs = Object.assign({}, this.state.inputs);
+        inputs[e.target.name] = e.target.value;
+        this.setState({ inputs: inputs });
+    }
 
-     handleKeyPress = (event) => {
-          if (event.key == 'Enter') {
-               this.saveProject()
-          }
-     };
+    radioChangeHandler = (e) => {
+        let inputs = Object.assign({}, this.state.inputs);
+        inputs.billByProject = false
+        inputs.billByTask = false
+        inputs.billByUser = false
 
-     saveProject = () => {
-          let inputs = Object.assign({}, this.state.inputs);
+        inputs[e.target.value] = true
+        this.setState({ inputs: inputs });
+    }
 
-          var item = {
-               action: this.state.action,
-               items: this.state.inputs
-          }
+    changeHandlerDropdown = (e) => {
+        let inputs = Object.assign({}, this.state.inputs);
+        if (e) {
+            inputs[e.name] = e.value;
+            if (e.name == 'clientName') {
+                inputs.clientId = e.id;
+            }
+        }
+        this.setState({ inputs: inputs });
+    }
 
-          this.props.addItem(item)
-               .then(() => this.setState(prevState => ({
-                    inputs: {
-                         ...prevState.inputs,
-                         name: '',
-                         clientName: '',
-                         projectRate: '',
-                         billByProject: '',
-                         billByTask: '',
-                         billByUser: '',
-                         notes: '',
-                    }
-               })))
-               .then(() => this.props.getItem(item))
-               .then(() => this.toggleToastrMsg())
-     }
+    handleKeyPress = (event) => {
+        if (event.key == 'Enter') this.saveItem()
+    }
 
-     toggleToastrMsg = () => {
-          this.setState({
-               toastrMsg: true
-          }, () => {
-               this.setState({ toastrMsg: !this.state.toastrMsg })
-          });
-     }
+    saveItem = async () => {
+        this.validateInput();
+        if (this.state.hasError)
+            return this.forceUpdate()
 
-     clear = () => {
-          this.setState(prevState => ({
-               inputs: {
-                    ...prevState.inputs,
-                    name: '',
-                    clientName: '',
-                    projectRate: '',
-                    billByProject: '',
-                    billByTask: '',
-                    billByUser: '',
-                    notes: '',
-               }
-          }));
-     }
+        var item = {
+            action: this.state.action,
+            items: this.state.inputs
+        }
 
-     componentDidMount() {
+        await this.props.addItem(item)
+        await this.clear()
+        await this.props.getItem(item)
+        await this.toggleToastrMsg()
+    }
 
-          var item = {
-               action: this.state.action
-          }
-          this.props.getItem(item);
-     }
+    validateInput = () => {
+        if (this.state.inputs.projectName == '') {
+            this.state.hasError = true;
+            window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+        } else {
+            this.state.hasError = false;
+        }
+    }
 
-     componentWillMount() {
-          window.addEventListener('keydown', this.handleKeyPress);
-     }
+    toggleToastrMsg = () => {
+        this.setState({ toastrMsg: true }, () => {
+            this.setState({ toastrMsg: false })
+        });
+    }
 
+    clear = () => {
+        this.setState(prevState => ({
+            inputs: {
+                ...prevState.inputs,
+                projectName: '',
+                clientName: '',
+                clientId: '',
+                projectRate: '',
+                billByProject: true,
+                billByTask: false,
+                billByUser: false,
+                notes: '',
+            }
+        }));
+    }
 
-     componentWillReceiveProps(nextProps) {
+    componentDidMount() {
+        this.props.getClients();
 
-          let state = Object.assign({}, this.state);
+        var item = { action: this.state.action }
+        this.props.getItem(item);
+    }
 
-          if (nextProps.projects) {
-               state.projects.length = 0;
-               state.projects = nextProps.projects;
-          }
-          this.setState({ projects: state.projects })
-     }
+    componentWillMount() {
+        window.addEventListener('keydown', this.handleKeyPress);
+    }
 
 
+    componentWillReceiveProps(nextProps) {
 
-     render() {
+        let state = Object.assign({}, this.state);
 
-          return (
-               <React.Fragment>
-               
-               <PageTop key="1"/>
+        if (nextProps.clients) {
+            state.clients.length = 0;
+            nextProps.clients.map(item => {
+                state.clients.push({ name: 'clientName', label: item.name, value: item.name, id: item.id })
+            })
+        }
+
+        if (nextProps.getItems) {
+            state.items.length = 0;
+            state.items = nextProps.getItems;
+        }
+
+        this.setState(state)
+    }
+
+    render() {
+
+        //ui visual error handling
+        let projectLabelError = '', projectInputError = ''
+        if (this.state.inputs.projectName == '' && this.state.hasError) {
+            projectLabelError = 'labelError';
+            projectInputError = 'inputError';
+        }
+
+        return (
+            <React.Fragment>
+                {this.state.toastrMsg ? <ToastrMsg type="success" msg="Project succesfuly saved" title="" /> : null}
+
+                <PageTop key="1" />
                 <div key="2" className="container">
 
                     {/* page title */}
                     <PageTitle title={this.state.title} />
-       
-               <div className="row">
-                   <div className="col-md-12">
-                       <div className="form-row">
-                           <div className="form-group col-md-6">
-                           <label for="" className="col-form-label">Project name</label>
-                               <div className="input-group"> 
-                                   <input type="text" className="form-control" aria-label="Text input with dropdown button" placeholder="type project name" />
-                               </div>
-                           </div>
-                           <div className="form-group col-md-6">
-                           <label for="" className="col-form-label">Client name</label>
-                           <div className="input-group"> 
-                               <input type="text" className="form-control" aria-label="Text input with dropdown button" placeholder="type client name..."  aria-describedby="btnGroupAddon" />
-                               <div className="input-group-btn">
-                                   <button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
-                                       Clients
-                               </button>
-                                   <div className="dropdown-menu dropdown-menu-right">
-                                       <ul className="list-group">
-                                           <li className="list-group-item list-group-item-action active">custom software</li>
-                                           <li className="list-group-item list-group-item-action">aviation llc</li>
-                                           <li className="list-group-item list-group-item-action">wall street corp</li>
-                                       </ul>
-                                   </div>
-                               </div>
-                           </div>
-                           </div>
-                       </div>
-                       <div className="form-row">
-                           <div className="form-group mr-md-3">
-                               <label for="" className="col-form-label">Bill by project</label>                            
-                               <div className="input-group">
-                               <span className="input-group-addon">
-                                   <input type="radio" name="radioBillBy" aria-label="Radio button for following text input" />
-                               </span>
-                               <span className="input-group-addon"><i className="fa fa-usd" aria-hidden="true"></i></span>
-                               <input type="text" className="form-control" aria-label="Text input with radio button" placeholder="cost per project"/>
-                               </div>
-                           </div>
-                           <div className="form-group mr-3">
-                               <label for="" className="col-form-label">Bill by task</label>
-                               <div className="input-group">
-                               <span className="input-group-addon">
-                                   <input type="radio" name="radioBillBy" aria-label="Radio button for following text input"/>&nbsp; bill by task
-                               </span>
-                               </div>
-                           </div>
-                           <div className="form-group">
-                               <label for="" className="col-form-label">Bill by user</label>
-                               <div className="input-group">
-                               <span className="input-group-addon">
-                                   <input type="radio" name="radioBillBy" aria-label="Radio button for following text input"/>&nbsp; bill by user
-                               </span>
-                               </div>
-                           </div>
-                       </div>
-                       <div className="form-row">
-                           <button type="submit" className="btn btn-secondary mr-2">Clear</button>
-                           <button type="submit" className="btn btn-primary">Save project</button>
-                       </div>
-                   </div>
-               </div>
-       
-               <hr className="hr-line mt-1 mt-5" />
-       
-               <div className="row mt-5">
-                   <div className="col-md-12">
-                       <table className="manage-table table table-responsive">
-                           <thead>
-                               <tr>
-                                   <th>Project</th>
-                                   <th>Project Rate</th>
-                                   <th>Bill By</th>
-                                   <th></th>
-                               </tr>
-                           </thead>
-                           <tbody>
-                               <tr>
-                                   <td>new software</td>
-                                   <td>50000</td>
-                                   <td>project</td>
-                                   <td>
-                                   <div className="btn-group float-right" role="group" aria-label="Third group">
-                                       <button type="button" className="btn btn-sm btn-secondary yellow-background f-1-2" data-toggle="tooltip" title="Edit"><i className="fa fa-pencil" aria-hidden="true"></i></button>
-                                       <button type="button" className="btn btn-sm btn-secondary red-background f-1-2" data-toggle="tooltip" title="Delete"><i className="fa fa-trash" aria-hidden="true"></i></button>
-                                   </div>
-                                   </td>
-                               </tr>
-                               <tr>
-                                   <td>website</td>
-                                   <td>0</td>
-                                   <td>user</td>
-                                   <td>
-                                   <div className="btn-group float-right" role="group" aria-label="Third group">
-                                       <button type="button" className="btn btn-sm btn-secondary yellow-background f-1-2" data-toggle="tooltip" title="Edit"><i className="fa fa-pencil" aria-hidden="true"></i></button>
-                                       <button type="button" className="btn btn-sm btn-secondary red-background f-1-2" data-toggle="tooltip" title="Delete"><i className="fa fa-trash" aria-hidden="true"></i></button>
-                                   </div>
-                                   </td>
-                               </tr>
-                               <tr>
-                                   <td>summer campaign</td>
-                                   <td>0</td>
-                                   <td>task</td>
-                                   <td>
-                                   <div className="btn-group float-right" role="group" aria-label="Third group">
-                                       <button type="button" className="btn btn-sm btn-secondary yellow-background f-1-2" data-toggle="tooltip" title="Edit"><i className="fa fa-pencil" aria-hidden="true"></i></button>
-                                       <button type="button" className="btn btn-sm btn-secondary red-background f-1-2" data-toggle="tooltip" title="Delete"><i className="fa fa-trash" aria-hidden="true"></i></button>
-                                   </div>
-                                   </td>
-                               </tr>
-                           </tbody>
-                       </table>
-                   </div>
-               </div>
-               </div>
-               </ React.Fragment>);
-     }
+
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="form-row">
+                                <div className="form-group col-md-6">
+                                    <label className={"col-form-label " + projectLabelError}>Project name</label>
+                                    <div className="input-group">
+                                        <input name='projectName' value={this.state.inputs.projectName} onChange={this.changeHandler} required={false} type="text" className={"form-control " + projectInputError} aria-label="Text input with dropdown button" placeholder="type project name" />
+                                    </div>
+                                </div>
+
+
+                                <div className="form-group col-md-6">
+                                    <label className="col-form-label">Client name</label>
+                                    <div className="input-group">
+                                        <DropdownSelector name="clientName" options={this.state.clients} placeholder="type client name..." className={"btn-block"} value={this.state.inputs.clientName} onChange={this.changeHandlerDropdown} />
+                                        <span className="input-group-btn" id="addTaskTooltip">
+                                            <Link to='/manageClients' ><Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>} className="btn btn-secondary green-background dropdown-effects add-btn" type="button" /></Link>
+                                            <UncontrolledTooltip placement="top" target={"addTaskTooltip"} >Add a new client</UncontrolledTooltip>
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div className="form-row">
+                                <div className="form-group mr-md-3">
+                                <label>
+                                    <label className="col-form-label ">Bill by project</label>
+                                    <div className="input-group">
+                                        <span className="input-group-addon radioBtn">
+                                            <input checked={this.state.inputs.billByProject} value='billByProject' name="billByRadio" onChange={this.radioChangeHandler} type="radio" />
+                                        </span>
+                                        <span className="input-group-addon"><i className="fa fa-usd" aria-hidden="true"></i></span>
+                                        <input name="projectRate" value={this.state.inputs.projectRate} onChange={this.changeHandler} type="number" className="form-control" placeholder="cost per project" />
+                                    </div>
+                                    </label>
+                                </div>
+                                <div className="form-group mr-3">
+                                    <label>
+                                        <label className="col-form-label">Bill by task</label>
+                                        <div className="input-group">
+                                            <span className="input-group-addon radioBtn" >
+                                                <input value='billByTask' name="billByRadio" onChange={this.radioChangeHandler} type="radio" />&nbsp; bill by task
+                                        </span>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div className="form-group">
+                                <label>
+                                    <label className="col-form-label">Bill by user</label>
+                                    <div className="input-group">
+                                        <span className="input-group-addon radioBtn">
+                                            <input value='billByUser' name="billByRadio" onChange={this.radioChangeHandler} type="radio"  />&nbsp; bill by user
+                                        </span>
+                                    </div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="form-row">
+                                <button onClick={this.clear} type="submit" className="btn btn-secondary mr-2">Clear</button>
+                                <button onClick={this.saveItem} type="submit" className="btn btn-primary blue-background">Save project</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr className="hr-line mt-1 mt-5" />
+                    <ManageItems items={this.state.items} action={this.state.action} updatetitle="Update Project" />
+
+                </div>
+
+                <PageBottom key="3" />
+
+            </ React.Fragment>);
+    }
 }
 
 function mapStateToProps(state, prop) {
-     return {
-          //will get props from redux to our local props
-          projects: state.manageReducer.project
-     }
+    return {
+        //will get props from redux to our local props
+        clients: state.getClientReducer,
+        getItems: state.manageReducer.getItems
+    }
 
 }
 
 function mapDispatchToProps(dispatch) {
-     return {
-          //will store whatever is in local state into redux state
-          addItem: (state) => dispatch(addItem(state)),
-          getItem: (state) => dispatch(getItem(state))
-     }
+    return {
+        //will store whatever is in local state into redux state
+        addItem: (state) => dispatch(addItem(state)),
+        getItem: (state) => dispatch(getItem(state)),
+
+        getClients: (state) => dispatch(getClients(state))
+    }
 }
 
 

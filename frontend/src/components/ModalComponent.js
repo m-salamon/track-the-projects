@@ -8,7 +8,7 @@ import DropdownSelector from '../components/DropdownSelector';
 import Datepicker from '../components/Datepicker';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import Button from '../components/Button';
-import { updateItem, getItem } from '../actions/actions';
+import { updateItem, getItem, getClients } from '../actions/actions';
 import '../css/editModal.css';
 import ToastrMsg from '../components/toastr';
 
@@ -17,6 +17,7 @@ class ModalComponent extends React.Component {
 		super();
 		this.state = {
 			modal: true,
+			clients: [],
 			item: [],
 			action: '',
 			toastrMsg: false
@@ -34,6 +35,27 @@ class ModalComponent extends React.Component {
 	changeHandler = (e) => {
 		let state = Object.assign({}, this.state);
 		state.item[0][e.target.name] = e.target.value; //item is an array thats why we need to populate the index [0]
+		this.setState(state)
+	}
+
+	radioChangeHandler = (e) => {
+		let state = Object.assign({}, this.state);
+		state.item[0]['billByProject'] = false
+		state.item[0]['billByTask'] = false
+		state.item[0]['billByUser'] = false
+
+		state.item[0][e.target.value] = true
+		this.setState(state)
+	}
+
+	changeHandlerDropdown = (e) => {
+		let state = Object.assign({}, this.state);
+		if (e) {
+			state.item[0][e.name] = e.value;
+			if (e.name == 'clientName') {
+				state.item[0]['clientId'] = e.id;
+			}
+		}
 		this.setState(state);
 	}
 
@@ -44,38 +66,129 @@ class ModalComponent extends React.Component {
 		}
 		await this.props.updateItem(item)
 		await this.props.getItem(item)
-		this.toggleToastrMsg()
+		await this.toggleToastrMsg()
 		this.props.handleClose()
 
 	}
 
+	componentWillReceiveProps(nextProps) {
+
+		let state = Object.assign({}, this.state);
+
+		if (nextProps.clients) {
+			state.clients.length = 0;
+			nextProps.clients.map(item => {
+				state.clients.push({ name: 'clientName', label: item.name, value: item.name, id: item.id })
+			})
+		}
+
+		this.setState(state)
+	}
+
 	componentDidMount() {
 		this.setState({ action: this.props.action })
+		this.props.getClients();
 	}
 	componentWillMount() {
 		this.setState({ item: this.props.item })
 	}
 
 	render() {
-		let body = () => {
-			var key = Object.keys(this.state.item[0]);
-			return (
-				key.map((k) => {
-					console.log(this.state.item[0][k])
-					if (k == 'id' || k == 'timeStamp' || k == 'userId' || k == 'teamId' || k == 'createdAt') return
-					return (
-						<div key={k} id={k} className="form-group row">
-							<label className="col-sm-3 col-lg-2 col-form-label">{k}</label>
-							<div className="col-sm-9 col-lg-10">
-								<div className="input-group">
-									<input type="text" value={this.state.item[0][k]} name={k} onChange={this.changeHandler} className="form-control" aria-label="Text input with dropdown button" placeholder={k} />
-								</div>
-							</div>
-						</div>)
-				}))
+
+		if (this.props.item.length == 0) {
+			return <div className="ml-4">No Items</div>
 		}
 
+		let body = () => {
+			var key = Object.keys(this.props.item[0]);
+
+			if (this.state.action == 'projects') {
+				return (
+					key.map((k) => {
+						if (k == 'projectName')
+							return (
+								<div key={k} id={k} className="form-group row">
+									<label className="col-sm-3 col-lg-2 col-form-label">{'Project Name'}</label>
+									<div className="col-sm-9 col-lg-10">
+										<div className="input-group">
+											<input type="text" value={this.state.item[0][k]} name={k} onChange={this.changeHandler} className="form-control" aria-label="Text input with dropdown button" placeholder={"Project Name"} />
+										</div>
+									</div>
+								</div>)
+						if (k == 'clientName')
+							return (
+								<div key={k} id={k} className="form-group row">
+									<label className="col-sm-3 col-lg-2 col-form-label">{'Client Name'}</label>
+									<div className="col-sm-9 col-lg-10">
+										<div className="input-group">
+											<DropdownSelector name={k} options={this.state.clients} placeholder="type client name..." className={"btn-block"} value={this.state.item[0][k]} onChange={this.changeHandlerDropdown} />
+										</div>
+									</div>
+								</div>)
+						if (k == 'projectRate')
+							return (
+								<div key={k} id={k} className="form-group row">
+									<label className="col-sm-3 col-lg-2 col-form-label">{'Bill By Project'}</label>
+									<div className="col-sm-9 col-lg-10">
+										<div className="input-group">
+											<span className="input-group-addon">
+												<input checked={this.state.item[0]['billByProject']} value='billByProject' name="billByRadio" onChange={this.radioChangeHandler} type="radio" aria-label="Radio button for following text input" />
+											</span>
+											<span className="input-group-addon"><i className="fa fa-usd" aria-hidden="true"></i></span>
+											<input name="projectRate" value={this.state.item[0][k]} onChange={this.changeHandler} type="number" className="form-control" aria-label="Text input with radio button" placeholder="cost per project" />
+										</div>
+									</div>
+								</div>)
+						if (k == 'billByTask')
+							return (
+								<div key={k} id={k} className="form-group row">
+									<label className="col-sm-3 col-lg-2 col-form-label">{'Bill By Task'}</label>
+									<div className="col-sm-9 col-lg-10">
+										<div className="input-group">
+											<span className="input-group-addon">
+												<input checked={this.state.item[0]['billByTask']} value='billByTask' name="billByRadio" onChange={this.radioChangeHandler} type="radio" aria-label="Radio button for following text input" />&nbsp; bill by task
+											</span>
+										</div>
+									</div>
+								</div>)
+						if (k == 'billByUser'){
+							return (
+								<div key={k} id={k} className="form-group row">
+									<label className="col-sm-3 col-lg-2 col-form-label">{'Bill By User'}</label>
+									<div className="col-sm-9 col-lg-10">
+										<div className="input-group">
+											<span className="input-group-addon">
+												<input checked={this.state.item[0]['billByUser']} value='billByUser' name="billByRadio" onChange={this.radioChangeHandler} type="radio" aria-label="Radio button for following text input" />&nbsp; bill by User
+											</span>
+										</div>
+									</div>
+								</div>)
+							}
+					}))
+			}
+
+			if (this.state.action == 'clients') {
+				return (
+					key.map((k) => {
+						if (k == 'id' || k == 'timeStamp' || k == 'userId' || k == 'teamId' || k == 'createdAt' || k == 'clientId') return
+						return (
+							<div key={k} id={k} className="form-group row">
+								<label className="col-sm-3 col-lg-2 col-form-label">{k}</label>
+								<div className="col-sm-9 col-lg-10">
+									<div className="input-group">
+										<input type="text" value={this.state.item[0][k]} name={k} onChange={this.changeHandler} className="form-control" aria-label="Text input with dropdown button" placeholder={k} />
+									</div>
+								</div>
+							</div>)
+					}))
+			}
+		}
+
+		
+
+
 		return (
+			console.log('ITEM ', this.props.item),
 			<div>
 				{this.state.toastrMsg ? <ToastrMsg type="success" msg="Succesfuly updated" title="" /> : null}
 
@@ -101,7 +214,7 @@ class ModalComponent extends React.Component {
 function mapStateToProps(state, prop) {
 	return {
 		//will get props from redux to our local props
-
+		clients: state.getClientReducer,
 	}
 
 }
@@ -111,6 +224,8 @@ function mapDispatchToProps(dispatch) {
 		//will store whatever is in local state into redux state 
 		updateItem: (state) => dispatch(updateItem(state)),
 		getItem: (state) => dispatch(getItem(state)),
+
+		getClients: (state) => dispatch(getClients(state))
 	}
 }
 

@@ -20,6 +20,13 @@
     animation: bounce 3s ease-in-out 0.6s 3;
   }
   
+  .labelError{
+    animation: bounce 3s ease-in-out 0.6s 3;
+  }
+  .inputError{
+    border-radius: 4px;
+    border-left: 3px solid #ff0033;
+  }
   @keyframes bounce {
     0%   {transform: translateY(0px)}
     10%  {transform: translateY(-15px)}
@@ -36,7 +43,12 @@
     border-radius: 4px;
     border-left: 3px solid #ff0033;
   }
-  
+ 
+.radioBtn:hover{
+  background-color: #868e96;
+  color: #fff;
+}
+
 
 /* ===================================================
 =======================  end  ========================

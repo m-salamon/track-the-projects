@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var projects = require('./projects');
 var tasks = require('./tasks');
+var clients = require('./clients');
+
 var saveTrackLog = require('./saveTrackLog');
 var getTrackLog = require('./getTrackLog');
 var editTrackLog = require('./editTrackLog');
@@ -16,6 +18,8 @@ router.get('/', function(req, res, next) {
 
 router.use('/projects', projects);
 router.use('/tasks', tasks);
+router.use('/clients', clients);
+
 router.use('/saveTrackLog', saveTrackLog);
 router.use('/getTrackLog', getTrackLog);
 router.use('/editTrackLog', editTrackLog);

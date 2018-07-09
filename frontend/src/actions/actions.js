@@ -14,7 +14,6 @@ function getProjectsSuccess(projectItems) {
 function getProjects() {
     return async dispatch => {
         let response = await axios.get(`/api/projects/getProjectItems`);
-        console.log('response data', response.data)
         dispatch(getProjectsSuccess(response.data));
     }
 }
@@ -33,6 +32,16 @@ function getTasks() {
     return async dispatch => {
         let response = await axios.get(`/api/tasks/getTaskItems`);
         dispatch(getTasksSuccess(response.data));
+    }
+}
+
+////////////////
+// get clients
+//////////////
+function getClients() {
+    return async dispatch => {
+        let response = await axios.get(`/api/clients/getClientItems`);
+        dispatch({ type: types.GET_CLIENTS, payload: response.data });
     }
 }
 
@@ -64,9 +73,8 @@ function getTrackLogSuccess(trackLog) {
 }
 
 function getTrackLog(tracklog) {
-    console.log('redux getTrackLog')
     return async dispatch => {
-        let response = await axios.get('/api/getTrackLog/', { headers: { logdate: tracklog.logDate} });
+        let response = await axios.get('/api/getTrackLog/', { headers: { logdate: tracklog.logDate } });
         dispatch(getTrackLogSuccess(response.data));
     }
 }
@@ -83,7 +91,7 @@ function editTrackLogSuccess(tracklog) {
 
 function editTrackLog(tracklog) {
     return async dispatch => {
-        let response = await axios.get('/api/editTrackLog/', { headers: { logId: tracklog.logId} });
+        let response = await axios.get('/api/editTrackLog/', { headers: { logId: tracklog.logId } });
         dispatch(editTrackLogSuccess(response.data));
     }
 }
@@ -100,8 +108,8 @@ function deleteTrackLogSuccess(deleteLog) {
 
 function deleteTrackLog(tracklog) {
     return async dispatch => {
-        let response = await axios.post('/api/deleteTrackLog', {logid: tracklog.logId})
-         dispatch(deleteTrackLogSuccess(response.data));
+        let response = await axios.post('/api/deleteTrackLog', { logid: tracklog.logId })
+        dispatch(deleteTrackLogSuccess(response.data));
     }
 }
 
@@ -116,10 +124,9 @@ function updateTrackLogSuccess(updateLog) {
 }
 
 function updateTrackLog(updateLog) {
-    console.log('updateLog',updateLog)
     return async dispatch => {
         let response = await axios.post('/api/updateTrackLog/', updateLog)
-         dispatch(updateTrackLogSuccess(response.data));       
+        dispatch(updateTrackLogSuccess(response.data));
     }
 }
 
@@ -133,7 +140,6 @@ function addItemSuccess(item) {
     }
 }
 function addItem(item) {
-    console.log('items', item)
     return async dispatch => {
         let response = await axios.post('/api/manage/addItem', item);
         dispatch(addItemSuccess(response.data));
@@ -143,18 +149,10 @@ function addItem(item) {
 ////////////////
 // get item
 //////////////
-function getItemSuccess(client) {
-    return {
-        type: types.GET_ITEM,
-        payload: client
-    }
-}
-
 function getItem(item) {
-    console.log('!!',item)
     return async dispatch => {
-        let response = await axios.get('/api/manage/getItem',  { headers: { action: item.action} });
-        dispatch(getItemSuccess(response.data));
+        let response = await axios.get('/api/manage/getItem', { headers: { action: item.action } });
+        dispatch({ type: types.GET_ITEM, payload: response.data });
     }
 }
 ////////////////
@@ -175,18 +173,10 @@ function deleteItem(items) {
 ////////////////
 // edit item
 //////////////
-function editItemSuccess(item) {
-    return {
-        type: types.EDIT_ITEM,
-        payload: item
-    }
-}
 function editItem(item) {
-    console.log(item)
     return async dispatch => {
-        let response = await axios.get('/api/manage/editItem', { headers: { id: item.id, action: item.action} });
-        console.log('res',response)
-        dispatch(editItemSuccess(response.data));
+        let response = await axios.get('/api/manage/editItem', { headers: { id: item.id, action: item.action } });
+        dispatch({ type: types.EDIT_ITEM, payload: response.data });
     }
 }
 
@@ -203,7 +193,7 @@ function updateItemSuccess(updateItem) {
 function updateItem(updateItem) {
     return async dispatch => {
         let response = await axios.post('/api/manage/updateItem', updateItem)
-         dispatch(updateItemSuccess(response.data));       
+        dispatch(updateItemSuccess(response.data));
     }
 }
 
@@ -211,6 +201,7 @@ function updateItem(updateItem) {
 export {
     getProjects,
     getTasks,
+    getClients,
     saveTrackLog,
     editTrackLog,
     getTrackLog,
