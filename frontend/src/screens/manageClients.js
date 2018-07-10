@@ -4,8 +4,8 @@ import ReactDOM from 'react-dom';
 import '../css/manage.css';
 import moment from 'moment';
 import { RouteComponentProps } from 'react-router-dom';
-import PageTop from './pageTop';
-import PageBottom from './pageBottom';
+import PageTop from './PageTop';
+import PageBottom from './PageBottom';
 import PageTitle from '../components/PageTitle';
 import ManageItems from '../components/ManageItems';
 import DropdownSelector from '../components/DropdownSelector';
@@ -19,7 +19,7 @@ import ToastrMsg from '../components/toastr';
 
 
 
-class manageClients extends React.Component {
+class ManageClients extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -190,4 +190,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(manageClients);
+export default connect(mapStateToProps, mapDispatchToProps)(ManageClients);

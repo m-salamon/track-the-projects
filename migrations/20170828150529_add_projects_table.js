@@ -2,9 +2,8 @@
 exports.up = function (knex, Promise) {
   return knex.schema.createTable('projects', table => {
     table.increments('id').primary();
-    table.string('projectName').notNullable()
+    table.string('name').notNullable()
     table.integer('clientId').notNullable()
-    table.string('clientName').notNullable()
     table.string('projectRate').notNullable()
     table.boolean('billByProject').notNullable()
     table.boolean('billByTask').notNullable()

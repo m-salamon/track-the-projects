@@ -3,14 +3,14 @@ exports.up = function (knex, Promise) {
         table.increments('id').primary();
         table.integer('projectId').notNullable()
         table.integer('taskId').notNullable()
-        table.integer('userID').notNullable()
-        table.integer('teamId').notNullable()
         table.string('date').notNullable()
         table.string('startTime').notNullable()
         table.string('endTime').notNullable()
         table.string('duration').notNullable()
         table.string('description').notNullable()
         table.string('additionalCost').notNullable()
+        table.integer('userID').notNullable()
+        table.integer('teamId').notNullable()
         table.timestamp('createdAt').default(knex.fn.now())
         table.timestamp('timeStamp').default(knex.fn.now())  
     });

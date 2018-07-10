@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import Main from './main';
 import NavbarSide from './components/NavbarSide';
-import Track from './screens/track';
-import manageClients from './screens/manageClients';
-import manageProjects from './screens/manageProjects';
-import Login from './screens/login';
+import Track from './screens/Track';
+import manageClients from './screens/ManageClients';
+import manageProjects from './screens/ManageProjects';
+import manageTasks from './screens/ManageTasks';
+import Login from './screens/Login';
 
 class App extends Component {
   render() {
@@ -19,6 +20,8 @@ class App extends Component {
             <Route exact path="/track" component={Track} />
             <Route exact path="/manageClients" component={manageClients} />
             <Route exact path="/manageProjects" component={manageProjects} />
+            <Route exact path="/manageTasks" component={manageTasks} />
+
           </div>
         </BrowserRouter>
       </div>

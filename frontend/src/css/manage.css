@@ -39,16 +39,24 @@
     
   }
   
-  .inputHasError{
-    border-radius: 4px;
-    border-left: 3px solid #ff0033;
-  }
+.inputHasError{
+  border-radius: 4px;
+  border-left: 3px solid #ff0033;
+}
  
+.radioBtn{
+  background-color: #9da7b1;
+  color: #fff;
+}
+
 .radioBtn:hover{
   background-color: #868e96;
   color: #fff;
 }
 
+.billByProjectInput{
+  border: 1px solid rgb(255, 255, 255) !important;
+}
 
 /* ===================================================
 =======================  end  ========================

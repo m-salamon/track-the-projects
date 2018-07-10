@@ -5,8 +5,8 @@ import '../css/track.css';
 import axios from 'axios';
 import moment from 'moment';
 import { RouteComponentProps } from 'react-router-dom';
-import PageTop from './pageTop';
-import PageBottom from './pageBottom';
+import PageTop from './PageTop';
+import PageBottom from './PageBottom';
 import PageTitle from '../components/PageTitle';
 import Input from '../components/Input';
 import DropdownSelector from '../components/DropdownSelector';
@@ -151,7 +151,7 @@ class Track extends React.Component {
       this.getTodaysLogs();
    }
 
-   getTodaysLogs = (logDate) => {
+   getTodaysLogs = () => {
       let filters = {
          logDate: this.state.logDate
       };
@@ -238,7 +238,7 @@ class Track extends React.Component {
                                        <div className="input-group">
                                           <DropdownSelector name="project" options={this.state.projectItems} placeholder="type project name..." className={"btn-block" + ' ' + projectInputHasError} value={this.state.inputs.project} onChange={this.changeHandlerDropdown} />
                                           <span className="input-group-btn" id="addProjectTooltip">
-                                             <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>} className="btn btn-secondary green-background dropdown-effects add-btn" type="button" />
+                                          <Link to='/manageProjects'><Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>} className="btn btn-secondary green-background dropdown-effects add-btn" type="button" /></Link>
                                              <UncontrolledTooltip placement="top" target={"addProjectTooltip"} >Create a new project</UncontrolledTooltip>
                                           </span>
                                        </div>
@@ -253,7 +253,7 @@ class Track extends React.Component {
                                        <div className="input-group">
                                           <DropdownSelector name="task" options={this.state.taskItems} placeholder="type task name..." className={"btn-block" + ' ' + taskInputHasError} value={this.state.inputs.task} onChange={this.changeHandlerDropdown} />
                                           <span className="input-group-btn" id="addTaskTooltip">
-                                             <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>} className="btn btn-secondary green-background dropdown-effects add-btn" type="button" />
+                                          <Link to='/manageTasks'><Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>} className="btn btn-secondary green-background dropdown-effects add-btn" type="button" /></Link>
                                              <UncontrolledTooltip placement="top" target={"addTaskTooltip"} >Create a new task</UncontrolledTooltip>
                                           </span>
                                        </div>
@@ -334,8 +334,8 @@ function mapStateToProps(state, prop) {
 function mapDispatchToProps(dispatch) {
    return {
       //will store whatever is in local state into redux state
-      getProjects: () => dispatch(getProjects()),
-      getTasks: () => dispatch(getTasks()),
+      getProjects: (state) => dispatch(getProjects(state)),
+      getTasks: (state) => dispatch(getTasks(state)),
       getTrackLog: (state) => dispatch(getTrackLog(state)),
 
       saveTrackLog: (state) => dispatch(saveTrackLog(state))

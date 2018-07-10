@@ -128,42 +128,48 @@ class ModalComponent extends React.Component {
 						if (k == 'projectRate')
 							return (
 								<div key={k} id={k} className="form-group row">
-									<label className="col-sm-3 col-lg-2 col-form-label">{'Bill By Project'}</label>
-									<div className="col-sm-9 col-lg-10">
-										<div className="input-group">
-											<span className="input-group-addon">
-												<input checked={this.state.item[0]['billByProject']} value='billByProject' name="billByRadio" onChange={this.radioChangeHandler} type="radio" aria-label="Radio button for following text input" />
-											</span>
-											<span className="input-group-addon"><i className="fa fa-usd" aria-hidden="true"></i></span>
-											<input name="projectRate" value={this.state.item[0][k]} onChange={this.changeHandler} type="number" className="form-control" aria-label="Text input with radio button" placeholder="cost per project" />
+									<label>
+										<label className="col-sm-12 col-form-label">{'Bill By Project'}</label>
+										<div className="col-sm-12">
+											<div className="input-group">
+												<span className="input-group-addon radioBtn">
+													<input checked={this.state.item[0]['billByProject']} value='billByProject' name="billByRadio" onChange={this.radioChangeHandler} type="radio" aria-label="Radio button for following text input" />&nbsp; Bill By Project
+												</span>
+												<span className="input-group-addon"><i className="fa fa-usd" aria-hidden="true"></i></span>
+												<input name="projectRate" value={this.state.item[0][k]} onChange={this.changeHandler} type="number" className="form-control" aria-label="Text input with radio button" placeholder="cost per project" />
+											</div>
 										</div>
-									</div>
+									</label>
 								</div>)
 						if (k == 'billByTask')
 							return (
 								<div key={k} id={k} className="form-group row">
-									<label className="col-sm-3 col-lg-2 col-form-label">{'Bill By Task'}</label>
-									<div className="col-sm-9 col-lg-10">
-										<div className="input-group">
-											<span className="input-group-addon">
-												<input checked={this.state.item[0]['billByTask']} value='billByTask' name="billByRadio" onChange={this.radioChangeHandler} type="radio" aria-label="Radio button for following text input" />&nbsp; bill by task
+									<label>
+										<label className="col-sm-12 col-form-label">{'Bill By Task'}</label>
+										<div className="col-sm-12">
+											<div className="input-group">
+												<span className="input-group-addon radioBtn">
+													<input checked={this.state.item[0]['billByTask']} value='billByTask' name="billByRadio" onChange={this.radioChangeHandler} type="radio" aria-label="Radio button for following text input" />&nbsp; Bill By Task
 											</span>
+											</div>
 										</div>
-									</div>
+									</label>
 								</div>)
-						if (k == 'billByUser'){
+						if (k == 'billByUser') {
 							return (
 								<div key={k} id={k} className="form-group row">
-									<label className="col-sm-3 col-lg-2 col-form-label">{'Bill By User'}</label>
-									<div className="col-sm-9 col-lg-10">
-										<div className="input-group">
-											<span className="input-group-addon">
-												<input checked={this.state.item[0]['billByUser']} value='billByUser' name="billByRadio" onChange={this.radioChangeHandler} type="radio" aria-label="Radio button for following text input" />&nbsp; bill by User
+									<label>
+										<label className="col-sm-12 col-form-label">{'Bill By User'}</label>
+										<div className="col-sm-12">
+											<div className="input-group">
+												<span className="input-group-addon radioBtn">
+													<input checked={this.state.item[0]['billByUser']} value='billByUser' name="billByRadio" onChange={this.radioChangeHandler} type="radio" aria-label="Radio button for following text input" />&nbsp; Bill By User
 											</span>
+											</div>
 										</div>
-									</div>
+									</label>
 								</div>)
-							}
+						}
 					}))
 			}
 
@@ -184,7 +190,7 @@ class ModalComponent extends React.Component {
 			}
 		}
 
-		
+
 
 
 		return (
