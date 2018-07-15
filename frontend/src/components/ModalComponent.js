@@ -8,7 +8,7 @@ import DropdownSelector from '../components/DropdownSelector';
 import Datepicker from '../components/Datepicker';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import Button from '../components/Button';
-import { updateItem, getItem, getClients } from '../actions/actions';
+import { updateItem, getItem, getClients, getProjects } from '../actions/actions';
 import '../css/editModal.css';
 import ToastrMsg from '../components/toastr';
 
@@ -18,6 +18,7 @@ class ModalComponent extends React.Component {
 		this.state = {
 			modal: true,
 			clients: [],
+			projects: [],
 			item: [],
 			action: '',
 			toastrMsg: false
@@ -55,6 +56,9 @@ class ModalComponent extends React.Component {
 			if (e.name == 'clientName') {
 				state.item[0]['clientId'] = e.id;
 			}
+			if (e.name == 'projectName') {
+				state.item[0]['projectId'] = e.id;
+			}
 		}
 		this.setState(state);
 	}
@@ -82,12 +86,22 @@ class ModalComponent extends React.Component {
 			})
 		}
 
+		if (nextProps.projects) {
+			state.projects.length = 0;
+			nextProps.projects.map(item => {
+				state.projects.push({ name: 'projectName', label: item.name, value: item.name, id: item.id })
+			})
+		}
+
 		this.setState(state)
 	}
 
 	componentDidMount() {
 		this.setState({ action: this.props.action })
 		this.props.getClients();
+
+		if (this.props.action == 'tasks')
+			this.props.getProjects();
 	}
 	componentWillMount() {
 		this.setState({ item: this.props.item })
@@ -188,6 +202,46 @@ class ModalComponent extends React.Component {
 							</div>)
 					}))
 			}
+
+			if (this.state.action == 'tasks') {
+				return (
+					key.map((k) => {
+						if (k == 'name')
+							return (
+								<div key={k} id={k} className="form-group row">
+									<label className="col-sm-3 col-lg-2 col-form-label">{'Project Name'}</label>
+									<div className="col-sm-9 col-lg-10">
+										<div className="input-group">
+											<input type="text" value={this.state.item[0][k]} name={k} onChange={this.changeHandler} className="form-control" aria-label="Text input with dropdown button" placeholder={"Project Name"} />
+										</div>
+									</div>
+								</div>)
+						if (k == 'projectName')
+							return (
+								<div key={k} id={k} className="form-group row">
+									<label className="col-sm-3 col-lg-2 col-form-label">{'Project Name'}</label>
+									<div className="col-sm-9 col-lg-10">
+										<div className="input-group">
+											<DropdownSelector name={k} options={this.state.projects} placeholder="type project name..." className={"btn-block"} value={this.state.item[0][k]} onChange={this.changeHandlerDropdown} />
+										</div>
+									</div>
+								</div>)
+						if (k == 'hourlyRate')
+						return (
+							<div key={k} id={k} className="form-group row">
+								<label>
+									<label className="col-sm-12 col-form-label">{'Hourly Rate'}</label>
+									<div className="col-sm-9 col-lg-10">
+										<div className="input-group">
+											<span className="input-group-addon"><i className="fa fa-usd" aria-hidden="true"></i></span>
+											<input name="hourlyRate" value={this.state.item[0][k]} onChange={this.changeHandler} type="number" className="form-control" aria-label="Text input with radio button" placeholder="task hourly rate" />
+										</div>
+									</div>
+								</label>
+							</div>)
+					}))
+			}
+
 		}
 
 
@@ -221,6 +275,7 @@ function mapStateToProps(state, prop) {
 	return {
 		//will get props from redux to our local props
 		clients: state.getClientReducer,
+		projects: state.getProjectReducer
 	}
 
 }
@@ -231,7 +286,8 @@ function mapDispatchToProps(dispatch) {
 		updateItem: (state) => dispatch(updateItem(state)),
 		getItem: (state) => dispatch(getItem(state)),
 
-		getClients: (state) => dispatch(getClients(state))
+		getClients: (state) => dispatch(getClients(state)),
+		getProjects: (state) => dispatch(getProjects(state))
 	}
 }
 

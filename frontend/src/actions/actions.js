@@ -4,34 +4,20 @@ import axios from 'axios';
 ////////////////
 // get projects
 //////////////
-function getProjectsSuccess(projectItems) {
-    return {
-        type: types.GET_PROJECTS,
-        payload: projectItems
-    }
-}
-
 function getProjects() {
     return async dispatch => {
         let response = await axios.get(`/api/projects/getProjectItems`);
-        dispatch(getProjectsSuccess(response.data));
+        dispatch({ type: types.GET_PROJECTS, payload: response.data });
     }
 }
 
 ////////////////
 // get tasks
 //////////////
-function getTasksSuccess(taskItems) {
-    return {
-        type: types.GET_TASKS,
-        payload: taskItems
-    }
-}
-
 function getTasks() {
     return async dispatch => {
         let response = await axios.get(`/api/tasks/getTaskItems`);
-        dispatch(getTasksSuccess(response.data));
+        dispatch({ type: types.GET_TASKS, payload: response.data });
     }
 }
 
@@ -44,6 +30,7 @@ function getClients() {
         dispatch({ type: types.GET_CLIENTS, payload: response.data });
     }
 }
+
 
 ////////////////
 // save track log start
