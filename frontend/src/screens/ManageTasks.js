@@ -171,11 +171,11 @@ class ManageTasks extends React.Component {
                         <div className="col-md-12">
                             <div className="form-row">
                                 <div className="form-group col-md-6">
-                                    <label for="inputName" className="col-form-label">Task name</label>
+                                    <label htmlFor="inputName" className="col-form-label">Task name</label>
                                     <input type="text" className="form-control" id="inputName" placeholder="task name" />
                                 </div>
                                 <div className="form-group col-md-6">
-                                    <label for="" className="col-form-label">Project name</label>
+                                    <label htmlFor="" className="col-form-label">Project name</label>
                                     <div className="input-group">
                                         <input type="text" className="form-control" aria-label="Text input with dropdown button" placeholder="type project name..." />
                                         <div className="input-group-btn">
@@ -196,7 +196,7 @@ class ManageTasks extends React.Component {
                             </div>
                             <div className="form-row">
                             <div className="form-group col-md-6">
-                                    <label for="" className="col-form-label">Hourly rate</label>
+                                    <label htmlFor="" className="col-form-label">Hourly rate</label>
                                     <div className="input-group billByTaskInput">
                                         <span className="input-group-addon" id="btnGroupAddon"><i className="fa fa-usd" aria-hidden="true"></i></span>
                                         <input type="text" value={this.state.inputs.hourlyRate} name="additionalCost" onChange={this.changeHandler} className="form-control" style={{ border: '1px solid rgb(255, 255, 255)'}} placeholder="task hourly rate"/>
