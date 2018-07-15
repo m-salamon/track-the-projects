@@ -7,8 +7,8 @@ function addItem(item) {
         .insert(item.items)
 }
 
-function getItem(item) {
-    return knex(item.action).select().orderBy('id', 'desc');;
+async function getItem(item) {
+    return knex(item.action).select().orderBy('id', 'desc');
 }
 
 function editItem(item) {

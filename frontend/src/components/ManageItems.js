@@ -1,8 +1,6 @@
 import * as React from 'react';
-import axios from 'axios';
-import moment from 'moment';
 import '../css/manage.css';
-import { RouteComponentProps } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ModalComponent from '../components/ModalComponent';
 import ModalSimple from '../components/ModalSimple';
@@ -29,7 +27,6 @@ class ManageItems extends React.Component {
 	toggleToastrMsg = () => {
 		this.setState({ toastrMsg: !this.state.toastrMsg }, () => { this.setState({ toastrMsg: false }) });
 	}
-
 
 	hideModal = () => {
 		this.setState({ modal: false });
@@ -96,8 +93,6 @@ class ManageItems extends React.Component {
 	}
 
 	render() {
-
-		
 		if (this.state.items.length == 0) {
 			return <div className="ml-4">No Items</div>
 		}
@@ -107,40 +102,51 @@ class ManageItems extends React.Component {
 			return (
 				<tr className="text-medium-dark">
 					{key.includes('name') ? <th>Name</th> : null}
+
+					{/* manage clients */}
 					{key.includes('email') ? <th>Email</th> : null}
 					{key.includes('phone') ? <th>Phone</th> : null}
 					{key.includes('address') ? <th>Address</th> : null}
-					{key.includes('project') ? <th>Project</th> : null}
 
-					{key.includes('projectName') ? <th>Project Name</th> : null}
+					{/* manage projects */}
 					{key.includes('clientName') ? <th>Client Name</th> : null}
 					{key.includes('billByProject') ? <th>Bill By Project</th> : null}
 					{key.includes('billByTask') ? <th>Bill By Task</th> : null}
 					{key.includes('billByUser') ? <th>Bill By User</th> : null}
 					{key.includes('projectRate') ? <th>Project Rate</th> : null}
+
+					{/* manage tasks */}
+					{key.includes('projectName') ? <th>Project Name</th> : null}
+					{key.includes('hourlyRate') ? <th>hourly Rate</th> : null}
+
 					<th></th>
 				</tr>);
 		}
 
 		let body = () => {
 			var key = Object.keys(this.state.items[0]);
+			console.log('ITEMS', this.state.items)
 			return this.state.items.map((item, index) => {
 				const { id } = item;
 				return (
 					<tr key={id}>
 						{key.includes('name') ? <th>{item.name}</th> : null}
+
+						{/* manage clients */}
 						{key.includes('email') ? <th>{item.email}</th> : null}
 						{key.includes('phone') ? <th>{item.phone}</th> : null}
 						{key.includes('address') ? <th>{item.address}</th> : null}
-						{key.includes('project') ? <th>{item.project}</th> : null}
 
-						{key.includes('projectName') ? <th>{item.projectName}</th> : null}
+						{/* manage projects */}
 						{key.includes('clientName') ? <th>{item.clientName}</th> : null}
 						{key.includes('billByProject') ? <th>{item.billByProject == 1 ? 'Yes' : ''}</th> : null}
 						{key.includes('billByTask') ? <th>{item.billByTask == 1 ? 'Yes' : ''}</th> : null}
 						{key.includes('billByUser') ? <th>{item.billByUser == 1 ? 'Yes' : ''}</th> : null}
 						{key.includes('projectRate') ? <th>{item.projectRate}</th> : null}
 
+						{/* manage tasks */}
+						{key.includes('projectName') ? <th>{item.projectName}</th> : null}
+						{key.includes('hourlyRate') ? <th>{item.hourlyRate}</th> : null}
 						<td>
 							<div className="btn-group float-right" role="group" aria-label="Third group">
 								<span className="input-group-btn" id="addTooltipEditButton">

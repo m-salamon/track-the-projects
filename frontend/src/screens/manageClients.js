@@ -1,22 +1,16 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import ReactDOM from 'react-dom';
 import '../css/manage.css';
-import moment from 'moment';
-import { RouteComponentProps } from 'react-router-dom';
+import { addItem, getItem } from '../actions/actions';
+import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import PageTop from './PageTop';
 import PageBottom from './PageBottom';
 import PageTitle from '../components/PageTitle';
 import ManageItems from '../components/ManageItems';
-import DropdownSelector from '../components/DropdownSelector';
-import TrackLogList from '../components/TrackLogList';
-import { connect } from 'react-redux';
-import { addItem, getItem } from '../actions/actions';
 import Button from '../components/Button';
-import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import Input from '../components/Input';
 import ToastrMsg from '../components/toastr';
-
 
 
 class ManageClients extends React.Component {
@@ -52,19 +46,15 @@ class ManageClients extends React.Component {
     }
 
     saveItem = async () => {
-        this.validateInput();
-        if (this.state.hasError)
-            return this.forceUpdate()
+        if (this.validateInput()) {
+            return this.setState({ hasError: true })
+        }
+        this.setState({ hasError: false })
 
         const { name, email, phone, address } = this.state.inputs
         var item = {
             action: this.state.action,
-            items: {
-                name: name,
-                email: email,
-                phone: phone,
-                address: address
-            }
+            items: { name, email, phone, address }
         }
         await this.props.addItem(item)
         await this.clear()
@@ -75,10 +65,10 @@ class ManageClients extends React.Component {
 
     validateInput = () => {
         if (this.state.inputs.name == '') {
-            this.state.hasError = true;
             window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+            return true
         } else {
-            this.state.hasError = false;
+            return false
         }
     }
 
@@ -141,8 +131,8 @@ class ManageClients extends React.Component {
                     <div className="col-md-12">
                         <div className="form-row">
                             <div className="form-group col-md-6">
-                                <label className={"col-form-label " + labelError}>Name</label>
-                                <Input type="text" name="name" onBlur={this.blurHandler} value={this.state.inputs.name} onChange={this.changeHandler} required={true} type="textarea" className={"form-control " + inputError} placeholder="client name" />
+                                <label className={`col-form-label ${labelError}`}>Name</label>
+                                <Input type="text" name="name" onBlur={this.blurHandler} value={this.state.inputs.name} onChange={this.changeHandler} required={true} type="textarea" className={`form-control ${inputError}`} placeholder="client name" />
                             </div>
                             <div className="form-group col-md-6">
                                 <label className="col-form-label">Email</label>

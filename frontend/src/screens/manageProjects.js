@@ -1,21 +1,16 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import ReactDOM from 'react-dom';
 import '../css/manage.css';
-import moment from 'moment';
-import { RouteComponentProps } from 'react-router-dom';
 import { getClients } from '../actions/actions';
+import { Tooltip, UncontrolledTooltip } from 'reactstrap';
+import { addItem, getItem } from '../actions/actions';
 import PageTop from './PageTop';
 import PageBottom from './PageBottom';
 import PageTitle from '../components/PageTitle';
 import ManageItems from '../components/ManageItems';
 import DropdownSelector from '../components/DropdownSelector';
-import TrackLogList from '../components/TrackLogList';
-import { connect } from 'react-redux';
-import { addItem, getItem } from '../actions/actions';
 import Button from '../components/Button';
-import { Tooltip, UncontrolledTooltip } from 'reactstrap';
-import Input from '../components/Input';
 import ToastrMsg from '../components/toastr';
 
 
@@ -74,15 +69,16 @@ class manageProjects extends React.Component {
     }
 
     saveItem = async () => {
-        this.validateInput();
-        if (this.state.hasError)
-            return this.forceUpdate()
+        if (this.validateInput()) {
+            return this.setState({ hasError: true })
+        }
+        this.setState({ hasError: false })
 
-        delete this.state.inputs['clientName']
 
+        const { name, clientName, clientId, projectRate, billByProject, billByTask, billByUser, notes } = this.state.inputs
         var item = {
             action: this.state.action,
-            items: this.state.inputs
+            items: { name, clientName, clientId, projectRate, billByProject, billByTask, billByUser, notes }
         }
 
         await this.props.addItem(item)
@@ -93,10 +89,10 @@ class manageProjects extends React.Component {
 
     validateInput = () => {
         if (this.state.inputs.name == '') {
-            this.state.hasError = true;
             window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+            return true
         } else {
-            this.state.hasError = false;
+            return false
         }
     }
 
@@ -176,9 +172,9 @@ class manageProjects extends React.Component {
                         <div className="col-md-12">
                             <div className="form-row">
                                 <div className="form-group col-md-6">
-                                    <label className={"col-form-label " + projectLabelError}>Project name</label>
+                                    <label className={`col-form-label ${projectLabelError}`}>Project name</label>
                                     <div className="input-group">
-                                        <input name='name' value={this.state.inputs.name} onChange={this.changeHandler} required={false} type="text" className={"form-control " + projectInputError} aria-label="Text input with dropdown button" placeholder="type project name" />
+                                        <input name='name' value={this.state.inputs.name} onChange={this.changeHandler} required={false} type="text" className={`form-control ${projectInputError}`} aria-label="Text input with dropdown button" placeholder="type project name" />
                                     </div>
                                 </div>
 
@@ -201,10 +197,10 @@ class manageProjects extends React.Component {
                                         <label className="col-form-label ">Bill by project</label>
                                         <div className="input-group">
                                             <span className="input-group-addon radioBtn">
-                                                <input  value='billByProject' name="billByRadio" onChange={this.radioChangeHandler} type="radio" />&nbsp; Bill By Project
+                                                <input value='billByProject' name="billByRadio" onChange={this.radioChangeHandler} type="radio" />&nbsp; Bill By Project
                                             </span>
                                             <span className="input-group-addon"><i className="fa fa-usd" aria-hidden="true"></i></span>
-                                            <input  name="projectRate" value={this.state.inputs.projectRate} onChange={this.changeHandler} type="number" className="form-control billByProjectInput" placeholder="cost per project" />
+                                            <input name="projectRate" value={this.state.inputs.projectRate} onChange={this.changeHandler} type="number" className="form-control billByProjectInput" placeholder="cost per project" />
                                         </div>
                                     </label>
                                 </div>

@@ -1,7 +1,7 @@
 
 exports.up = function (knex, Promise) {
   return knex.schema.createTable('teams', table => {
-    table.increments('id').primary();
+    table.bigIncrements('id').primary();
     table.string('name');
     table.string('adminId');
     table.timestamp('createdAt').default(knex.fn.now())

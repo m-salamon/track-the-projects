@@ -13,14 +13,8 @@
     cursor: not-allowed;
   }    
   
-  .projectErrorClassName{
-    animation: bounce 3s ease-in-out 0.33s 3;
-  }
-  .taskErrorClassName{
-    animation: bounce 3s ease-in-out 0.6s 3;
-  }
-  
   .labelError{
+    color: #ff0033;
     animation: bounce 3s ease-in-out 0.6s 3;
   }
   .inputError{

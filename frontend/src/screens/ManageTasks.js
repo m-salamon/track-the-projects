@@ -1,22 +1,17 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import ReactDOM from 'react-dom';
 import '../css/manage.css';
-import { RouteComponentProps } from 'react-router-dom';
+import { addItem, getItem } from '../actions/actions';
+import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import { getClients, getTasks, getProjects } from '../actions/actions';
 import PageTop from './PageTop';
 import PageBottom from './PageBottom';
 import PageTitle from '../components/PageTitle';
 import ManageItems from '../components/ManageItems';
 import DropdownSelector from '../components/DropdownSelector';
-import TrackLogList from '../components/TrackLogList';
-import { connect } from 'react-redux';
-import { addItem, getItem } from '../actions/actions';
 import Button from '../components/Button';
-import { Tooltip, UncontrolledTooltip } from 'reactstrap';
-import Input from '../components/Input';
 import ToastrMsg from '../components/toastr';
-
 
 
 class ManageTasks extends React.Component {
@@ -29,10 +24,12 @@ class ManageTasks extends React.Component {
             inputs: {
                 name: '',
                 projectId: '',
+                projectName: '',
                 hourlyRate: '',
                 notes: '',
             },
             toastrMsg: false,
+            hasError: false,
             action: 'tasks'
         }
     }
@@ -57,8 +54,8 @@ class ManageTasks extends React.Component {
         let inputs = Object.assign({}, this.state.inputs);
         if (e) {
             inputs[e.name] = e.value;
-            if (e.name == 'clientName') {
-                inputs.clientId = e.id;
+            if (e.name == 'projectName') {
+                inputs.projectId = e.id;
             }
         }
         this.setState({ inputs: inputs });
@@ -69,13 +66,15 @@ class ManageTasks extends React.Component {
     }
 
     saveItem = async () => {
-        this.validateInput();
-        if (this.state.hasError)
-            return this.forceUpdate()
+        if (this.validateInput()) {
+            return this.setState({ hasError: true })
+        }
+        this.setState({ hasError: false })
 
+        const { name, projectName, projectId, hourlyRate, notes } = this.state.inputs
         var item = {
             action: this.state.action,
-            items: this.state.inputs
+            items: { name, projectName, projectId, hourlyRate, notes }
         }
 
         await this.props.addItem(item)
@@ -85,11 +84,11 @@ class ManageTasks extends React.Component {
     }
 
     validateInput = () => {
-        if (this.state.inputs.projectName == '') {
-            this.state.hasError = true;
+        if (this.state.inputs.name == '') {
             window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+            return true
         } else {
-            this.state.hasError = false;
+            return false
         }
     }
 
@@ -103,13 +102,10 @@ class ManageTasks extends React.Component {
         this.setState(prevState => ({
             inputs: {
                 ...prevState.inputs,
+                name: '',
+                projectId: '',
                 projectName: '',
-                clientName: '',
-                clientId: '',
-                projectRate: '',
-                billByProject: true,
-                billByTask: false,
-                billByUser: false,
+                hourlyRate: '',
                 notes: '',
             }
         }));
@@ -136,12 +132,12 @@ class ManageTasks extends React.Component {
         if (nextProps.projectItems) {
             state.projectItems.length = 0;
             nextProps.projectItems.map(item => {
-                state.projectItems.push({ name: 'clientName', label: item.name, value: item.name, id: item.id })
+                state.projectItems.push({ name: 'projectName', label: item.name, value: item.name, id: item.id })
             })
         }
 
         if (nextProps.getItems) {
-            state.items.length = 0;
+            // state.items.length = 0;
             state.items = nextProps.getItems;
         }
 
@@ -151,12 +147,13 @@ class ManageTasks extends React.Component {
     render() {
 
         //ui visual error handling
-        let projectLabelError = '', projectInputError = ''
-        if (this.state.inputs.projectName == '' && this.state.hasError) {
-            projectLabelError = 'labelError';
-            projectInputError = 'inputError';
+        let taskLabelError = '', taskInputError = ''
+        if (this.state.inputs.name == '' && this.state.hasError) {
+            taskLabelError = 'labelError';
+            taskInputError = 'inputError';
         }
 
+        console.log(this.state)
         return (
             <React.Fragment>
                 {this.state.toastrMsg ? <ToastrMsg type="success" msg="Project succesfuly saved" title="" /> : null}
@@ -170,39 +167,38 @@ class ManageTasks extends React.Component {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="form-row">
+
+                                {/* name */}
                                 <div className="form-group col-md-6">
-                                    <label htmlFor="inputName" className="col-form-label">Task name</label>
-                                    <input type="text" className="form-control" id="inputName" placeholder="task name" />
+                                    <label htmlFor="inputName" className={`col-form-label ${taskLabelError}`}>Task name</label>
+                                    <input name='name' value={this.state.inputs.name} onChange={this.changeHandler} required={false} className={`form-control ${taskInputError}`} placeholder="task name" type="text" />
                                 </div>
+
+                                {/* project */}
                                 <div className="form-group col-md-6">
-                                    <label htmlFor="" className="col-form-label">Project name</label>
+                                    <label htmlFor="" className="col-form-label ">Project name</label>
                                     <div className="input-group">
-                                        <input type="text" className="form-control" aria-label="Text input with dropdown button" placeholder="type project name..." />
-                                        <div className="input-group-btn">
-                                            <button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Projects</button>
-                                            <div className="dropdown-menu dropdown-menu-right">
-                                                <ul className="list-group">
-                                                    <li className="list-group-item list-group-item-action active">Cras justo odio Lorem ipsum dolor sit</li>
-                                                    <li className="list-group-item list-group-item-action">Cras justo odio</li>
-                                                    <li className="list-group-item list-group-item-action">Cras odio</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <span className="input-group-btn">
-                                            <button className="btn btn-secondary green-background" type="button" data-toggle="tooltip" title="Create a new project"><i className="fa fa-plus" aria-hidden="true"></i></button>
+                                        <DropdownSelector name="projectName" options={this.state.projectItems} placeholder="type project name..." className={"btn-block"} value={this.state.inputs.projectName} onChange={this.changeHandlerDropdown} />
+                                        <span className="input-group-btn" id="addTaskTooltip">
+                                            <Link to='/manageProjects'><Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>} className="btn btn-secondary green-background dropdown-effects add-btn" type="button" /></Link>
+                                            <UncontrolledTooltip placement="top" target={"addTaskTooltip"} >Add a new project</UncontrolledTooltip>
                                         </span>
                                     </div>
                                 </div>
+
                             </div>
+
+                            {/* hourly rate */}
                             <div className="form-row">
-                            <div className="form-group col-md-6">
+                                <div className="form-group col-md-6">
                                     <label htmlFor="" className="col-form-label">Hourly rate</label>
                                     <div className="input-group billByTaskInput">
                                         <span className="input-group-addon" id="btnGroupAddon"><i className="fa fa-usd" aria-hidden="true"></i></span>
-                                        <input type="text" value={this.state.inputs.hourlyRate} name="additionalCost" onChange={this.changeHandler} className="form-control" style={{ border: '1px solid rgb(255, 255, 255)'}} placeholder="task hourly rate"/>
+                                        <input name="hourlyRate" value={this.state.inputs.hourlyRate} onChange={this.changeHandler} className="form-control" style={{ border: '1px solid rgb(255, 255, 255)' }} placeholder="task hourly rate" type="text" />
                                     </div>
                                 </div>
                             </div>
+
                             <div className="">
                                 <button onClick={this.clear} type="submit" className="btn btn-secondary mr-2">Clear</button>
                                 <button onClick={this.saveItem} type="submit" className="btn btn-primary blue-background">Save task</button>
@@ -221,9 +217,8 @@ class ManageTasks extends React.Component {
     }
 }
 
-function mapStateToProps(state, prop) {
+function mapStateToProps(state) {
     return {
-        //will get props from redux to our local props
         projectItems: state.getProjectReducer,
         getItems: state.manageReducer.getItems
     }
@@ -232,7 +227,6 @@ function mapStateToProps(state, prop) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        //will store whatever is in local state into redux state
         addItem: (state) => dispatch(addItem(state)),
         getItem: (state) => dispatch(getItem(state)),
 

@@ -105,7 +105,7 @@ class ModalComponent extends React.Component {
 			if (this.state.action == 'projects') {
 				return (
 					key.map((k) => {
-						if (k == 'projectName')
+						if (k == 'name')
 							return (
 								<div key={k} id={k} className="form-group row">
 									<label className="col-sm-3 col-lg-2 col-form-label">{'Project Name'}</label>

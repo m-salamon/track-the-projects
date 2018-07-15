@@ -208,12 +208,12 @@ class Track extends React.Component {
       //ui visual error handling
       let projectErrorClassName = '', taskErrorClassName = '', projectInputHasError = '', taskInputHasError = '';
       if (this.state.inputs.projectId == '' && this.state.startLogWasCalled) {
-         projectErrorClassName = 'projectErrorClassName';
-         projectInputHasError = 'inputHasError';
+         projectErrorClassName = 'labelError';
+         projectInputHasError = 'inputError';
       }
       if (this.state.inputs.taskId == '' && this.state.startLogWasCalled) {
-         taskErrorClassName = 'taskErrorClassName';
-         taskInputHasError = 'inputHasError';
+         taskErrorClassName = 'labelError';
+         taskInputHasError = 'inputError';
       }
 
       return (
