@@ -209,7 +209,7 @@ class ModalComponent extends React.Component {
 						if (k == 'name')
 							return (
 								<div key={k} id={k} className="form-group row">
-									<label className="col-sm-3 col-lg-2 col-form-label">{'Project Name'}</label>
+									<label className="col-sm-3 col-lg-2 col-form-label">{'Task Name'}</label>
 									<div className="col-sm-9 col-lg-10">
 										<div className="input-group">
 											<input type="text" value={this.state.item[0][k]} name={k} onChange={this.changeHandler} className="form-control" aria-label="Text input with dropdown button" placeholder={"Project Name"} />
@@ -229,7 +229,6 @@ class ModalComponent extends React.Component {
 						if (k == 'hourlyRate')
 						return (
 							<div key={k} id={k} className="form-group row">
-								<label>
 									<label className="col-sm-12 col-form-label">{'Hourly Rate'}</label>
 									<div className="col-sm-9 col-lg-10">
 										<div className="input-group">
@@ -237,7 +236,6 @@ class ModalComponent extends React.Component {
 											<input name="hourlyRate" value={this.state.item[0][k]} onChange={this.changeHandler} type="number" className="form-control" aria-label="Text input with radio button" placeholder="task hourly rate" />
 										</div>
 									</div>
-								</label>
 							</div>)
 					}))
 			}
