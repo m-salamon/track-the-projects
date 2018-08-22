@@ -3,6 +3,10 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+:root {
+  --blue: #1997c6;
+}
 /* ===================================================
 ==============   special css aplicable to the entire project   =============
 ====================================================== */

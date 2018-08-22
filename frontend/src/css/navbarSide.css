@@ -16,7 +16,7 @@ a:hover {
 .nav-pills .nav-link.active,
 .show>.nav-pills .nav-link {
     color: #fff;
-    background-color: #1997c6;
+    background-color: #1998c659;
 }
 
 .sidebar {
@@ -28,13 +28,11 @@ a:hover {
     padding: 20px;
     overflow-x: hidden;
     overflow-y: auto;
+    padding-left: 0;
+    padding-right: 0;
     /* Scrollable contents if viewport is shorter than content. */
 }
 
-.sidebar {
-    padding-left: 0;
-    padding-right: 0;
-}
 
 .sidebar .nav {
     margin-bottom: 20px;
@@ -69,19 +67,41 @@ a:hover {
     margin-bottom: 30px;
 }
 
-
-.sidebar .closebtn {
-    position: absolute;
-    top: 0;
-    right: 8px;
-    font-size: 30px;
-    margin-left: 50px;
+.closebtn-wrapper{
+    font-size: 1.5rem;
+    margin-left: 8px;
+    margin-top: 10px;
+    left: 0;
+    position: fixed;
 }
 
-.closeNav{
-width: 0px;
+.closebtn {
+    cursor: pointer;
+    color: #fff;
+    display: inline-block;
+    padding: 0.2em 0.5em;
+    border-radius: 50%;
 }
 
+.closebtn:hover{
+    background-color:rgba(25, 151, 198, 0.3);
+    outline: none;
+}
+
+.navmainclosed{
+  max-width: 65px;   
+}
+.navmainopen{
+    min-width: 200px;
+}
+.navlinktext{
+    background-color:rgba(25, 152, 198, 0.459);
+    outline: none;
+    padding: 4px 10px;
+    border-radius: 50%;
+    font-family: 'Roboto Mono', monospace;
+    color: var(--blue);
+}
 
 /* ===================================================
 =======================  end  ========================

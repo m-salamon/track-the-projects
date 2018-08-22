@@ -192,7 +192,7 @@ class manageProjects extends React.Component {
 
                             </div>
                             <div className="form-row">
-                                <div className="form-group mr-md-3">
+                                <div className="form-group col-md-4 mr-2">
                                     <label>
                                         <label className="col-form-label ">Bill by project</label>
                                         <div className="input-group">
@@ -225,7 +225,7 @@ class manageProjects extends React.Component {
                                     </label>
                                 </div>
                             </div>
-                            <div className="form-row">
+                            <div className="form-row mt-4">
                                 <button onClick={this.clear} type="submit" className="btn btn-secondary mr-2">Clear</button>
                                 <button onClick={this.saveItem} type="submit" className="btn btn-primary blue-background">Save project</button>
                             </div>

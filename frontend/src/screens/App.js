@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
-import Main from './main';
+import Main from './Main';
 import NavbarSide from '../components/NavbarSide';
 import Track from './Track';
 import manageClients from './ManageClients';
