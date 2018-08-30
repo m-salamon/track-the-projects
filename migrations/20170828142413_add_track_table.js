@@ -9,7 +9,7 @@ exports.up = function (knex, Promise) {
         table.string('duration').notNullable()
         table.string('description').notNullable()
         table.string('additionalCost').notNullable()
-        table.bigInteger('userID').notNullable()
+        table.bigInteger('userId').notNullable()
         table.bigInteger('teamId').notNullable()
         table.timestamp('createdAt').default(knex.fn.now())
         table.timestamp('timeStamp').default(knex.fn.now())  

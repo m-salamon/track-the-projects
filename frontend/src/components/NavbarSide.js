@@ -1,34 +1,40 @@
 import React, { Component, Fragment } from "react";
+import { connect } from 'react-redux';
+import { toggleNavSide } from '../actions/actions';
 import { Link, NavLink } from "react-router-dom";
 import "../css/navbarSide.css";
+import profile from '../images/icons/profile.svg'
+import info from '../images/icons/info-sign.svg'
+import logout from '../images/icons/logout-left-arrow.svg'
+
 
 class NavbarSide extends Component {
   constructor() {
     super()
     this.state = {
-      closenav: false
     }
   }
-
-  openNav = () => {
-    // document.getElementById("mySidenav").style.width = "250px";
-    // document.getElementById("main").style.marginLeft = "250px";
-  };
+  
+  componentDidMount(){
+    this.props.toggleNavSide(true)
+    
+  }
 
   toggleNav = () => {
-    this.setState({ closenav: !this.state.closenav })
+    this.props.toggleNavSide(!this.props.navside)
   };
 
   render() {
-    const { closenav } = this.state
-    const togglenav = closenav ? { display: "none" } : { display: "initial" }
-    const togglenavcategory = closenav ? { visibility: 'hidden' } : { visibility: "initial" }
+    const { navside } = this.props
+    const togglenav = navside ?  { display: "initial" } : { display: "none" }
+    const togglenavcategory = navside ?  { visibility: "initial" } : { visibility: 'hidden' }
 
-    const togglenavmain = closenav ? 'navmainclosed' : 'navmainopen'
+    const togglenavmain = navside ? 'navmainopen' : 'navmainclosed'
 
     return (
       <div className="container">
         <div className="row">
+
           <div className="closebtn-wrapper">
             <div className="closebtn" onClick={this.toggleNav}>
               &#9776;
@@ -138,7 +144,7 @@ class NavbarSide extends Component {
 
                 <NavLink to="/profile" className="nav-link">
                   <span className="mr-3">
-                    <i className="fa fa-adjust fa-lg" />
+                    <img src={profile} width="20px" />
                   </span>
                   <span style={togglenav}> Profile </span>
                 </NavLink>
@@ -149,7 +155,7 @@ class NavbarSide extends Component {
 
                 <NavLink to="/signOut" className="nav-link">
                   <span className="mr-3">
-                    <i className="fa fa-adjust fa-lg" />
+                    <img src={logout} width="20px" />
                   </span>
                   <span style={togglenav}> Sign out </span>
                 </NavLink>
@@ -160,7 +166,7 @@ class NavbarSide extends Component {
 
                 <NavLink to="/help" className="nav-link">
                   <span className="mr-3">
-                    <i className="fa fa-adjust fa-lg" />
+                    <img src={info} width="20px" width="20px" />
                   </span>
                   <span style={togglenav}> Help </span>
                 </NavLink>
@@ -176,4 +182,17 @@ class NavbarSide extends Component {
   }
 }
 
-export default NavbarSide;
+
+function mapStateToProps(state, prop) {
+  return {
+      navside: state.toggleNavSide,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    toggleNavSide: (state) => dispatch(toggleNavSide(state)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps,  undefined, { pure: false })(NavbarSide);

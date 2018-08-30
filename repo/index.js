@@ -7,5 +7,6 @@ var editTrackLog = require('./editTrackLog');
 var deleteTrackLog = require('./deleteTrackLog');
 var updateTrackLog = require('./updateTrackLog');
 var manage = require('./manage');
+var getDashboardItems = require('./getDashboardItems');
 
-module.exports = {projects, tasks, clients, saveTrackLog, getTrackLog, editTrackLog, deleteTrackLog, updateTrackLog, manage};
+module.exports = {projects, tasks, clients, saveTrackLog, getTrackLog, editTrackLog, deleteTrackLog, updateTrackLog, manage, getDashboardItems};

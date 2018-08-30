@@ -8,8 +8,9 @@ import editTrackLogReducer from './editTrackLog';
 import deleteTrackLogReducer from './deleteTrackLog';
 import updateTrackLogReducer from './updateTrackLog';
 import manageReducer from './manage';
+import {toggleNavSide} from './global';
 
-
+console.log('GLOABL', global)
 const appreducer = combineReducers({
     getProjectReducer,
     getTaskReducer,
@@ -20,7 +21,7 @@ const appreducer = combineReducers({
     deleteTrackLogReducer,
     updateTrackLogReducer,
     manageReducer,
-
+    toggleNavSide,
 })
 
 export default appreducer;

@@ -67,6 +67,17 @@ function getTrackLog(tracklog) {
 }
 
 ////////////////
+// get dahsboard items
+//////////////
+export function getDashboardItems(filters) {
+    return async dispatch => {
+        let response = await axios.get(`/api/getDashboardItems/`, {  params: filters, 
+          headers: { filters } } );
+        dispatch({ type: types.GET_DASHBOARD_ITEMS, payload: response.data });
+    }
+}
+
+////////////////
 // edit track logs
 //////////////
 function editTrackLogSuccess(tracklog) {
@@ -184,6 +195,13 @@ function updateItem(updateItem) {
     }
 }
 
+////////////////
+// navside
+//////////////
+export function toggleNavSide(bool) {
+    return { type: types.NAV_SIDE, payload: bool }
+}
+
 
 export {
     getProjects,
@@ -198,5 +216,5 @@ export {
     getItem,
     deleteItem,
     editItem,
-    updateItem
+    updateItem,
 }

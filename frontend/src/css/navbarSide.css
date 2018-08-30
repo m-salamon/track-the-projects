@@ -14,7 +14,7 @@ a:hover {
 }
 
 .nav-pills .nav-link.active,
-.show>.nav-pills .nav-link {
+.show>.nav-pills {
     color: #fff;
     background-color: #1998c659;
 }
@@ -101,6 +101,41 @@ a:hover {
     border-radius: 50%;
     font-family: 'Roboto Mono', monospace;
     color: var(--blue);
+}
+
+/* scroll bar */
+nav::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+nav::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+nav::-webkit-scrollbar-thumb {
+  background: #e1e1e1;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+nav::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
+nav::-webkit-scrollbar-thumb:active {
+  background: #fff;
+}
+nav::-webkit-scrollbar-track {
+  background: #666666;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+nav::-webkit-scrollbar-track:hover {
+  background: #666666;
+}
+nav::-webkit-scrollbar-track:active {
+  background: #333333;
+}
+nav::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 /* ===================================================
