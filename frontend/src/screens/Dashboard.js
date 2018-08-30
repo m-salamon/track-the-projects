@@ -11,6 +11,7 @@ import ManageItems from '../components/ManageItems';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import ToastrMsg from '../components/toastr';
+import Pagination from "react-js-pagination";
 
 
 class Dashboard extends Component {
@@ -38,6 +39,7 @@ class Dashboard extends Component {
         projectId: '',
         taskId: '1'
       },
+      activePage: 15,
       toastrMsg: false,
       action: 'dashboard',
       hasError: false
@@ -116,6 +118,12 @@ class Dashboard extends Component {
     }
     this.setState(state)
   }
+
+  handlePageChange = (pageNumber) => {
+    console.log(`active page is ${pageNumber}`);
+    this.setState({ activePage: pageNumber });
+  }
+
 
   render() {
 
@@ -273,9 +281,25 @@ class Dashboard extends Component {
                   </tr>
                 </tfoot>
               </table>
+
+              {/* pagination */}
+              <div className="row justify-content-center">
+              <Pagination
+                activePage={this.state.activePage} //Required
+                itemsCountPerPage={10}
+                totalItemsCount={450} //Required
+                pageRangeDisplayed={5}
+                onChange={this.handlePageChange} //Required
+              />
+              </div>
+              {/* /end pagination */}
             </div>
           </div>
           {/* <!-- /end dashboard-table --> */}
+
+
+
+
 
           {/* </div>
         <!-- /.container  --> */}
