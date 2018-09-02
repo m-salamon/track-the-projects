@@ -282,17 +282,35 @@ class Dashboard extends Component {
                 </tfoot>
               </table>
 
-              {/* pagination */}
-              <div className="row justify-content-center">
-              <Pagination
-                activePage={this.state.activePage} //Required
-                itemsCountPerPage={10}
-                totalItemsCount={450} //Required
-                pageRangeDisplayed={5}
-                onChange={this.handlePageChange} //Required
-              />
+
+              <div className="row justify-content-center mt-4">
+
+                {/* pagination */}
+                <Pagination
+                  hideDisabled
+                  activePage={this.state.activePage} //Required
+                  itemsCountPerPage={10}
+                  totalItemsCount={450} //Required
+                  pageRangeDisplayed={5}
+                  onChange={this.handlePageChange} //Required
+                />
+                {/* /end pagination */}
+
+                {/* page count */}
+                <div class="dropdown pl-3">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                     10
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                  </div>
+                </div>
+                {/*/end page count */}
+
               </div>
-              {/* /end pagination */}
+
             </div>
           </div>
           {/* <!-- /end dashboard-table --> */}
