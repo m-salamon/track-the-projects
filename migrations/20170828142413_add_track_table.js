@@ -11,8 +11,8 @@ exports.up = function (knex, Promise) {
         table.string('additionalCost').notNullable()
         table.bigInteger('userId').notNullable()
         table.bigInteger('teamId').notNullable()
-        table.timestamp('createdAt').default(knex.fn.now())
-        table.timestamp('timeStamp').default(knex.fn.now())  
+        table.timestamp('createdAt').defaultTo(knex.fn.now())
+        table.timestamp('updatedAt').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))   
     });
 };
 
