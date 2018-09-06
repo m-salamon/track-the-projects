@@ -1,5 +1,4 @@
 var knex = require('knex');
-require('dotenv').config();
 
 module.exports =  knex({
     client: 'mysql',

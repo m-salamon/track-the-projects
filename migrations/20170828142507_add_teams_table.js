@@ -2,10 +2,10 @@
 exports.up = function (knex, Promise) {
   return knex.schema.createTable('teams', table => {
     table.bigIncrements('id').primary();
-    table.string('name');
-    table.string('adminId');
+    table.string('name').notNullable()
+    table.string('adminId').notNullable()
     table.timestamp('createdAt').default(knex.fn.now())
-    table.timestamp('timeStamp').default(knex.fn.now())  
+    table.timestamp('updatedAt').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')) 
   });
 };
 

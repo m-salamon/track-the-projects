@@ -1,5 +1,9 @@
 //repo/config.js uses env
-require('dotenv').config();
+const result = require('dotenv').config();
+if (result.error) {
+   console.log('Env Error ',result.error)
+}
+
 
 var express = require('express');
 var path = require('path');
