@@ -80,13 +80,13 @@ export function getDashboardItems(filters) {
             item.rateType = !_.isEmpty(item.taskRate) ? 'task' : !_.isEmpty(item.userRate) ? 'user' : !_.isEmpty(item.projectRate) ? 'project' : ''
             item.total = (moment.duration(item.duration).asMinutes() / 60 * item.rate).toFixed(2)
         })
-        response.data.subTotal = response.data.getItems.reduce((a, b) => ({
-            rate: Number(a.rate) + Number(b.rate),
-            duration: moment.duration(a.duration).asMinutes() + moment.duration(b.duration).asMinutes()
-        }))
-        
-        
-        console.log('RESPOINe', response.data)
+        var durations = response.data.getItems.map(i => i.duration)
+        const totalDurations = durations.slice(1).reduce((prev, cur) => moment.duration(cur).add(prev), moment.duration(durations[0]))
+        const totalRate = response.data.getItems.reduce((pre, cur) => {
+            pre.total = (Number(pre.total) + Number(cur.total)).toFixed(2)
+            return pre
+        }, { total: 0 })
+        response.data.getItems.map(i => _.merge(i, { totalDuration: moment.utc(totalDurations.asMilliseconds()).format("HH:mm:ss"), totalRate: totalRate.total }))
         dispatch({ type: types.GET_ITEM, payload: response.data });
     }
 }

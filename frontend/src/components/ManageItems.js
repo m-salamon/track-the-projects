@@ -101,8 +101,6 @@ class ManageItems extends Component {
 		let header = () => {
 			var key = Object.keys(this.state.items[0]);
 
-
-
 			return (
 				<tr className="text-medium-dark">
 
@@ -160,15 +158,15 @@ class ManageItems extends Component {
 
 						{this.state.action == 'dashboard' ?
 							<Fragment>
-								<th>{}</th>
-								<th>{item.firstName}</th>
-								<th>{item.date}</th>
-								<th>{item.project}</th>
-								<th>{item.task}</th>
-								<th>{item.startTime} - {item.endTime}</th>
-								<th>{item.duration}</th>
-								<th>{item.rate}</th>
-								<th>{'total'}</th>
+								<td>{}</td>
+								<td>{item.firstName}</td>
+								<td>{item.date}<div className="d-inline text-medium-dark text-uppercase f-0-8">&nbsp;</div></td>
+								<td>{item.project}</td>
+								<td>{item.task}</td>
+								<td>{item.startTime} - {item.endTime}</td>
+								<td>{item.duration}</td>
+								<td>{item.rate}<div className="d-inline text-medium-dark text-uppercase f-0-8">&nbsp;{item.rateType}</div></td>
+								<td>{item.total}</td>
 							</Fragment>
 							: null
 						}
@@ -212,9 +210,9 @@ class ManageItems extends Component {
 
 
 		let tfoot = () => {
-			return this.state.items.map((item, index) => {
+			const {totalDuration, totalRate} =  this.state.items[0]
 				{
-					this.state.action == 'dashboard' ?
+					return this.state.action == 'dashboard' ?
 						<tr>
 							<td>Total</td>
 							<td></td>
@@ -222,13 +220,13 @@ class ManageItems extends Component {
 							<td></td>
 							<td></td>
 							<td></td>
-							<td>45:40</td>
-							<td>1200.00</td>
+							<td>{totalDuration}</td>
 							<td></td>
+							<td>{totalRate}</td>
 						</tr>
 						: null
 				}
-			})
+			
 		}
 
 
