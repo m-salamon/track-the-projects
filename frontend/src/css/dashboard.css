@@ -16,12 +16,11 @@
    line-height: 1.42857143;
    color: #337ab7;
    text-decoration: none;
-   /* background-color: #fff; */
+   background-color: #fff;
    border: 1px solid #ddd;
-   background-color: #727b84;
-   border: 1px solid #6c757d;
+   /* background-color: #727b84; */
+   /* border: 1px solid #6c757d; */
 }
- }
  .pagination > li:first-child > a,
  .pagination > li:first-child > span {
    margin-left: 0;

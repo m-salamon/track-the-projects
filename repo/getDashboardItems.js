@@ -15,6 +15,7 @@ function getDashboardItems(query) {
       if (query.userId)
         queryBuilder.where('tr.userId', query.userId)
     })
+    .whereBetween('tr.date', [query.startDate, query.endDate])
     .leftJoin('projects as p', 'p.id', 'tr.projectId')
     .leftJoin('tasks as t', 't.id', 'tr.taskId')
     .leftJoin('clients as c', 'c.id', 'p.clientId')

@@ -1,5 +1,7 @@
 import * as types from './actionsType';
 import axios from 'axios';
+import _ from 'lodash';
+import moment from 'moment';
 
 ////////////////
 // get projects
@@ -71,9 +73,21 @@ function getTrackLog(tracklog) {
 //////////////
 export function getDashboardItems(filters) {
     return async dispatch => {
-        let response = await axios.get(`/api/getDashboardItems/`, {  params: filters, 
-          headers: { filters } } );
-        dispatch({ type: types.GET_DASHBOARD_ITEMS, payload: response.data });
+        let response = await axios.get(`/api/manage/getDashboardItems/`, { params: filters, headers: { filters } });
+
+        response.data.getItems.map(item => {
+            item.rate = !_.isEmpty(item.taskRate) ? item.taskRate : !_.isEmpty(item.userRate) ? item.userRate : !_.isEmpty(item.projectRate) ? item.projectRate : 0
+            item.rateType = !_.isEmpty(item.taskRate) ? 'task' : !_.isEmpty(item.userRate) ? 'user' : !_.isEmpty(item.projectRate) ? 'project' : ''
+            item.total = (moment.duration(item.duration).asMinutes() / 60 * item.rate).toFixed(2)
+        })
+        response.data.subTotal = response.data.getItems.reduce((a, b) => ({
+            rate: Number(a.rate) + Number(b.rate),
+            duration: moment.duration(a.duration).asMinutes() + moment.duration(b.duration).asMinutes()
+        }))
+        
+        
+        console.log('RESPOINe', response.data)
+        dispatch({ type: types.GET_ITEM, payload: response.data });
     }
 }
 

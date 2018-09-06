@@ -1,7 +1,7 @@
-import * as React from 'react';
+import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-class Main extends React.Component {
+class Main extends Component {
 
     render() {
         return (

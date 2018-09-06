@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import '../css/manage.css';
@@ -15,7 +15,7 @@ import ToastrMsg from '../components/toastr';
 
 
 
-class manageProjects extends React.Component {
+class manageProjects extends Component {
     constructor() {
         super();
         this.state = {

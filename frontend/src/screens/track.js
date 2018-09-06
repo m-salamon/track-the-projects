@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import '../css/track.css';
@@ -17,7 +17,7 @@ import Button from '../components/Button';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 
 
-class Track extends React.Component {
+class Track extends Component {
    constructor() {
       super();
       this.state = {
