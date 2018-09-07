@@ -35,6 +35,11 @@ function getDashboardItems(query) {
 }
 
 function editItem(item) {
+    if(item.action == 'dashboard'){
+        return knex('track')
+        .select('*')
+        .where('id', item.id);
+    }
     return knex(item.action)
         .select('*')
         .where('id', item.id);

@@ -86,7 +86,7 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
-    this.props.getDashboardItems(this.state.filters);
+    this.syncDashboardItems()
   }
 
   componentWillMount() {
@@ -108,6 +108,9 @@ class Dashboard extends Component {
     this.setState({ activePage: pageNumber });
   }
 
+  syncDashboardItems = () => {
+    this.props.getDashboardItems(this.state.filters);
+  }
 
   render() {
 
@@ -187,102 +190,12 @@ class Dashboard extends Component {
 
           {/* <ManageItems items={this.state.items} action={this.state.action} updatetitle="Update Client" /> */}
 
-          {/* <!-- dashboard-table --> */}
-          
-        <ManageItems items={this.state.items} action={this.state.action} updatetitle="Update Track Log" /> 
-
-          
-          <div className="row mt-3">
-            <div className="col-sm-12">
-              <table className="dashboard-table table table-responsive">
-                <thead>
-                  <tr>
-                    <th>selected</th>
-                    <th>user</th>
-                    <th>Date</th>
-                    <th>Project</th>
-                    <th>Task</th>
-                    <th>Time</th>
-                    <th>Duration</th>
-                    <th>rate</th>
-                    <th>Total</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-
-                  <tr>
-                    <th scope="row">-what-</th>
-                    <th>joe</th>
-                    <td>09/04/17<div className="d-inline text-medium-dark f-0-8">&nbsp;FRI</div></td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                    <td>9:04 am - 12:30 pm</td>
-                    <td>01:55</td>
-                    <td>40.00<div className="d-inline text-medium-dark f-0-8">&nbsp;USER</div></td>
-                    <td>125.00</td>
-                    <td><div className="btn-group float-right" role="group" aria-label="Third group">
-                      <button type="button" className="btn btn-sm btn-secondary yellow-background f-1-2" data-toggle="tooltip" title="Edit the track log"><i className="fa fa-pencil" aria-hidden="true"></i></button>
-                      <button type="button" className="btn btn-sm btn-secondary red-background f-1-2" data-toggle="tooltip" title="Delete the track log"><i className="fa fa-trash" aria-hidden="true"></i></button>
-                    </div></td>
-                  </tr>
-
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td>Total</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>45:40</td>
-                    <td>1200.00</td>
-                    <td></td>
-                  </tr>
-                </tfoot>
-              </table>
-
-
-              <div className="row justify-content-center mt-4">
-
-                {/* pagination */}
-                <Pagination
-                  hideDisabled
-                  activePage={this.state.activePage} //Required
-                  itemsCountPerPage={10}
-                  totalItemsCount={450} //Required
-                  pageRangeDisplayed={5}
-                  onChange={this.handlePageChange} //Required
-                />
-                {/* /end pagination */}
-
-                {/* page count */}
-                <div className="dropdown pl-3">
-                  <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    10
-                  </button>
-                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a className="dropdown-item" href="#">20</a>
-                    <a className="dropdown-item" href="#">50</a>
-                    <a className="dropdown-item" href="#">100</a>
-                  </div>
-                </div>
-                {/*/end page count */}
-
-              </div>
-
-            </div>
-          </div>
-          {/* <!-- /end dashboard-table --> */}
-
-
-
-
+          {/* <!-- dashboard-items --> */}
+          <ManageItems items={this.state.items} action={this.state.action} syncDashboardItems={this.syncDashboardItems} updatetitle="Update Track Log" />
+          {/* <!-- /end dashboard-items --> */}
 
           {/* </div>
         <!-- /.container  --> */}
-
         </div>
 
         <PageBottom key="3" />

@@ -1,8 +1,5 @@
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import axios from 'axios';
 import moment from 'moment';
-import { connect } from 'react-redux'
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 //import '../css/datepicker.css';

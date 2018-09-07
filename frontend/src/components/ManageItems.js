@@ -4,9 +4,10 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ModalComponent from '../components/ModalComponent';
 import ModalSimple from '../components/ModalSimple';
+import EditModal from '../components/EditModal';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import Button from '../components/Button';
-import { getItem, deleteItem, editItem } from '../actions/actions';
+import { getItem, deleteItem, editItem, editTrackLog, deleteTrackLog, getDashboardItems } from '../actions/actions';
 import ToastrMsg from '../components/toastr';
 
 
@@ -20,7 +21,8 @@ class ManageItems extends Component {
 			item: [],
 			action: '',
 			itemToDelete: '',
-			toastrMsg: ''
+			toastrMsg: '',
+			modaltracklog: false,
 		}
 	}
 
@@ -45,12 +47,24 @@ class ManageItems extends Component {
 	}
 
 	editHandler = async (e) => {
-		//when icon is clicked its e.currentTarget - when button is clicked its e.target 
 		if (e.currentTarget) { e.target = e.currentTarget }
+
+		if (this.state.action == 'dashboard') {
+
+			this.setState({ modaltracklog: false }, () => {
+				this.setState({ modaltracklog: true })
+			});
+
+			let item = { logId: e.target.id }
+			this.props.editTrackLog(item);
+			return
+		}
+
 		let item = {
 			id: e.target.id,
 			action: this.state.action
 		};
+
 		await this.props.editItem(item)
 		this.showModal()
 	}
@@ -62,6 +76,18 @@ class ManageItems extends Component {
 	}
 
 	deleteItem = async () => {
+		if (this.state.action == 'dashboard') {
+			let item = {
+				logId: this.state.itemToDelete
+			};
+
+			await this.props.deleteTrackLog(item)
+			await this.props.syncDashboardItems()
+			await this.hideSimpleModal()
+			this.toggleToastrMsg()
+			return
+		}
+
 		let item = {
 			id: this.state.itemToDelete,
 			action: this.state.action
@@ -93,7 +119,6 @@ class ManageItems extends Component {
 	}
 
 	render() {
-		console.log(this.state.items)
 		if (this.state.items.length == 0) {
 			return <div className="ml-4">No Items</div>
 		}
@@ -147,7 +172,6 @@ class ManageItems extends Component {
 
 		let body = () => {
 			var key = Object.keys(this.state.items[0]);
-			console.log('ITEMS', this.state.items)
 
 			return this.state.items.map((item, index) => {
 				const { id } = item;
@@ -210,23 +234,23 @@ class ManageItems extends Component {
 
 
 		let tfoot = () => {
-			const {totalDuration, totalRate} =  this.state.items[0]
-				{
-					return this.state.action == 'dashboard' ?
-						<tr>
-							<td>Total</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>{totalDuration}</td>
-							<td></td>
-							<td>{totalRate}</td>
-						</tr>
-						: null
-				}
-			
+			const { totalDuration, totalRate } = this.state.items[0]
+			{
+				return this.state.action == 'dashboard' ?
+					<tr>
+						<td>Total</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>{totalDuration}</td>
+						<td></td>
+						<td>{totalRate}</td>
+					</tr>
+					: null
+			}
+
 		}
 
 
@@ -236,6 +260,7 @@ class ManageItems extends Component {
 
 				{this.state.modal && <ModalComponent handleClose={this.hideModal} item={this.state.item} action={this.state.action} updatetitle={this.props.updatetitle}></ModalComponent>}
 				{this.state.modalsimple && <ModalSimple handleClose={this.hideSimpleModal} deleteItem={this.deleteItem} updatetitle="Are you sure?" body="You'll lose the information!" />}
+				{this.state.modaltracklog && <EditModal toggle={this.state.modaltracklog} syncDashboardItems={this.props.syncDashboardItems} action={this.state.action}></EditModal>}
 
 				<div className="row mt-5">
 					<div className="col-md-12">
@@ -272,6 +297,10 @@ function mapDispatchToProps(dispatch) {
 		deleteItem: (state) => dispatch(deleteItem(state)),
 		getItem: (state) => dispatch(getItem(state)),
 		editItem: (state) => dispatch(editItem(state)),
+		editTrackLog: (state) => dispatch(editTrackLog(state)),
+		deleteTrackLog: (state) => dispatch(deleteTrackLog(state)),
+		getDashboardItems: (state) => dispatch(getDashboardItems(state)),
+
 	}
 }
 
