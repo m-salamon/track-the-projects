@@ -4,23 +4,15 @@ import 'react-select/dist/react-select.css';
 import '../css/dropdownSelector.css';
 
 
-export default class Dropdown extends React.Component{
+export default class Dropdown extends React.Component {
     constructor() {
         super();
         this.state = {
-            startTime: {label: '1:23pm', value: '1:23pm'}
+            // startTime: {label: '1:23pm', value: '1:23pm'}
         }
     }
-    
-    
-    // arrowRenderer = () => {
-    //     return (
-    //         <span><i className="fa fa-clock-o" aria-hidden="true"></i></span>
-    //     )
-    // }
 
-  render() {
-
+    render() {
         return (
             <Select
                 name={this.props.name}
@@ -32,7 +24,6 @@ export default class Dropdown extends React.Component{
                 searchable={this.props.searchable}
                 placeholder={this.props.placeholder}
                 arrowRenderer={this.props.arrowRenderer}
-                
             />
         );
     }

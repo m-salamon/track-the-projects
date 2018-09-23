@@ -73,7 +73,7 @@ function getTrackLog(tracklog) {
 //////////////
 export function getDashboardItems(filters) {
     return async dispatch => {
-        let response = await axios.get(`/api/manage/getDashboardItems/`, { params: filters, headers: { filters } });
+        let response = await axios.post(`/api/manage/getDashboardItems/`, filters );
 
         response.data.getItems.map(item => {
             item.rate = !_.isEmpty(item.taskRate) ? item.taskRate : !_.isEmpty(item.userRate) ? item.userRate : !_.isEmpty(item.projectRate) ? item.projectRate : 0

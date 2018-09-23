@@ -21,9 +21,9 @@ router.get('/getItem', async (req, res) => {
 
 });
 
-router.get('/getDashboardItems', async (req, res) => {
+router.post('/getDashboardItems', async (req, res) => {
     try {
-        let getItems = await repo.manage.getDashboardItems(req.query)
+        let getItems = await repo.manage.getDashboardItems(req.body)
         res.json({ success: true, getItems });
     } catch (err) {
         console.error(err)

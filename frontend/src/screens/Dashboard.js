@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import '../css/dashboard.css';
-import { getDashboardItems } from '../actions/actions';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import PageTop from './PageTop';
 import PageBottom from './PageBottom';
@@ -12,29 +11,33 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import ToastrMsg from '../components/toastr';
 import Pagination from "react-js-pagination";
-
+import DropdownSelector from '../components/DropdownSelector';
+import { getDashboardItems, getProjects, getTasks, getClients } from '../actions/actions';
+import moment from 'moment';
+import DatePickerRange from '../components/DatePickerRange';
+import _ from 'lodash'
 
 class Dashboard extends Component {
   constructor() {
     super();
     this.state = {
       title: 'Dashboard',
-      items: [{
-        client: "first client",
-        date: "08/29/2018",
-        duration: "00:00:02",
-        id: 20,
-        project: "second project",
-        task: "forth tasks"
-      }],
       filters: {
         userId: '',
         clientId: '',
+        client: '',
         projectId: '',
-        taskId: '1',
-        startDate: '08/01/2018',
-        endDate: '09/31/2018'
+        project: '',
+        taskId: '',
+        task: '',
+        startDate: moment().startOf('month').format('MM/DD/YYYY'),
+        endDate: moment().endOf('month').format('MM/DD/YYYY')
       },
+      projectItems: [],
+      taskItems: [],
+      clientItems: [],
+      datepickerStartDate: moment().startOf('month'),
+      datepickerEndDate: moment().endOf('month'),
       activePage: 15,
       toastrMsg: false,
       action: 'dashboard',
@@ -86,21 +89,14 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
-    this.syncDashboardItems()
+    this.syncDashboardItems(this.state.filters)
+    this.props.getProjects();
+    this.props.getTasks();
+    this.props.getClients();
   }
 
   componentWillMount() {
     window.addEventListener('keydown', this.handleKeyPress);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    let state = Object.assign({}, this.state);
-
-    if (nextProps.getItems) {
-      state.items.length = 0;
-      state.items = nextProps.getItems;
-    }
-    this.setState(state)
   }
 
   handlePageChange = (pageNumber) => {
@@ -108,12 +104,70 @@ class Dashboard extends Component {
     this.setState({ activePage: pageNumber });
   }
 
-  syncDashboardItems = () => {
-    this.props.getDashboardItems(this.state.filters);
+  syncDashboardItems = (filters) => {
+  //  for (var k in filters)
+      // if (_.isEmpty(filters[k])){
+      //   delete filters[k]
+      // } 
+    this.props.getDashboardItems(filters);
+  }
+
+  // invoked every time component recieves new props.
+  componentWillReceiveProps(nextProps) {
+    let state = Object.assign({}, this.state);
+    if (nextProps.projectItems) {
+      state.projectItems.length = 0;
+      nextProps.projectItems.map(item => {
+        state.projectItems.push({ name: 'project', label: item.name, value: item.name, id: item.id })
+      })
+    }
+    if (nextProps.taskItems) {
+      state.taskItems.length = 0;
+      nextProps.taskItems.map(item => {
+        state.taskItems.push({ name: 'task', label: item.name, value: item.name, id: item.id })
+      })
+    }
+    if (nextProps.clientItems) {
+      state.clientItems.length = 0;
+      nextProps.clientItems.map(item => {
+        state.clientItems.push({ name: 'client', label: item.name, value: item.name, id: item.id })
+      })
+    }
+
+    this.setState({ projectItems: state.projectItems, taskItems: state.taskItems, clientItems: state.clientItems });
+  }
+
+  changeHandlerDropdown = async (e) => {
+    let filters = Object.assign({}, this.state.filters);
+     if (e) {
+      filters[e.name] = e.value;
+      if (e.name == 'task') {
+        filters.taskId = e.id;
+      } else if (e.name == 'project') {
+        filters.projectId = e.id;
+      } else if (e.name == 'client') {
+        filters.clientId = e.id;
+      }
+      this.setState({ filters })
+      this.syncDashboardItems(filters)
+    }
+  }
+
+  startDateHandler = (date) => {
+    this.setState({ datepickerStartDate: moment(date) })
+
+    this.state.filters.startDate = moment(date._d).format('MM/DD/YYYY')
+    this.syncDashboardItems(this.state.filters)
+  }
+  endDateHandler = (date) => {
+    this.setState({ datepickerEndDate: moment(date) })
+
+    this.state.filters.endDate = moment(date._d).format('MM/DD/YYYY')
+    this.syncDashboardItems(this.state.filters)
   }
 
   render() {
-
+    console.log('STATE', this.state)
     return (
       <Fragment>
         {this.state.toastrMsg ? <ToastrMsg type="success" msg="Client succesfuly saved" title="" /> : null}
@@ -131,9 +185,17 @@ class Dashboard extends Component {
             </div>
             <div className="col-md-6 text-md-right">
               <div className="d-md-inline blue">Monday Sep 04 - Tuesday Sep 08</div>
-              <button type="button" className="btn btn-secondary blue-background ml-2">
+              {/* <button type="button" className="btn btn-secondary blue-background ml-2">
                 <i className="fa fa-calendar-o mr-2" aria-hidden="true"></i>9/01/17-9/08/17
-                    </button>
+                    </button> */}
+              <DatePickerRange
+                startDate={this.state.datepickerStartDate}
+                endDate={this.state.datepickerEndDate}
+                className="DropdownSelector-datepicker"
+                startDateHandler={this.startDateHandler}
+                endDateHandler={this.endDateHandler}
+              />
+
             </div>
           </div>
           <hr className="hr-line" />
@@ -149,15 +211,15 @@ class Dashboard extends Component {
                 </div>
                 <div className="col">
                   <label className="text-dark">CLIENT</label>
-                  <select className="form-control blue"><option value="" className="">All clients</option></select>
+                  <DropdownSelector name="client" options={this.state.clientItems} placeholder="All clients" className={"dashboard-page btn-block"} value={this.state.filters.client} onChange={this.changeHandlerDropdown} />
                 </div>
                 <div className="col">
                   <label className="text-dark">PROJECT</label>
-                  <select className="form-control blue"><option value="" className="">All projects</option></select>
+                  <DropdownSelector name="project" options={this.state.projectItems} placeholder="All projects" className="dashboard-page btn-block" value={this.state.filters.project} onChange={this.changeHandlerDropdown} />
                 </div>
                 <div className="col">
                   <label className="text-dark">TASK</label>
-                  <select className="form-control blue"><option value="" className="">All tasks</option></select>
+                  <DropdownSelector name="project" options={this.state.taskItems} placeholder="All tasks" className="dashboard-page btn-block blue" value={this.state.filters.task} onChange={this.changeHandlerDropdown} />
                 </div>
                 <div className="col align-self-end">
                   <button type="button" className="btn btn-secondary float-md-right">clear</button>
@@ -191,7 +253,7 @@ class Dashboard extends Component {
           {/* <ManageItems items={this.state.items} action={this.state.action} updatetitle="Update Client" /> */}
 
           {/* <!-- dashboard-items --> */}
-          <ManageItems items={this.state.items} action={this.state.action} syncDashboardItems={this.syncDashboardItems} updatetitle="Update Track Log" />
+          <ManageItems action={this.state.action} syncDashboardItems={this.syncDashboardItems} updatetitle="Update Track Log" />
           {/* <!-- /end dashboard-items --> */}
 
           {/* </div>
@@ -206,7 +268,10 @@ class Dashboard extends Component {
 function mapStateToProps(state, prop) {
   return {
     //will get props from redux to our local props
-    dashboardItems: state.getDashboardItems
+    dashboardItems: state.getDashboardItems,
+    projectItems: state.getProjectReducer,
+    taskItems: state.getTaskReducer,
+    clientItems: state.getClientReducer,
   }
 
 }
@@ -214,7 +279,11 @@ function mapStateToProps(state, prop) {
 function mapDispatchToProps(dispatch) {
   return {
     //will store whatever is in local state into redux state
-    getDashboardItems: (state) => dispatch(getDashboardItems(state))
+    getDashboardItems: (state) => dispatch(getDashboardItems(state)),
+    getProjects: (state) => dispatch(getProjects(state)),
+    getTasks: (state) => dispatch(getTasks(state)),
+    getClients: (state) => dispatch(getClients(state))
+
   }
 }
 

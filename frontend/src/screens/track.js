@@ -18,330 +18,330 @@ import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 
 
 class Track extends Component {
-   constructor() {
-      super();
-      this.state = {
-         title: 'Track Log',
-         todaysDate: moment().format("dddd, MMMM Do YYYY"),
-         logDate: moment().format('L'),
-         projectItems: [],
-         taskItems: [],
-         startTime: '00:00',
-         endTime: '',
-         timeDuration: '00:00:00',
-         inputs: {
-            projectId: '',
-            project: '',
-            taskId: '',
-            task: '',
-            description: ''
-         },
-         isLogStart: false,
-         teamId: '',
-         userId: '',
-         hasError: true,
-         startLogWasCalled: false,
-         trackLogs: []
+  constructor() {
+    super();
+    this.state = {
+      title: 'Track Log',
+      todaysDate: moment().format("dddd, MMMM Do YYYY"),
+      logDate: moment().format('L'),
+      projectItems: [],
+      taskItems: [],
+      startTime: '00:00',
+      endTime: '',
+      timeDuration: '00:00:00',
+      inputs: {
+        projectId: '',
+        project: '',
+        taskId: '',
+        task: '',
+        description: ''
+      },
+      isLogStart: false,
+      teamId: '',
+      userId: '',
+      hasError: true,
+      startLogWasCalled: false,
+      trackLogs: []
+    }
+
+  }
+
+  changeHandler = (e) => {
+    let inputs = Object.assign({}, this.state.inputs);
+    inputs[e.target.name] = e.target.value;
+    this.setState({ inputs: inputs });
+  }
+
+  changeHandlerDropdown = (e) => {
+    let inputs = Object.assign({}, this.state.inputs);
+    if (e) {
+      inputs[e.name] = e.value;
+      if (e.name == 'task') {
+        inputs.taskId = e.id;
+      } else if (e.name == 'project') {
+        inputs.projectId = e.id;
       }
+    }
 
-   }
+    this.setState({ inputs: inputs });
 
-   changeHandler = (e) => {
-      let inputs = Object.assign({}, this.state.inputs);
-      inputs[e.target.name] = e.target.value;
-      this.setState({ inputs: inputs });
-   }
+  }
 
-   changeHandlerDropdown = (e) => {
-      let inputs = Object.assign({}, this.state.inputs);
-      if (e) {
-         inputs[e.name] = e.value;
-         if (e.name == 'task') {
-            inputs.taskId = e.id;
-         } else if (e.name == 'project') {
-            inputs.projectId = e.id;
-         }
-      }
+  blurHandler = () => {
+    this.validateInput();
+  }
 
-      this.setState({ inputs: inputs });
+  validateInput = () => {
+    if (this.state.inputs.projectId == '' || this.state.inputs.taskId == '') {
+      this.state.hasError = true;
+    } else {
+      this.state.hasError = false;
+    }
+  }
 
-   }
+  startLog = () => {
+    this.validateInput();
+    if (this.state.hasError) {
+      this.setState({ startLogWasCalled: true });
+      return;
+    }
+    if (this.state.isLogStart) {
+      return;
+    }
+    this.state.isLogStart = true;
 
-   blurHandler = () => {
-      this.validateInput();
-   }
+    //startTime
+    let startTime = Object.assign({}, this.state.startTime);
+    startTime = moment().format("h:mma");
+    this.setState({ startTime: startTime });
 
-   validateInput = () => {
-      if (this.state.inputs.projectId == '' || this.state.inputs.taskId == '') {
-         this.state.hasError = true;
-      } else {
-         this.state.hasError = false;
-      }
-   }
+    //duration time
+    startTime = moment().format("hhmmssa");
 
-   startLog = () => {
-      this.validateInput();
-      if (this.state.hasError) {
-         this.setState({ startLogWasCalled: true });
-         return;
-      }
-      if (this.state.isLogStart) {
-         return;
-      }
-      this.state.isLogStart = true;
-
-      //startTime
-      let startTime = Object.assign({}, this.state.startTime);
-      startTime = moment().format("h:mma");
-      this.setState({ startTime: startTime });
-
-      //duration time
-      startTime = moment().format("hhmmssa");
-
-      var interval = setInterval(() => {
-         this.durationLog(startTime);
-         if (!this.state.isLogStart) {
-            clearInterval(interval);
-         }
-      }, 1000);
-   }
-
-   durationLog = (startTime) => {
+    var interval = setInterval(() => {
+      this.durationLog(startTime);
       if (!this.state.isLogStart) {
-         return;
+        clearInterval(interval);
       }
-      let timeDuration = Object.assign({}, this.state.timeDuration);
-      let durationInSeconds = moment().diff(moment(startTime, "hhmmssa"), 'seconds');
-      timeDuration = moment.utc(durationInSeconds * 1000).format('HH:mm:ss');
+    }, 1000);
+  }
 
-      this.setState({ timeDuration: timeDuration });
-   }
+  durationLog = (startTime) => {
+    if (!this.state.isLogStart) {
+      return;
+    }
+    let timeDuration = Object.assign({}, this.state.timeDuration);
+    let durationInSeconds = moment().diff(moment(startTime, "hhmmssa"), 'seconds');
+    timeDuration = moment.utc(durationInSeconds * 1000).format('HH:mm:ss');
 
-   endLog = async () => {
-      if (!this.state.isLogStart) {
-         return;
-      }
-      this.state.isLogStart = false;
+    this.setState({ timeDuration: timeDuration });
+  }
 
-      let endTime = Object.assign({}, this.state.endTime);
-      endTime = moment().format("h:mma");
-      this.setState({ endTime: endTime }, () => this.saveLog());
-   }
+  endLog = async () => {
+    if (!this.state.isLogStart) {
+      return;
+    }
+    this.state.isLogStart = false;
 
-   saveLog = () => {
-      let state = Object.assign({}, this.state);
-      let trackLogState =
-         {
-            startTime: state.startTime,
-            endTime: state.endTime,
-            date: state.logDate,
-            timeDuration: state.timeDuration,
-            projectId: state.inputs.projectId,
-            taskId: state.inputs.taskId,
-            description: state.inputs.description,
-            teamId: state.teamId,
-            userId: state.userId
-         }
-      this.props.saveTrackLog(trackLogState);
+    let endTime = Object.assign({}, this.state.endTime);
+    endTime = moment().format("h:mma");
+    this.setState({ endTime: endTime }, () => this.saveLog());
+  }
 
-      //this needs a better workaround - the problem is i cant change the way state was initilized     
-      this.setState({ startTime: '00:00', endTime: '', timeDuration: '00:00:00', projectId: '', project: '', taskId: '', project: '', task: '', description: '' })
+  saveLog = () => {
+    let state = Object.assign({}, this.state);
+    let trackLogState =
+    {
+      startTime: state.startTime,
+      endTime: state.endTime,
+      date: state.logDate,
+      timeDuration: state.timeDuration,
+      projectId: state.inputs.projectId,
+      taskId: state.inputs.taskId,
+      description: state.inputs.description,
+      teamId: state.teamId,
+      userId: state.userId
+    }
+    this.props.saveTrackLog(trackLogState);
 
-      //get the newest log after its been saved
-      this.getTodaysLogs();
-   }
+    //this needs a better workaround - the problem is i cant change the way state was initilized     
+    this.setState({ startTime: '00:00', endTime: '', timeDuration: '00:00:00', projectId: '', project: '', taskId: '', project: '', task: '', description: '' })
 
-   getTodaysLogs = () => {
-      let filters = {
-         logDate: this.state.logDate
-      };
-      this.props.getTrackLog(filters);
-   }
+    //get the newest log after its been saved
+    this.getTodaysLogs();
+  }
 
-   // good for AJAX: fetch, ajax, or subscriptions. - fires before initial 'render'
-   async componentDidMount() {
-      //get all projects from redux
-      this.props.getProjects();
-      this.props.getTasks();
-      this.getTodaysLogs();
-   }
+  getTodaysLogs = () => {
+    let filters = {
+      logDate: this.state.logDate
+    };
+    this.props.getTrackLog(filters);
+  }
+
+  // good for AJAX: fetch, ajax, or subscriptions. - fires before initial 'render'
+  async componentDidMount() {
+    //get all projects from redux
+    this.props.getProjects();
+    this.props.getTasks();
+    this.getTodaysLogs();
+  }
 
 
-   // invoked immediately after DOM updates
-   componentDidUpdate() {
+  // invoked immediately after DOM updates
+  componentDidUpdate() {
 
-   }
+  }
 
-   // invoked every time component recieves new props.
-   componentWillReceiveProps(nextProps) {
-      let state = Object.assign({}, this.state);
-      if (nextProps.projectItems) {
-         state.projectItems.length = 0;
-         nextProps.projectItems.map(item => {
-            state.projectItems.push({ name: 'project', label: item.name, value: item.name, id: item.id, clientId: item.clientId, userId: item.userId, teamId: item.teamId })
-         })
-      }
-      if (nextProps.taskItems) {
-         state.taskItems.length = 0;
-         nextProps.taskItems.map(item => {
-            state.taskItems.push({ name: 'task', label: item.name, value: item.name, id: item.id, hourlyRate: item.hourlyRate, projectId: item.projectId })
-         })
-      }
-      if (nextProps.getTrackLogItems) {
-         state.trackLogs.length = 0;
-         nextProps.getTrackLogItems.map(item => {
-            state.trackLogs.push(item)
-         })
-      }
-      this.setState({ projectItems: state.projectItems, taskItems: state.taskItems, trackLogs: state.trackLogs });
-   }
+  // invoked every time component recieves new props.
+  componentWillReceiveProps(nextProps) {
+    let state = Object.assign({}, this.state);
+    if (nextProps.projectItems) {
+      state.projectItems.length = 0;
+      nextProps.projectItems.map(item => {
+        state.projectItems.push({ name: 'project', label: item.name, value: item.name, id: item.id, clientId: item.clientId, userId: item.userId, teamId: item.teamId })
+      })
+    }
+    if (nextProps.taskItems) {
+      state.taskItems.length = 0;
+      nextProps.taskItems.map(item => {
+        state.taskItems.push({ name: 'task', label: item.name, value: item.name, id: item.id, hourlyRate: item.hourlyRate, projectId: item.projectId })
+      })
+    }
+    if (nextProps.getTrackLogItems) {
+      state.trackLogs.length = 0;
+      nextProps.getTrackLogItems.map(item => {
+        state.trackLogs.push(item)
+      })
+    }
+    this.setState({ projectItems: state.projectItems, taskItems: state.taskItems, trackLogs: state.trackLogs });
+  }
 
-   render() {
+  render() {
 
-      { this.validateInput() }
+    { this.validateInput() }
 
-      let errorClassName = '';
-      if (this.state.hasError) {
-         errorClassName = 'disabled';
-      }
+    let errorClassName = '';
+    if (this.state.hasError) {
+      errorClassName = 'disabled';
+    }
 
-      //ui visual error handling
-      let projectErrorClassName = '', taskErrorClassName = '', projectInputHasError = '', taskInputHasError = '';
-      if (this.state.inputs.projectId == '' && this.state.startLogWasCalled) {
-         projectErrorClassName = 'labelError';
-         projectInputHasError = 'inputError';
-      }
-      if (this.state.inputs.taskId == '' && this.state.startLogWasCalled) {
-         taskErrorClassName = 'labelError';
-         taskInputHasError = 'inputError';
-      }
+    //ui visual error handling
+    let projectErrorClassName = '', taskErrorClassName = '', projectInputHasError = '', taskInputHasError = '';
+    if (this.state.inputs.projectId == '' && this.state.startLogWasCalled) {
+      projectErrorClassName = 'labelError';
+      projectInputHasError = 'inputError';
+    }
+    if (this.state.inputs.taskId == '' && this.state.startLogWasCalled) {
+      taskErrorClassName = 'labelError';
+      taskInputHasError = 'inputError';
+    }
 
-      return (
-         <div>
-            <PageTop />
-            <div className="container">
-               {/* page title */}
-               <PageTitle title={this.state.title} todaysDate={this.state.todaysDate} />
+    return (
+      <div>
+        <PageTop />
+        <div className="container">
+          {/* page title */}
+          <PageTitle title={this.state.title} todaysDate={this.state.todaysDate} />
 
-               {/* track log */}
-               <div className="row">
-                  <div className="col-sm-12">
-                     <div className="track-log">
-                        {/* .row */}
-                        <div className="row">
-                           <div className="form-inline col-sm-12">
-                              {/* project input */}
-                              <div className="p-sm-3  col-md-6 col-sm-12">
-                                 <div className="form-group row">
-                                    <label className={"col-sm-3 col-lg-2 col-form-label " + ' ' + projectErrorClassName}>Project</label>
-                                    <div className="col-sm-9 col-lg-10">
-                                       <div className="input-group">
-                                          <DropdownSelector name="project" options={this.state.projectItems} placeholder="type project name..." className={"btn-block" + ' ' + projectInputHasError} value={this.state.inputs.project} onChange={this.changeHandlerDropdown} />
-                                          <span className="input-group-btn" id="addProjectTooltip">
-                                          <Link to='/manageProjects'><Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>} className="btn btn-secondary green-background dropdown-effects add-btn" type="button" /></Link>
-                                             <UncontrolledTooltip placement="top" target={"addProjectTooltip"} >Create a new project</UncontrolledTooltip>
-                                          </span>
-                                       </div>
-                                    </div>
-                                 </div>{/* /.form-group  */}
-                              </div> {/* /project input */}
-
-                              <div className="p-sm-3  col-md-6 col-sm-12"> {/* task input */}
-                                 <div className="form-group row">
-                                    <label className={"col-sm-3 col-lg-2 col-form-label " + ' ' + taskErrorClassName}>Task</label>
-                                    <div className="col-sm-9 col-lg-10">
-                                       <div className="input-group">
-                                          <DropdownSelector name="task" options={this.state.taskItems} placeholder="type task name..." className={"btn-block" + ' ' + taskInputHasError} value={this.state.inputs.task} onChange={this.changeHandlerDropdown} />
-                                          <span className="input-group-btn" id="addTaskTooltip">
-                                          <Link to='/manageTasks'><Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>} className="btn btn-secondary green-background dropdown-effects add-btn" type="button" /></Link>
-                                             <UncontrolledTooltip placement="top" target={"addTaskTooltip"} >Create a new task</UncontrolledTooltip>
-                                          </span>
-                                       </div>
-                                    </div>
-                                 </div>{/* /.form-group  */}
-                              </div> {/* /task input */}
-                           </div>
+          {/* track log */}
+          <div className="row">
+            <div className="col-sm-12">
+              <div className="track-log">
+                {/* .row */}
+                <div className="row">
+                  <div className="form-inline col-sm-12">
+                    {/* project input */}
+                    <div className="p-sm-3  col-md-6 col-sm-12">
+                      <div className="form-group row">
+                        <label className={"col-sm-3 col-lg-2 col-form-label " + ' ' + projectErrorClassName}>Project</label>
+                        <div className="col-sm-9 col-lg-10">
+                          <div className="input-group">
+                            <DropdownSelector name="project" options={this.state.projectItems} placeholder="type project name..." className={"track-page btn-block" + ' ' + projectInputHasError} value={this.state.inputs.project} onChange={this.changeHandlerDropdown} />
+                            <span className="input-group-btn" id="addProjectTooltip">
+                              <Link to='/manageProjects'><Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>} className="btn btn-secondary green-background dropdown-effects add-btn" type="button" /></Link>
+                              <UncontrolledTooltip placement="top" target={"addProjectTooltip"} >Create a new project</UncontrolledTooltip>
+                            </span>
+                          </div>
                         </div>
-                        {/* /.row */}
-                        <div className="col-sm-12 p-sm-3 ">
-                           <div className="form-group row">
-                              <label className="col-sm-3 col-md-2 col-lg-1 col-form-label">Description</label>
-                              <div className="col-sm-9  col-md-10 col-lg-11">
-                                 <Input name="description" onBlur={this.blurHandler} value={this.state.inputs.description} onChange={this.changeHandler} required={false} type="textarea" className="form-control textarea" placeholder="brief description about what your doing..." />
-                              </div>
-                           </div>
-                        </div>{/* /track-log */}
-                     </div>
-                  </div>
-               </div>{/* /.row */}
+                      </div>{/* /.form-group  */}
+                    </div> {/* /project input */}
 
-               {/* start stop buttons */}
-               <div className="row justify-content-center">
-                  <div className="col-md-2 col-sm-6 col-auto">
-                     <div onClick={this.startLog} className={"button-start  float-sm-right " + ' ' + errorClassName}>
-                        <i className="fa fa-play" aria-hidden="true"></i>
-                        <span className="d-block">Start</span>
-                     </div>
+                    <div className="p-sm-3  col-md-6 col-sm-12"> {/* task input */}
+                      <div className="form-group row">
+                        <label className={"col-sm-3 col-lg-2 col-form-label " + ' ' + taskErrorClassName}>Task</label>
+                        <div className="col-sm-9 col-lg-10">
+                          <div className="input-group">
+                            <DropdownSelector name="task" options={this.state.taskItems} placeholder="type task name..." className={"track-page btn-block" + ' ' + taskInputHasError} value={this.state.inputs.task} onChange={this.changeHandlerDropdown} />
+                            <span className="input-group-btn" id="addTaskTooltip">
+                              <Link to='/manageTasks'><Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>} className="btn btn-secondary green-background dropdown-effects add-btn" type="button" /></Link>
+                              <UncontrolledTooltip placement="top" target={"addTaskTooltip"} >Create a new task</UncontrolledTooltip>
+                            </span>
+                          </div>
+                        </div>
+                      </div>{/* /.form-group  */}
+                    </div> {/* /task input */}
                   </div>
-                  <div className="col-md-2 col-sm-6 col-auto">
-                     <div onClick={this.endLog} className="button-stop">
-                        <i className="fa fa-stop" aria-hidden="true"></i>
-                        <span className="d-block">Stop</span>
-                     </div>
+                </div>
+                {/* /.row */}
+                <div className="col-sm-12 p-sm-3 ">
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-md-2 col-lg-1 col-form-label">Description</label>
+                    <div className="col-sm-9  col-md-10 col-lg-11">
+                      <Input name="description" onBlur={this.blurHandler} value={this.state.inputs.description} onChange={this.changeHandler} required={false} type="textarea" className="form-control textarea" placeholder="brief description about what your doing..." />
+                    </div>
                   </div>
-                  <div className="col-md-3 col-sm-12 pt-3 d-flex align-self-sm-center">
-                     <div className="track-timer mx-auto display-4">
-                        {this.state.timeDuration.toString()}
-                     </div>
-                  </div>
-                  <div className="col-md-3 col-sm-12 d-flex align-self-sm-end">
-                     <div className="time-started mx-auto float-sm-right f-1-5">
-                        <i className="fa fa-clock-o" aria-hidden="true"></i>
-                        <span>&nbsp;</span><span>{this.state.startTime.toString()}</span>
-                        <span className="d-sm-inline-block text-medium-dark f-1">&nbsp;time started</span>
-                     </div>
-                  </div>
-               </div>{/* /.start stop buttons */}
-
-
-               {/* My logs  */}
-               <div className="mt-5 pt-5  d-inline-block"></div>
-               <div className="row justify-content-between blue">
-                  <div className="col-md-6">
-                     <h2>Today's Logs</h2>
-                  </div>
-                  { /*<div className="col-md-6 text-md-right">Monday september 4th 2017</div>*/}
-               </div>
-               <hr className="hr-line mt-1" />
-               <TrackLogList trackLogs={this.state.trackLogs} />
+                </div>{/* /track-log */}
+              </div>
             </div>
-            <PageBottom />
-         </div>
-      );
-   }
+          </div>{/* /.row */}
+
+          {/* start stop buttons */}
+          <div className="row justify-content-center">
+            <div className="col-md-2 col-sm-6 col-auto">
+              <div onClick={this.startLog} className={"button-start  float-sm-right " + ' ' + errorClassName}>
+                <i className="fa fa-play" aria-hidden="true"></i>
+                <span className="d-block">Start</span>
+              </div>
+            </div>
+            <div className="col-md-2 col-sm-6 col-auto">
+              <div onClick={this.endLog} className="button-stop">
+                <i className="fa fa-stop" aria-hidden="true"></i>
+                <span className="d-block">Stop</span>
+              </div>
+            </div>
+            <div className="col-md-3 col-sm-12 pt-3 d-flex align-self-sm-center">
+              <div className="track-timer mx-auto display-4">
+                {this.state.timeDuration.toString()}
+              </div>
+            </div>
+            <div className="col-md-3 col-sm-12 d-flex align-self-sm-end">
+              <div className="time-started mx-auto float-sm-right f-1-5">
+                <i className="fa fa-clock-o" aria-hidden="true"></i>
+                <span>&nbsp;</span><span>{this.state.startTime.toString()}</span>
+                <span className="d-sm-inline-block text-medium-dark f-1">&nbsp;time started</span>
+              </div>
+            </div>
+          </div>{/* /.start stop buttons */}
+
+
+          {/* My logs  */}
+          <div className="mt-5 pt-5  d-inline-block"></div>
+          <div className="row justify-content-between blue">
+            <div className="col-md-6">
+              <h2>Today's Logs</h2>
+            </div>
+            { /*<div className="col-md-6 text-md-right">Monday september 4th 2017</div>*/}
+          </div>
+          <hr className="hr-line mt-1" />
+          <TrackLogList trackLogs={this.state.trackLogs} />
+        </div>
+        <PageBottom />
+      </div>
+    );
+  }
 }
 
 function mapStateToProps(state, prop) {
-   return {
-      //will get props from redux to our local props
-      projectItems: state.getProjectReducer,
-      taskItems: state.getTaskReducer,
-      getTrackLogItems: state.getTrackLogReducer
-   }
+  return {
+    //will get props from redux to our local props
+    projectItems: state.getProjectReducer,
+    taskItems: state.getTaskReducer,
+    getTrackLogItems: state.getTrackLogReducer
+  }
 
 }
 
 function mapDispatchToProps(dispatch) {
-   return {
-      //will store whatever is in local state into redux state
-      getProjects: (state) => dispatch(getProjects(state)),
-      getTasks: (state) => dispatch(getTasks(state)),
-      getTrackLog: (state) => dispatch(getTrackLog(state)),
+  return {
+    //will store whatever is in local state into redux state
+    getProjects: (state) => dispatch(getProjects(state)),
+    getTasks: (state) => dispatch(getTasks(state)),
+    getTrackLog: (state) => dispatch(getTrackLog(state)),
 
-      saveTrackLog: (state) => dispatch(saveTrackLog(state))
+    saveTrackLog: (state) => dispatch(saveTrackLog(state))
 
 
-   }
+  }
 }
 
-export default  connect(mapStateToProps, mapDispatchToProps)(Track);
+export default connect(mapStateToProps, mapDispatchToProps)(Track);
