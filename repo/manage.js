@@ -2,7 +2,7 @@ var knex = require('./config');
 
 function addItem(item) {
     console.log(item)
-    item.items.timeStamp = knex.fn.now();
+    //item.items.updatedAt = knex.fn.now();
     return knex(item.action)
         .insert(item.items)
 }

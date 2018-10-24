@@ -190,7 +190,7 @@ class ModalComponent extends React.Component {
 			if (this.state.action == 'clients') {
 				return (
 					key.map((k) => {
-						if (k == 'id' || k == 'timeStamp' || k == 'userId' || k == 'teamId' || k == 'createdAt' || k == 'clientId') return
+						if (k == 'id' || k == 'updatedAt' || k == 'userId' || k == 'teamId' || k == 'createdAt' || k == 'clientId') return
 						return (
 							<div key={k} id={k} className="form-group row">
 								<label className="col-sm-3 col-lg-2 col-form-label">{k}</label>
