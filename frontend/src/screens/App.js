@@ -4,9 +4,9 @@ import { toggleNavSide } from '../actions/actions';
 import { BrowserRouter, Route } from 'react-router-dom';
 import NavbarSide from '../components/NavbarSide';
 import Track from './Track';
-import manageClients from './ManageClients';
-import manageProjects from './ManageProjects';
-import manageTasks from './ManageTasks';
+import ManageClients from './ManageClients';
+import ManageProjects from './ManageProjects';
+import ManageTasks from './ManageTasks';
 import Login from './Login';
 import '../css/App.css'
 import Dashboard from "./Dashboard";
@@ -18,20 +18,20 @@ class App extends Component {
         <BrowserRouter>
           <div>
             <NavbarSide />
-            <div  className={`${this.props.navside ? 'shrinkmain' : 'expandmain'}`} >
+            <div className={`${this.props.navside ? 'shrinkmain' : 'expandmain'}`} >
               <Route exact path="/" component={Track} />
               <Route exact path="/track" component={Track} />
               <Route exact path="/login" component={Login} />
               <Route exact path="/navbarSide" component={NavbarSide} />
-              <Route exact path="/manageClients" component={manageClients} />
-              <Route exact path="/manageProjects" component={manageProjects} />
-              <Route exact path="/manageTasks" component={manageTasks} />
+              <Route exact path="/manageClients" component={ManageClients} />
+              <Route exact path="/manageProjects" component={ManageProjects} />
+              <Route exact path="/manageTasks" component={ManageTasks} />
               <Route exact path="/dashboard" component={Dashboard} />
             </div>
           </div>
         </BrowserRouter>
       </div>
-    );
+    )
   }
 }
 

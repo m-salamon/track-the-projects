@@ -43,7 +43,7 @@ class Dashboard extends Component {
       clientItems: [],
       datepickerStartDate: moment().startOf('month'),
       datepickerEndDate: moment().endOf('month'),
-      activePage: 15,
+      activePage: 15, //pagination
       toastrMsg: false,
       action: 'dashboard',
       hasError: false
@@ -104,16 +104,17 @@ class Dashboard extends Component {
     window.addEventListener('keydown', this.handleKeyPress);
   }
 
+  //pagination
   handlePageChange = (pageNumber) => {
     console.log(`active page is ${pageNumber}`);
     this.setState({ activePage: pageNumber });
   }
 
   syncDashboardItems = (filters) => {
-  //  for (var k in filters)
-      // if (_.isEmpty(filters[k])){
-      //   delete filters[k]
-      // } 
+    //  for (var k in filters)
+    // if (_.isEmpty(filters[k])){
+    //   delete filters[k]
+    // } 
     this.props.getDashboardItems(filters);
   }
 
@@ -144,7 +145,7 @@ class Dashboard extends Component {
 
   changeHandlerDropdown = async (e) => {
     let filters = Object.assign({}, this.state.filters);
-     if (e) {
+    if (e) {
       filters[e.name] = e.value;
       if (e.name == 'task') {
         filters.taskId = e.id;
@@ -172,7 +173,8 @@ class Dashboard extends Component {
   }
 
   render() {
-    console.log('STATE', this.state)
+    console.log('datepickerStartDate', this.state.datepickerStartDate)
+    console.log('datepickerEndDate', this.state.datepickerEndDate)
     return (
       <Fragment>
         {this.state.toastrMsg ? <ToastrMsg type="success" msg="Client succesfuly saved" title="" /> : null}
@@ -184,24 +186,24 @@ class Dashboard extends Component {
           {/* <PageTitle title={this.state.title} /> */}
 
           {/* <!-- page title  --> */}
-          <div className="row justify-content-between blue mb-1">
-            <div className="col-md-6">
-              <h2>{this.state.title}</h2>
-            </div>
-            <div className="col-md-6 text-md-right">
-              <div className="d-md-inline blue">Monday Sep 04 - Tuesday Sep 08</div>
+          <div className="row blue mb-3">
+            <div className="col-sm-12">
+              <h2 className="d-inline-flex">{this.state.title}</h2>
+
+              <div className="d-inline-flex float-right blue">{moment(this.state.datepickerStartDate._d).format('dddd MMM Do')} - {moment(this.state.datepickerEndDate._d).format('dddd MMM Do')} </div>
               {/* <button type="button" className="btn btn-secondary blue-background ml-2">
                 <i className="fa fa-calendar-o mr-2" aria-hidden="true"></i>9/01/17-9/08/17
                     </button> */}
+            </div>
+            <div className="col-sm-12">
               <DatePickerRange
                 startDate={this.state.datepickerStartDate}
                 endDate={this.state.datepickerEndDate}
-                className="DropdownSelector-datepicker"
                 startDateHandler={this.startDateHandler}
                 endDateHandler={this.endDateHandler}
               />
-
             </div>
+
           </div>
           <hr className="hr-line" />
           {/* <!-- /end page title  --> */}
