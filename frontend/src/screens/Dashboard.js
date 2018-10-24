@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import '../css/dashboard.css';
-import { getDashboardItems } from '../actions/actions';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import PageTop from './PageTop';
 import PageBottom from './PageBottom';
@@ -12,33 +11,33 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import ToastrMsg from '../components/toastr';
 import Pagination from "react-js-pagination";
-
+import DropdownSelector from '../components/DropdownSelector';
+import { getDashboardItems, getProjects, getTasks, getClients } from '../actions/actions';
+import moment from 'moment';
+import DatePickerRange from '../components/DatePickerRange';
+import _ from 'lodash'
 
 class Dashboard extends Component {
   constructor() {
     super();
     this.state = {
       title: 'Dashboard',
-      items: [{
-        client:
-          "first client",
-        date:
-          "08/29/2018",
-        duration:
-          "00:00:02",
-        id:
-          20,
-        project:
-          "second project",
-        task:
-          "forth tasks"
-      }],
       filters: {
         userId: '',
         clientId: '',
+        client: '',
         projectId: '',
-        taskId: '1'
+        project: '',
+        taskId: '',
+        task: '',
+        startDate: moment().startOf('month').format('MM/DD/YYYY'),
+        endDate: moment().endOf('month').format('MM/DD/YYYY')
       },
+      projectItems: [],
+      taskItems: [],
+      clientItems: [],
+      datepickerStartDate: moment().startOf('month'),
+      datepickerEndDate: moment().endOf('month'),
       activePage: 15,
       toastrMsg: false,
       action: 'dashboard',
@@ -89,34 +88,15 @@ class Dashboard extends Component {
     });
   }
 
-  clear = () => {
-    this.setState(prevState => ({
-      inputs: {
-        ...prevState.inputs,
-        name: '',
-        email: '',
-        phone: '',
-        address: ''
-      }
-    }));
-  }
-
   componentDidMount() {
-    this.props.getDashboardItems(this.state.filters);
+    this.syncDashboardItems(this.state.filters)
+    this.props.getProjects();
+    this.props.getTasks();
+    this.props.getClients();
   }
 
   componentWillMount() {
     window.addEventListener('keydown', this.handleKeyPress);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    let state = Object.assign({}, this.state);
-
-    if (nextProps.getItems) {
-      state.items.length = 0;
-      state.items = nextProps.getItems;
-    }
-    this.setState(state)
   }
 
   handlePageChange = (pageNumber) => {
@@ -124,9 +104,70 @@ class Dashboard extends Component {
     this.setState({ activePage: pageNumber });
   }
 
+  syncDashboardItems = (filters) => {
+  //  for (var k in filters)
+      // if (_.isEmpty(filters[k])){
+      //   delete filters[k]
+      // } 
+    this.props.getDashboardItems(filters);
+  }
+
+  // invoked every time component recieves new props.
+  componentWillReceiveProps(nextProps) {
+    let state = Object.assign({}, this.state);
+    if (nextProps.projectItems) {
+      state.projectItems.length = 0;
+      nextProps.projectItems.map(item => {
+        state.projectItems.push({ name: 'project', label: item.name, value: item.name, id: item.id })
+      })
+    }
+    if (nextProps.taskItems) {
+      state.taskItems.length = 0;
+      nextProps.taskItems.map(item => {
+        state.taskItems.push({ name: 'task', label: item.name, value: item.name, id: item.id })
+      })
+    }
+    if (nextProps.clientItems) {
+      state.clientItems.length = 0;
+      nextProps.clientItems.map(item => {
+        state.clientItems.push({ name: 'client', label: item.name, value: item.name, id: item.id })
+      })
+    }
+
+    this.setState({ projectItems: state.projectItems, taskItems: state.taskItems, clientItems: state.clientItems });
+  }
+
+  changeHandlerDropdown = async (e) => {
+    let filters = Object.assign({}, this.state.filters);
+     if (e) {
+      filters[e.name] = e.value;
+      if (e.name == 'task') {
+        filters.taskId = e.id;
+      } else if (e.name == 'project') {
+        filters.projectId = e.id;
+      } else if (e.name == 'client') {
+        filters.clientId = e.id;
+      }
+      this.setState({ filters })
+      this.syncDashboardItems(filters)
+    }
+  }
+
+  startDateHandler = (date) => {
+    this.setState({ datepickerStartDate: moment(date) })
+
+    this.state.filters.startDate = moment(date._d).format('MM/DD/YYYY')
+    this.syncDashboardItems(this.state.filters)
+  }
+  endDateHandler = (date) => {
+    this.setState({ datepickerEndDate: moment(date) })
+
+    this.state.filters.endDate = moment(date._d).format('MM/DD/YYYY')
+    this.syncDashboardItems(this.state.filters)
+  }
 
   render() {
-
+    console.log('STATE', this.state)
     return (
       <Fragment>
         {this.state.toastrMsg ? <ToastrMsg type="success" msg="Client succesfuly saved" title="" /> : null}
@@ -144,12 +185,21 @@ class Dashboard extends Component {
             </div>
             <div className="col-md-6 text-md-right">
               <div className="d-md-inline blue">Monday Sep 04 - Tuesday Sep 08</div>
-              <button type="button" className="btn btn-secondary blue-background ml-2">
+              {/* <button type="button" className="btn btn-secondary blue-background ml-2">
                 <i className="fa fa-calendar-o mr-2" aria-hidden="true"></i>9/01/17-9/08/17
-                    </button>
+                    </button> */}
+              <DatePickerRange
+                startDate={this.state.datepickerStartDate}
+                endDate={this.state.datepickerEndDate}
+                className="DropdownSelector-datepicker"
+                startDateHandler={this.startDateHandler}
+                endDateHandler={this.endDateHandler}
+              />
+
             </div>
           </div>
           <hr className="hr-line" />
+          {/* <!-- /end page title  --> */}
 
           {/* <!-- filters --> */}
           <div className="row mt-2">
@@ -161,15 +211,15 @@ class Dashboard extends Component {
                 </div>
                 <div className="col">
                   <label className="text-dark">CLIENT</label>
-                  <select className="form-control blue"><option value="" className="">All clients</option></select>
+                  <DropdownSelector name="client" options={this.state.clientItems} placeholder="All clients" className={"dashboard-page btn-block"} value={this.state.filters.client} onChange={this.changeHandlerDropdown} />
                 </div>
                 <div className="col">
                   <label className="text-dark">PROJECT</label>
-                  <select className="form-control blue"><option value="" className="">All projects</option></select>
+                  <DropdownSelector name="project" options={this.state.projectItems} placeholder="All projects" className="dashboard-page btn-block" value={this.state.filters.project} onChange={this.changeHandlerDropdown} />
                 </div>
                 <div className="col">
                   <label className="text-dark">TASK</label>
-                  <select className="form-control blue"><option value="" className="">All tasks</option></select>
+                  <DropdownSelector name="project" options={this.state.taskItems} placeholder="All tasks" className="dashboard-page btn-block blue" value={this.state.filters.task} onChange={this.changeHandlerDropdown} />
                 </div>
                 <div className="col align-self-end">
                   <button type="button" className="btn btn-secondary float-md-right">clear</button>
@@ -202,165 +252,12 @@ class Dashboard extends Component {
 
           {/* <ManageItems items={this.state.items} action={this.state.action} updatetitle="Update Client" /> */}
 
-          {/* <!-- dashboard-table --> */}
-          <div className="row mt-3">
-            <div className="col-sm-12">
-              <table className="dashboard-table table table-responsive">
-                <thead>
-                  <tr>
-                    <th>selected</th>
-                    <th>user</th>
-                    <th>Date</th>
-                    <th>Project</th>
-                    <th>Task</th>
-                    <th>Time</th>
-                    <th>Duration</th>
-                    <th>rate</th>
-                    <th>Total</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">-what-</th>
-                    <th>joe</th>
-                    <td>09/04/17<div className="d-inline text-medium-dark f-0-8">&nbsp;FRI</div></td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                    <td>9:04 am - 12:30 pm</td>
-                    <td>01:55</td>
-                    <td>40.00<div className="d-inline text-medium-dark f-0-8">&nbsp;USER</div></td>
-                    <td>125.00</td>
-                    <td><div className="btn-group float-right" role="group" aria-label="Third group">
-                      <button type="button" className="btn btn-sm btn-secondary yellow-background f-1-2" data-toggle="tooltip" title="Edit the track log"><i className="fa fa-pencil" aria-hidden="true"></i></button>
-                      <button type="button" className="btn btn-sm btn-secondary red-background f-1-2" data-toggle="tooltip" title="Delete the track log"><i className="fa fa-trash" aria-hidden="true"></i></button>
-                    </div></td>
-                  </tr>
-                  <tr>
-                    <th scope="row"></th>
-                    <th>mike</th>
-                    <td>09/04/17<div className="d-inline text-medium-dark f-0-8">&nbsp;SUN</div></td>
-                    <td>Otto</td>
-                    <td>@fat</td>
-                    <td>9:04 am - 12:30 pm</td>
-                    <td>00:45</td>
-                    <td>400.00<div className="d-inline text-medium-dark f-0-8">&nbsp;TASK</div></td>
-                    <td>100.00</td>
-                    <td><div className="btn-group float-right" role="group" aria-label="Third group">
-                      <button type="button" className="btn btn-sm btn-secondary yellow-background f-1-2" data-toggle="tooltip" title="Edit the track log"><i className="fa fa-pencil" aria-hidden="true"></i></button>
-                      <button type="button" className="btn btn-sm btn-secondary red-background f-1-2" data-toggle="tooltip" title="Delete the track log"><i className="fa fa-trash" aria-hidden="true"></i></button>
-                    </div></td>
-                  </tr>
-                  <tr>
-                    <th scope="row"></th>
-                    <th>joe</th>
-                    <td>09/04/17<div className="d-inline text-medium-dark f-0-8">&nbsp;MON</div></td>
-                    <td>Otto</td>
-                    <td>@twitter</td>
-                    <td>9:04 am - 12:30 pm</td>
-                    <td>02:50</td>
-                    <td>20.00<div className="d-inline text-medium-dark f-0-8">&nbsp;SPECIAL</div></td>
-                    <td>40.00</td>
-                    <td><div className="btn-group float-right" role="group" aria-label="Third group">
-                      <button type="button" className="btn btn-sm btn-secondary yellow-background f-1-2" data-toggle="tooltip" title="Edit the track log"><i className="fa fa-pencil" aria-hidden="true"></i></button>
-                      <button type="button" className="btn btn-sm btn-secondary red-background f-1-2" data-toggle="tooltip" title="Delete the track log"><i className="fa fa-trash" aria-hidden="true"></i></button>
-                    </div></td>
-                  </tr>
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td>Total</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>45:40</td>
-                    <td>1200.00</td>
-                    <td></td>
-                  </tr>
-                </tfoot>
-              </table>
-
-
-              <div className="row justify-content-center mt-4">
-
-                {/* pagination */}
-                <Pagination
-                  hideDisabled
-                  activePage={this.state.activePage} //Required
-                  itemsCountPerPage={10}
-                  totalItemsCount={450} //Required
-                  pageRangeDisplayed={5}
-                  onChange={this.handlePageChange} //Required
-                />
-                {/* /end pagination */}
-
-                {/* page count */}
-                <div class="dropdown pl-3">
-                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                     10
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </div>
-                </div>
-                {/*/end page count */}
-
-              </div>
-
-            </div>
-          </div>
-          {/* <!-- /end dashboard-table --> */}
-
-
-
-
+          {/* <!-- dashboard-items --> */}
+          <ManageItems action={this.state.action} syncDashboardItems={this.syncDashboardItems} updatetitle="Update Track Log" />
+          {/* <!-- /end dashboard-items --> */}
 
           {/* </div>
         <!-- /.container  --> */}
-
-
-
-
-
-
-
-          {/*         
-          <div className="row">
-            <div className="col-md-12">
-              <div className="form-row">
-                <div className="form-group col-md-6">
-                  <label className={`col-form-label`}>Name</label>
-                  <Input type="text" name="name" onBlur={this.blurHandler} value={this.state.inputs.name} onChange={this.changeHandler} required={true} type="textarea" className={`form-control`} placeholder="client name" />
-                </div>
-                <div className="form-group col-md-6">
-                  <label className="col-form-label">Email</label>
-                  <Input type="text" name="email" onBlur={this.blurHandler} value={this.state.inputs.email} onChange={this.changeHandler} required={false} type="textarea" className="form-control" placeholder="client email" />
-                </div>
-              </div>
-              <div className="form-row">
-                <div className="form-group col-md-6">
-                  <label className="col-form-label">Phone</label>
-                  <Input type="text" name="phone" onBlur={this.blurHandler} value={this.state.inputs.phone} onChange={this.changeHandler} required={false} type="textarea" className="form-control" placeholder="phone number" />
-                </div>
-              </div>
-              <div className="form-group">
-                <label className="col-form-label">Address</label>
-                <Input type="text" name="address" onBlur={this.blurHandler} value={this.state.inputs.address} onChange={this.changeHandler} required={false} type="textarea" className="form-control" placeholder="address" />
-              </div>
-              <div className="">
-                <Button buttonName={'Clear'} onClick={this.clear} className="btn btn-secondary mr-2" type="button" />
-                <Button buttonName={'Save Client'} onClick={this.saveItem} className="btn btn-primary blue-background" type="button" />
-              </div>
-            </div>
-          </div>
-          <hr className="hr-line mt-1 mt-5" />
-          <ManageItems items={this.state.items} action={this.state.action} updatetitle="Update Client" /> */}
-
-
         </div>
 
         <PageBottom key="3" />
@@ -371,7 +268,10 @@ class Dashboard extends Component {
 function mapStateToProps(state, prop) {
   return {
     //will get props from redux to our local props
-    dashboardItems: state.manageReducer.getDashboardItems
+    dashboardItems: state.getDashboardItems,
+    projectItems: state.getProjectReducer,
+    taskItems: state.getTaskReducer,
+    clientItems: state.getClientReducer,
   }
 
 }
@@ -379,7 +279,11 @@ function mapStateToProps(state, prop) {
 function mapDispatchToProps(dispatch) {
   return {
     //will store whatever is in local state into redux state
-    getDashboardItems: (state) => dispatch(getDashboardItems(state))
+    getDashboardItems: (state) => dispatch(getDashboardItems(state)),
+    getProjects: (state) => dispatch(getProjects(state)),
+    getTasks: (state) => dispatch(getTasks(state)),
+    getClients: (state) => dispatch(getClients(state))
+
   }
 }
 

@@ -21,6 +21,16 @@ router.get('/getItem', async (req, res) => {
 
 });
 
+router.post('/getDashboardItems', async (req, res) => {
+    try {
+        let getItems = await repo.manage.getDashboardItems(req.body)
+        res.json({ success: true, getItems });
+    } catch (err) {
+        console.error(err)
+    }
+
+});
+
 router.post('/deleteItem', async (req, res) => {
     try {
         let deleteItem = await repo.manage.deleteItem(req.body)

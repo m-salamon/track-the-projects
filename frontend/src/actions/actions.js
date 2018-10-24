@@ -1,5 +1,7 @@
 import * as types from './actionsType';
 import axios from 'axios';
+import _ from 'lodash';
+import moment from 'moment';
 
 ////////////////
 // get projects
@@ -71,9 +73,21 @@ function getTrackLog(tracklog) {
 //////////////
 export function getDashboardItems(filters) {
     return async dispatch => {
-        let response = await axios.get(`/api/getDashboardItems/`, {  params: filters, 
-          headers: { filters } } );
-        dispatch({ type: types.GET_DASHBOARD_ITEMS, payload: response.data });
+        let response = await axios.post(`/api/manage/getDashboardItems/`, filters );
+
+        response.data.getItems.map(item => {
+            item.rate = !_.isEmpty(item.taskRate) ? item.taskRate : !_.isEmpty(item.userRate) ? item.userRate : !_.isEmpty(item.projectRate) ? item.projectRate : 0
+            item.rateType = !_.isEmpty(item.taskRate) ? 'task' : !_.isEmpty(item.userRate) ? 'user' : !_.isEmpty(item.projectRate) ? 'project' : ''
+            item.total = (moment.duration(item.duration).asMinutes() / 60 * item.rate).toFixed(2)
+        })
+        var durations = response.data.getItems.map(i => i.duration)
+        const totalDurations = durations.slice(1).reduce((prev, cur) => moment.duration(cur).add(prev), moment.duration(durations[0]))
+        const totalRate = response.data.getItems.reduce((pre, cur) => {
+            pre.total = (Number(pre.total) + Number(cur.total)).toFixed(2)
+            return pre
+        }, { total: 0 })
+        response.data.getItems.map(i => _.merge(i, { totalDuration: moment.utc(totalDurations.asMilliseconds()).format("HH:mm:ss"), totalRate: totalRate.total }))
+        dispatch({ type: types.GET_ITEM, payload: response.data });
     }
 }
 

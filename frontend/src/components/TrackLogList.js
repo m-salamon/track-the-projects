@@ -34,6 +34,13 @@ class TrackLogList extends React.Component{
         this.editTrackLog(logId);        
     }
 
+    editTrackLog = (logId) => {
+        let item = {
+            logId: logId 
+       };
+        this.props.editTrackLog(item);
+    }
+    
      deleteHandler = async (e) => {
         //when icon is clicked its e.currentTarget - when button is clicked its e.target 
         if(e.currentTarget){
@@ -52,15 +59,9 @@ class TrackLogList extends React.Component{
              
     }
 
-    editTrackLog = (logId) => {
-        let item = {
-            logId: logId 
-       };
-        this.props.editTrackLog(item);
-    }
+
 
     componentWillReceiveProps(nextProps){
-        console.log('REDUX STATE', nextProps)
         let state = Object.assign({}, this.state);
         if (nextProps.getTrackLogItems) {
             state.trackLogs.length = 0;
@@ -124,7 +125,7 @@ class TrackLogList extends React.Component{
         <div>
         
         {this.state.showModal ?
-            <EditModal toggle={this.state.showModal} editTrackLogItems={this.props.editTrackLogItems} ></EditModal> :
+            <EditModal toggle={this.state.showModal} ></EditModal> :
             null
          }
             {trackLogs}

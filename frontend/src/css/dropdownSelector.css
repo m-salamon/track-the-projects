@@ -1,10 +1,14 @@
 /* ==================================================
 ================== copy this code====================
 ====================== bellow ======================= */
-.Select div{
+.Select.track-page div{
     border-top-right-radius:  0px;
     border-bottom-right-radius:  0px;
     /* z-index: 2000; */
+}
+
+.Select.dashboard-page>div>span>div{
+    color: var(--blue);
 }
 /* ===================================================
 =======================  end  ========================

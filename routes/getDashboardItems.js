@@ -1,16 +1,16 @@
-var express = require('express');
-var router = express.Router();
-var repo = require('../repo');
+// var express = require('express');
+// var router = express.Router();
+// var repo = require('../repo');
 
-router.get('/', (req, res) => {
-  repo.getDashboardItems.getDashboardItems(req.query)
-    .then((dashboardItems) => {
-      console.log('RESPONSE ', dashboardItems)
-      res.json({ success: true, dashboardItems: dashboardItems });
-    }).catch(err => {
-      console.error(err)
-    })
+// router.post('/', async (req, res) => {
+//   console.log('req', req)
+//   return
+//   try {
+//     let dashboardItems = await repo.getDashboardItems.getDashboardItems(req.query)
+//     res.json({ success: true, dashboardItems });
+//   } catch (err) {
+//     console.error(err)
+//   }
+// });
 
-});
-
-module.exports = router;
+// module.exports = router;

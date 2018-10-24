@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
@@ -18,7 +18,7 @@ import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import Input from '../components/Input';
 import ToastrMsg from '../components/toastr';
 
-class Login extends React.Component {
+class Login extends Component {
   constructor() {
     super();
     this.state = {

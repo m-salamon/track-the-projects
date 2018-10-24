@@ -26,7 +26,7 @@ router.use('/editTrackLog', editTrackLog);
 router.use('/deleteTrackLog', deleteTrackLog);
 router.use('/updateTrackLog', updateTrackLog);
 router.use('/manage', manage);
-router.use('/getDashboardItems', getDashboardItems);
+//router.use('/getDashboardItems', getDashboardItems);
 
 
 module.exports = router;

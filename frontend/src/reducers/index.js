@@ -4,6 +4,7 @@ import getProjectReducer from './project';
 import getTaskReducer from './task';
 import getClientReducer from './client'
 import getTrackLogReducer from './getTrackLog';
+import getDashboardItems from './getDashboardItems';
 import editTrackLogReducer from './editTrackLog';
 import deleteTrackLogReducer from './deleteTrackLog';
 import updateTrackLogReducer from './updateTrackLog';
@@ -22,6 +23,7 @@ const appreducer = combineReducers({
     updateTrackLogReducer,
     manageReducer,
     toggleNavSide,
+    getDashboardItems
 })
 
 export default appreducer;
