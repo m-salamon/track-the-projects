@@ -22,6 +22,7 @@ class EditModal extends React.Component {
             taskItems: [],
             startTimeItems: [],
             endTimeItems: [],
+            action: '',
             inputs: {
                 id: '',
                 projectId: '',
@@ -35,8 +36,7 @@ class EditModal extends React.Component {
                 date: '',
                 startDate: '',
                 additionalCost: ''
-            },
-            action: ''
+            }
         }
     }
 
@@ -176,8 +176,6 @@ class EditModal extends React.Component {
         }
 
         this.setState({ projectItems: state.projectItems, taskItems: state.taskItems, startTimeItems: startTimeItems, endTimeItems: endTimeItems }, () => this.durationLog());
-
-
     }
 
     durationLog = () => {
@@ -200,7 +198,6 @@ class EditModal extends React.Component {
         this.setState({
             inputs: inputs
         });
-
     }
 
     updateTrackLog = () => {
@@ -223,7 +220,6 @@ class EditModal extends React.Component {
         if (this.state.action == 'dashboard') {
             this.props.syncDashboardItems()
         }
-
         //close the modal
         this.toggle();
     }
@@ -237,7 +233,6 @@ class EditModal extends React.Component {
             modal: this.props.toggle,
             action: this.props.action || ''
         });
-
         this.durationLog();
     }
 
@@ -395,7 +390,6 @@ class EditModal extends React.Component {
                 </div>
             )
         });
-        console.log('modal', modalItems)
 
         return (
             <div>
@@ -423,7 +417,6 @@ function mapDispatchToProps(dispatch) {
         saveTrackLog: (state) => dispatch(saveTrackLog(state)),
         updateTrackLog: (state) => dispatch(updateTrackLog(state)),
         getTrackLog: (state) => dispatch(getTrackLog(state))
-
     }
 }
 

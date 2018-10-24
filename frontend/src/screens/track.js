@@ -1,10 +1,11 @@
+/**
+ * Track
+ */
+
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import ReactDOM from 'react-dom';
 import '../css/track.css';
-import axios from 'axios';
 import moment from 'moment';
-import { RouteComponentProps } from 'react-router-dom';
 import PageTop from './PageTop';
 import PageBottom from './PageBottom';
 import PageTitle from '../components/PageTitle';
@@ -15,7 +16,6 @@ import { connect } from 'react-redux';
 import { getProjects, getTasks, saveTrackLog, getTrackLog } from '../actions/actions';
 import Button from '../components/Button';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
-
 
 class Track extends Component {
   constructor() {
@@ -315,6 +315,7 @@ class Track extends Component {
           <hr className="hr-line mt-1" />
           <TrackLogList trackLogs={this.state.trackLogs} />
         </div>
+        {/* Footer */}
         <PageBottom />
       </div>
     );
@@ -328,7 +329,6 @@ function mapStateToProps(state, prop) {
     taskItems: state.getTaskReducer,
     getTrackLogItems: state.getTrackLogReducer
   }
-
 }
 
 function mapDispatchToProps(dispatch) {
@@ -339,8 +339,6 @@ function mapDispatchToProps(dispatch) {
     getTrackLog: (state) => dispatch(getTrackLog(state)),
 
     saveTrackLog: (state) => dispatch(saveTrackLog(state))
-
-
   }
 }
 

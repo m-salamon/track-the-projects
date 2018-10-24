@@ -1,7 +1,9 @@
+/**
+ * Page Top
+ */
+
 import React, { Component, Fragment } from 'react';
-import { Link } from 'react-router-dom';
 import '../css/pageTop.css';
-import axios from 'axios';
 
 export default function PageTop(){
 

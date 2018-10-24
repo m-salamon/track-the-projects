@@ -1,3 +1,7 @@
+/**
+ * Main Dashbaord
+ */
+
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -16,6 +20,7 @@ import { getDashboardItems, getProjects, getTasks, getClients } from '../actions
 import moment from 'moment';
 import DatePickerRange from '../components/DatePickerRange';
 import _ from 'lodash'
+
 
 class Dashboard extends Component {
   constructor() {

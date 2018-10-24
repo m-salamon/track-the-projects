@@ -2,7 +2,6 @@ import React, { Component, Fragment } from "react";
 import { connect } from 'react-redux';
 import { toggleNavSide } from '../actions/actions';
 import { BrowserRouter, Route } from 'react-router-dom';
-import Main from './Main';
 import NavbarSide from '../components/NavbarSide';
 import Track from './Track';
 import manageClients from './ManageClients';

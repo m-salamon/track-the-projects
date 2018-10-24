@@ -1,18 +1,12 @@
+/**
+ * Login
+ */
+
 import React, { Component, Fragment } from 'react';
-import { Link } from 'react-router-dom';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
 import '../css/login.css';
-import moment from 'moment';
-import { RouteComponentProps } from 'react-router-dom';
-import PageTop from './PageTop';
 import PageBottom from './PageBottom';
-import PageTitle from '../components/PageTitle';
-import ManageItems from '../components/ManageItems';
-import DropdownSelector from '../components/DropdownSelector';
-import TrackLogList from '../components/TrackLogList';
 import { connect } from 'react-redux';
-import { addItem, getItem } from '../actions/actions';
 import Button from '../components/Button';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import Input from '../components/Input';

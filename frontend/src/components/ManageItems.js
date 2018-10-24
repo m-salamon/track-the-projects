@@ -250,9 +250,7 @@ class ManageItems extends Component {
 					</tr>
 					: null
 			}
-
 		}
-
 
 		return (
 			<div>
@@ -288,7 +286,6 @@ function mapStateToProps(state, prop) {
 		editItemReducer: state.manageReducer.editItem,
 		getItems: state.manageReducer.getItems,
 	}
-
 }
 
 function mapDispatchToProps(dispatch) {
@@ -300,7 +297,6 @@ function mapDispatchToProps(dispatch) {
 		editTrackLog: (state) => dispatch(editTrackLog(state)),
 		deleteTrackLog: (state) => dispatch(deleteTrackLog(state)),
 		getDashboardItems: (state) => dispatch(getDashboardItems(state)),
-
 	}
 }
 

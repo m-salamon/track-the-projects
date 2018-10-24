@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { Component, Fragment } from "react";
 import axios from 'axios';
 import moment from 'moment';
 import { RouteComponentProps } from 'react-router-dom';
@@ -8,7 +8,7 @@ import { editTrackLog, deleteTrackLog, getTrackLog } from '../actions/actions';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
 import Button from '../components/Button';
 
-class TrackLogList extends React.Component{
+class TrackLogList extends Component{
     constructor() {
         super();
         this.state = {

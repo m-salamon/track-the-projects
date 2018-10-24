@@ -1,6 +1,9 @@
+/**
+ * Manage Clients
+ */
+
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import '../css/manage.css';
 import { addItem, getItem } from '../actions/actions';
 import { Tooltip, UncontrolledTooltip } from 'reactstrap';
@@ -11,7 +14,6 @@ import ManageItems from '../components/ManageItems';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import ToastrMsg from '../components/toastr';
-
 
 class ManageClients extends Component {
     constructor() {

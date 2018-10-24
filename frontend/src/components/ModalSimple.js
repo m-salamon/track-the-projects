@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { Component, Fragment } from "react";
 import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
@@ -7,7 +7,7 @@ import Button from '../components/Button';
 // import '../css/editModal.css';
 import ToastrMsg from '../components/toastr';
 
-class ModalSimple extends React.Component {
+class ModalSimple extends Component {
 	constructor() {
 		super();
 		this.state = {
@@ -16,7 +16,6 @@ class ModalSimple extends React.Component {
 	}
 
 	render() {
-		
 		return (
 			<div>
 				<Modal isOpen={true} className={this.props.className}>
