@@ -1,5 +1,5 @@
 import * as React from 'react';
-import axios from 'axios';
+import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -22,6 +22,7 @@ class EditModal extends React.Component {
             taskItems: [],
             startTimeItems: [],
             endTimeItems: [],
+            action: '',
             inputs: {
                 id: '',
                 projectId: '',
@@ -35,8 +36,7 @@ class EditModal extends React.Component {
                 date: '',
                 startDate: '',
                 additionalCost: ''
-            },
-            action: ''
+            }
         }
     }
 
@@ -176,8 +176,6 @@ class EditModal extends React.Component {
         }
 
         this.setState({ projectItems: state.projectItems, taskItems: state.taskItems, startTimeItems: startTimeItems, endTimeItems: endTimeItems }, () => this.durationLog());
-
-
     }
 
     durationLog = () => {
@@ -200,7 +198,6 @@ class EditModal extends React.Component {
         this.setState({
             inputs: inputs
         });
-
     }
 
     updateTrackLog = () => {
@@ -223,7 +220,6 @@ class EditModal extends React.Component {
         if (this.state.action == 'dashboard') {
             this.props.syncDashboardItems()
         }
-
         //close the modal
         this.toggle();
     }
@@ -237,7 +233,6 @@ class EditModal extends React.Component {
             modal: this.props.toggle,
             action: this.props.action || ''
         });
-
         this.durationLog();
     }
 
@@ -260,7 +255,7 @@ class EditModal extends React.Component {
                                     <div className="input-group">
                                         <DropdownSelector name="project" options={this.state.projectItems} placeholder="type project name..." className={"btn-block DropdownSelector-project"} value={this.state.inputs.project} onChange={this.changeHandlerDropdown} />
                                         <span className="input-group-btn" id="addProjectTooltipModal">
-                                            <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>} className="btn btn-secondary green-background dropdown-effects add-btn" type="button" />
+                                            <Link to='/manageProjects'><Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>} className="btn btn-secondary green-background dropdown-effects add-btn" type="button" /></Link>
                                             <UncontrolledTooltip placement="left" target={"addProjectTooltipModal"} >Create a new project</UncontrolledTooltip>
                                         </span>
                                     </div>
@@ -275,7 +270,7 @@ class EditModal extends React.Component {
                                     <div className="input-group">
                                         <DropdownSelector name="task" options={this.state.taskItems} placeholder="type task name..." className={"btn-block DropdownSelector-task"} value={this.state.inputs.task} onChange={this.changeHandlerDropdown} />
                                         <span className="input-group-btn" id="addTaskTooltipModal">
-                                            <Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>} className="btn btn-secondary green-background dropdown-effects add-btn" type="button" />
+                                            <Link to='/manageTasks'><Button buttonName={<i className='fa fa-plus' aria-hidden='true'></i>} className="btn btn-secondary green-background dropdown-effects add-btn" type="button" /></Link>
                                             <UncontrolledTooltip placement="left" target={"addTaskTooltipModal"} >Create a new task</UncontrolledTooltip>
                                         </span>
                                     </div>
@@ -292,13 +287,13 @@ class EditModal extends React.Component {
                                             <i className="fa fa-clock-o" aria-hidden="true"></i>
                                         </span>
                                         <DropdownSelector name="startTime" value={this.state.inputs.startTime} onChange={this.changeHandlerDropdown} searchable={false} options={this.state.startTimeItems} placeholder="time started" className={"btn-block DropdownSelector-startTime"} />
-                                        <span className="input-group-btn" id="incrementTimeTooltip">
-                                            <Button type="button" onClick={this.changeHandlerIncrement} title="startTime" name="timeIncrement" className="btn btn-secondary dropdown-effects" icon='fa fa-plus' />
-                                            <UncontrolledTooltip placement="top" target={"incrementTimeTooltip"} >Increment by 1 minutes</UncontrolledTooltip>
-                                        </span>
                                         <span className="input-group-btn" id="decrementTimeTooltip">
                                             <Button type="button" onClick={this.changeHandlerIncrement} title="startTime" name="timeDecrement" className="btn btn-secondary dropdown-effects" buttonName={<i className="fa fa-minus" name="timeIncrement" aria-hidden="true"> </i>} />
                                             <UncontrolledTooltip placement="top" target={"decrementTimeTooltip"} >Decrement by 1 minutes</UncontrolledTooltip>
+                                        </span>
+                                        <span className="input-group-btn" id="incrementTimeTooltip">
+                                            <Button type="button" onClick={this.changeHandlerIncrement} title="startTime" name="timeIncrement" className="btn btn-secondary dropdown-effects" icon='fa fa-plus' />
+                                            <UncontrolledTooltip placement="top" target={"incrementTimeTooltip"} >Increment by 1 minutes</UncontrolledTooltip>
                                         </span>
                                     </div>
                                 </div>
@@ -314,13 +309,13 @@ class EditModal extends React.Component {
                                             <i className="fa fa-clock-o" aria-hidden="true"></i>
                                         </span>
                                         <DropdownSelector name="endTime" value={this.state.inputs.endTime} onChange={this.changeHandlerDropdown} searchable={false} options={this.state.endTimeItems} placeholder="time finished" className="btn-block DropdownSelector-endTime" />
-                                        <span className="input-group-btn" id="incrementEndTimeTooltip">
-                                            <Button type="button" onClick={this.changeHandlerIncrement} title="endTime" name="timeIncrement" className="btn btn-secondary dropdown-effects" buttonName={<i className="fa fa-plus" name="timeIncrement" aria-hidden="true"></i>} />
-                                            <UncontrolledTooltip placement="top" target={"incrementEndTimeTooltip"} >Increment by 1 minutes</UncontrolledTooltip>
-                                        </span>
                                         <span className="input-group-btn" id="decrementEndTimeTooltip">
                                             <Button type="button" onClick={this.changeHandlerIncrement} title="endTime" name="timeDecrement" className="btn btn-secondary dropdown-effects" buttonName={<i className="fa fa-minus" name="timeDecrement" aria-hidden="true"></i>} />
                                             <UncontrolledTooltip placement="top" target={"decrementEndTimeTooltip"} >Decrement by 1 minutes</UncontrolledTooltip>
+                                        </span>
+                                        <span className="input-group-btn" id="incrementEndTimeTooltip">
+                                            <Button type="button" onClick={this.changeHandlerIncrement} title="endTime" name="timeIncrement" className="btn btn-secondary dropdown-effects" buttonName={<i className="fa fa-plus" name="timeIncrement" aria-hidden="true"></i>} />
+                                            <UncontrolledTooltip placement="top" target={"incrementEndTimeTooltip"} >Increment by 1 minutes</UncontrolledTooltip>
                                         </span>
                                     </div>
                                 </div>
@@ -395,7 +390,6 @@ class EditModal extends React.Component {
                 </div>
             )
         });
-        console.log('modal', modalItems)
 
         return (
             <div>
@@ -423,7 +417,6 @@ function mapDispatchToProps(dispatch) {
         saveTrackLog: (state) => dispatch(saveTrackLog(state)),
         updateTrackLog: (state) => dispatch(updateTrackLog(state)),
         getTrackLog: (state) => dispatch(getTrackLog(state))
-
     }
 }
 

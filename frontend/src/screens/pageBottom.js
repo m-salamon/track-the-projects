@@ -1,7 +1,9 @@
+/**
+ * Page Bottom
+ */
+
 import React, { Component, Fragment } from 'react';
-import { Link } from 'react-router-dom';
 import '../css/pageBottom.css';
-import axios from 'axios';
 
 export default function PageBottom() {
 

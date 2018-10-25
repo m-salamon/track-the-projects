@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { Component, Fragment } from "react";
 import axios from 'axios';
 import moment from 'moment';
 import { RouteComponentProps } from 'react-router-dom';
@@ -12,7 +12,7 @@ import { updateItem, getItem, getClients, getProjects } from '../actions/actions
 import '../css/editModal.css';
 import ToastrMsg from '../components/toastr';
 
-class ModalComponent extends React.Component {
+class ModalComponent extends Component {
 	constructor() {
 		super();
 		this.state = {
@@ -72,7 +72,6 @@ class ModalComponent extends React.Component {
 		await this.props.getItem(item)
 		await this.toggleToastrMsg()
 		this.props.handleClose()
-
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -190,7 +189,7 @@ class ModalComponent extends React.Component {
 			if (this.state.action == 'clients') {
 				return (
 					key.map((k) => {
-						if (k == 'id' || k == 'timeStamp' || k == 'userId' || k == 'teamId' || k == 'createdAt' || k == 'clientId') return
+						if (k == 'id' || k == 'updatedAt' || k == 'userId' || k == 'teamId' || k == 'createdAt' || k == 'clientId') return
 						return (
 							<div key={k} id={k} className="form-group row">
 								<label className="col-sm-3 col-lg-2 col-form-label">{k}</label>
@@ -227,8 +226,8 @@ class ModalComponent extends React.Component {
 									</div>
 								</div>)
 						if (k == 'hourlyRate')
-						return (
-							<div key={k} id={k} className="form-group row">
+							return (
+								<div key={k} id={k} className="form-group row">
 									<label className="col-sm-12 col-form-label">{'Hourly Rate'}</label>
 									<div className="col-sm-9 col-lg-10">
 										<div className="input-group">
@@ -236,36 +235,34 @@ class ModalComponent extends React.Component {
 											<input name="hourlyRate" value={this.state.item[0][k]} onChange={this.changeHandler} type="number" className="form-control" aria-label="Text input with radio button" placeholder="task hourly rate" />
 										</div>
 									</div>
-							</div>)
+								</div>)
 					}))
 			}
-
 		}
-
-
-
 
 		return (
 			console.log('ITEM ', this.props.item),
-			<div>
-				{this.state.toastrMsg ? <ToastrMsg type="success" msg="Succesfuly updated" title="" /> : null}
+			<Fragment>
+				<div>
+					{this.state.toastrMsg ? <ToastrMsg type="success" msg="Succesfuly updated" title="" /> : null}
 
-				<Modal isOpen={true} className={this.props.className}>
-					<ModalHeader toggle={this.props.handleClose}>{this.props.updatetitle}</ModalHeader>
-					{/*<!-- .Modal body -->*/}
-					<ModalBody>
-						{body()}
-					</ModalBody>
-					{/*<!-- /.Modal body -->*/}
-					{/*<!-- .Modal footer -->*/}
-					<ModalFooter>
-						<button type="button" className="btn btn-secondary" onClick={this.props.handleClose} name='cancel' >Cancel</button>
-						<button type="button" className="btn btn-primary blue-background" onClick={this.updateItem} name='save' >Save</button>
-					</ModalFooter>
-					{/*<!-- /.Modal footer -->*/}
-				</Modal>
-			</div>
-		);
+					<Modal isOpen={true} className={this.props.className}>
+						<ModalHeader toggle={this.props.handleClose}>{this.props.updatetitle}</ModalHeader>
+						{/*<!-- .Modal body -->*/}
+						<ModalBody>
+							{body()}
+						</ModalBody>
+						{/*<!-- /.Modal body -->*/}
+						{/*<!-- .Modal footer -->*/}
+						<ModalFooter>
+							<button type="button" className="btn btn-secondary" onClick={this.props.handleClose} name='cancel' >Cancel</button>
+							<button type="button" className="btn btn-primary blue-background" onClick={this.updateItem} name='save' >Save</button>
+						</ModalFooter>
+						{/*<!-- /.Modal footer -->*/}
+					</Modal>
+				</div>
+			</Fragment>
+		)
 	}
 }
 
@@ -275,7 +272,6 @@ function mapStateToProps(state, prop) {
 		clients: state.getClientReducer,
 		projects: state.getProjectReducer
 	}
-
 }
 
 function mapDispatchToProps(dispatch) {

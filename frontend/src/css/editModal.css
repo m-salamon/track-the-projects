@@ -21,7 +21,34 @@
     background-color: #fff;
     padding: .5rem .75rem;
     font-size: 1rem;
-    border-top-right-radius: 0.25rem;;
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+}
+.DropdownSelector-datepicker-range-left{
+    display: flex;
+    width: 100%;
+    background-color: #fff;
+    padding: .5rem .75rem;
+    font-size: 1rem;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+    border-top-right-radius: 0rem;
+    border-bottom-right-radius: 0rem;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+}
+.DropdownSelector-datepicker-range-right{
+    display: flex;
+    width: 100%;
+    background-color: #fff;
+    padding: .5rem .75rem;
+    font-size: 1rem;
+    border-top-left-radius: 0rem;
+    border-bottom-left-radius: 0rem;
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
     border-bottom-right-radius: 0.25rem;;
     background-clip: padding-box;
     border: 1px solid rgba(0, 0, 0, 0.15);

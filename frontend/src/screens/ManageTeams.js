@@ -1,5 +1,5 @@
 /**
- * Manage Clients
+ * Manage Teams
  */
 
 import React, { Component, Fragment } from 'react';
@@ -15,14 +15,15 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import ToastrMsg from '../components/toastr';
 
-class ManageClients extends Component {
+class ManageTeams extends Component {
     constructor() {
         super();
         this.state = {
-            title: 'Add Client',
+            title: 'Add Team',
             items: [],
             inputs: {
-                name: '',
+                firstName: '',
+                lastName: '',
                 email: '',
                 phone: '',
                 address: ''
@@ -182,4 +183,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManageClients);
+export default connect(mapStateToProps, mapDispatchToProps)(ManageTeams);

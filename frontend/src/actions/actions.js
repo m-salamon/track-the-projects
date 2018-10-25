@@ -33,7 +33,6 @@ function getClients() {
     }
 }
 
-
 ////////////////
 // save track log start
 //////////////
@@ -54,17 +53,10 @@ function saveTrackLog(saveLog) {
 ////////////////
 // get todays logs
 //////////////
-function getTrackLogSuccess(trackLog) {
-    return {
-        type: types.GET_TRACK_LOG,
-        payload: trackLog
-    }
-}
-
 function getTrackLog(tracklog) {
     return async dispatch => {
         let response = await axios.get('/api/getTrackLog/', { headers: { logdate: tracklog.logDate } });
-        dispatch(getTrackLogSuccess(response.data));
+        dispatch({type: types.GET_TRACK_LOG, payload: response.data});
     }
 }
 
@@ -94,17 +86,10 @@ export function getDashboardItems(filters) {
 ////////////////
 // edit track logs
 //////////////
-function editTrackLogSuccess(tracklog) {
-    return {
-        type: types.EDIT_TRACK_LOG,
-        payload: tracklog
-    }
-}
-
 function editTrackLog(tracklog) {
     return async dispatch => {
         let response = await axios.get('/api/editTrackLog/', { headers: { logId: tracklog.logId } });
-        dispatch(editTrackLogSuccess(response.data));
+        dispatch({type: types.EDIT_TRACK_LOG, payload:response.data});
     }
 }
 

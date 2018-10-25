@@ -7,17 +7,14 @@ class Button extends React.Component {
         this.state = {
      
         }
-        
     }
  
     clickHandler = (e) => {
         
     }
 
-
     render(){
         const iconHandler = <i className={this.props.icon} aria-hidden="true"></i>;
-
         return (
                 <button
                     name={this.props.name}
@@ -32,7 +29,6 @@ class Button extends React.Component {
                 </button>
         );
     }    
-
 }
 
 function mapStateToProps(state) {
@@ -47,5 +43,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-//export default Button;
 export default connect(mapStateToProps, mapDispatchToProps)(Button);

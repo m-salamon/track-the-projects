@@ -19,7 +19,6 @@ class Input extends React.Component {
         this.setState(state);
     }
 
-
     render() {
         return (
             <input className={this.props.className}

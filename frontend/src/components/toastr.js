@@ -1,7 +1,7 @@
-import * as React from 'react';
+import React, { Component, Fragment } from "react";
 import toastr from 'toastr'
 
-export default  class ToastrMsg extends React.Component {
+export default  class ToastrMsg extends Component {
      constructor() {
           super();
           this.state = {
