@@ -173,8 +173,6 @@ class Dashboard extends Component {
   }
 
   render() {
-    console.log('datepickerStartDate', this.state.datepickerStartDate)
-    console.log('datepickerEndDate', this.state.datepickerEndDate)
     return (
       <Fragment>
         {this.state.toastrMsg ? <ToastrMsg type="success" msg="Client succesfuly saved" title="" /> : null}

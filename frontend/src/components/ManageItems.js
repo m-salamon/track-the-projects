@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import '../css/manage.css';
 import { Link } from 'react-router-dom';
+import Pagination from "react-js-pagination";
+import DropdownSelector from '../components/DropdownSelector';
 import { connect } from 'react-redux';
 import ModalComponent from '../components/ModalComponent';
 import ModalSimple from '../components/ModalSimple';
@@ -23,7 +25,22 @@ class ManageItems extends Component {
 			itemToDelete: '',
 			toastrMsg: '',
 			modaltracklog: false,
+			activePage: 1, //pagination
+			totalItemsCount: 0, //pagination
+			itemsCountPerPage: 3, //pagination
+			itemsCountPerPageList: [5, 10, 20, 50, 100, 1000], //pagination
+
 		}
+	}
+
+	//pagination
+	handlePageChange = (pageNumber) => {
+		console.log(`active page is ${pageNumber}`);
+		this.setState({ activePage: pageNumber });
+	}
+
+	clickHandlerItemsCountPerPage = (count) => {
+		this.setState({ itemsCountPerPage: count });
 	}
 
 	toggleToastrMsg = () => {
@@ -104,13 +121,17 @@ class ManageItems extends Component {
 		if (nextProps.getItems) {
 			state.items.length = 0;
 			state.items = nextProps.getItems;
+
+			console.log('state.items', state.items)
+			if (state.items.length) {
+				state.totalItemsCount = state.items.length
+			}
 		}
 
 		if (nextProps.editItemReducer) {
 			state.item.length = 0;
 			state.item = nextProps.editItemReducer;
 		}
-
 		this.setState(state)
 	}
 
@@ -119,8 +140,20 @@ class ManageItems extends Component {
 	}
 
 	render() {
-		if (this.state.items.length == 0) {
-			return <div className="ml-4">No Items</div>
+		if (!this.state.items.length) {
+			return (
+				<div className="row mt-5">
+					<div className="col-md-12">
+						<table className="manage-table table table-responsive">
+							<thead>
+								<tr className="text-medium-dark">
+									<th>No Items</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+			)
 		}
 
 		let header = () => {
@@ -173,7 +206,14 @@ class ManageItems extends Component {
 		let body = () => {
 			var key = Object.keys(this.state.items[0]);
 
-			return this.state.items.map((item, index) => {
+			const { items, activePage, itemsCountPerPage } = this.state
+
+			// Logic for displaying pagination items
+			const indexOfLastTodo = activePage * itemsCountPerPage;
+			const indexOfFirstTodo = indexOfLastTodo - itemsCountPerPage;
+			const currentTodos = items.slice(indexOfFirstTodo, indexOfLastTodo);
+
+			return currentTodos.map((item, index) => {
 				const { id } = item;
 
 
@@ -262,6 +302,20 @@ class ManageItems extends Component {
 
 				<div className="row mt-5">
 					<div className="col-md-12">
+
+						{/* Items Count Per Page */}
+						<div class="dropdown float-right">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								{this.state.itemsCountPerPage}
+							</button>
+							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+								{this.state.itemsCountPerPageList.map((i) => {
+									return <a class="dropdown-item" onClick={() => this.clickHandlerItemsCountPerPage(i)}>{i}</a>
+								})}
+							</div>
+						</div>
+						{/* End Items Count Per Page */}
+
 						<table className="manage-table table table-responsive">
 							<thead>
 								{header()}
@@ -273,6 +327,20 @@ class ManageItems extends Component {
 								{tfoot()}
 							</tfoot>
 						</table>
+
+						{/* Pagination */}
+						<div className="row justify-content-center">
+							<Pagination
+								activePage={this.state.activePage} //Required
+								itemsCountPerPage={this.state.itemsCountPerPage}
+								totalItemsCount={this.state.totalItemsCount} //Required
+								pageRangeDisplayed={5}
+								onChange={this.handlePageChange} //Required
+							// hideDisabled
+							/>
+						</div>
+						{/* /End Pagination */}
+
 					</div>
 				</div>
 			</div>
