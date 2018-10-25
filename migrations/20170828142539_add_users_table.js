@@ -10,7 +10,7 @@ exports.up = function(knex, Promise) {
        table.string('tempToken').notNullable()
        table.boolean('isVerified').notNullable()
        table.string('hourlyRate').notNullable()
-       table.bigInteger('teamId').notNullable()
+      //  table.bigInteger('teamId').notNullable()
        table.string('ip').notNullable()
        table.boolean('blackListed').notNullable()
        table.timestamp('createdAt').default(knex.fn.now())
